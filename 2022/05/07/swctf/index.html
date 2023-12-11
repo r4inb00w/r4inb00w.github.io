@@ -9,18 +9,18 @@
     <meta name="description" content="写一下2022年实验室招新赛题目的wp吧，这次招新赛我出了5道Web题目，并且搭建了整个靶场，收获很多。在出题的过程中，我对一些题目也有了更深的理解，这里记录一下这五道题目的题解吧。 snert翻译获取线索打开环境，查看网站源码，发现一个hint：  传递source参数，得到：  很明显就可以看出，这里输出了ifconfig，我们可以通过这些获得一些内网信息。 输入框中随意输入字符，页面响应时间">
 <meta property="og:type" content="article">
 <meta property="og:title" content="2022 SWCTF WriteUp">
-<meta property="og:url" content="https://r4inb00w.github.io/2022/05/07/swctf/index.html">
+<meta property="og:url" content="https://blog.rainb0w.top/2022/05/07/swctf/index.html">
 <meta property="og:site_name" content="rainb0w">
 <meta property="og:description" content="写一下2022年实验室招新赛题目的wp吧，这次招新赛我出了5道Web题目，并且搭建了整个靶场，收获很多。在出题的过程中，我对一些题目也有了更深的理解，这里记录一下这五道题目的题解吧。 snert翻译获取线索打开环境，查看网站源码，发现一个hint：  传递source参数，得到：  很明显就可以看出，这里输出了ifconfig，我们可以通过这些获得一些内网信息。 输入框中随意输入字符，页面响应时间">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://r4inb00w.github.io/images/4dd4c7e8bf650027.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/81be3812550efcdc.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/ed713dd72868ff05.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/26e0bd7642a2c404.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/e4f11a8fd9e8a419.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/8b1c5c204800d886.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/72614e159ef2c3bc.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/e5fbfa03ae923fdd.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/4dd4c7e8bf650027.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/81be3812550efcdc.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/ed713dd72868ff05.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/26e0bd7642a2c404.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/e4f11a8fd9e8a419.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/8b1c5c204800d886.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/72614e159ef2c3bc.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/e5fbfa03ae923fdd.png">
 <meta property="og:image" content="https://pic.imgdb.cn/item/626687a7b10bd.png">
 <meta property="og:image" content="https://pic.imgdb.cn/item/626687bf82c09.png">
 <meta property="og:image" content="https://pic.imgdb.cn/item/6266a41d239250f7c5e52df2.png">
@@ -58,7 +58,7 @@
 <meta property="article:author" content="rainb0w">
 <meta property="article:tag" content="CTF">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://r4inb00w.github.io/images/4dd4c7e8bf650027.png">
+<meta name="twitter:image" content="https://blog.rainb0w.top/images/4dd4c7e8bf650027.png">
     
     
       
@@ -139,17 +139,17 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://r4inb00w.github.io/2022/05/07/swctf/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://r4inb00w.github.io/2022/05/07/swctf/&text=2022 SWCTF WriteUp"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://r4inb00w.github.io/2022/05/07/swctf/&title=2022 SWCTF WriteUp"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://r4inb00w.github.io/2022/05/07/swctf/&is_video=false&description=2022 SWCTF WriteUp"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=2022 SWCTF WriteUp&body=Check out this article: https://r4inb00w.github.io/2022/05/07/swctf/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://r4inb00w.github.io/2022/05/07/swctf/&title=2022 SWCTF WriteUp"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://r4inb00w.github.io/2022/05/07/swctf/&title=2022 SWCTF WriteUp"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://r4inb00w.github.io/2022/05/07/swctf/&title=2022 SWCTF WriteUp"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://r4inb00w.github.io/2022/05/07/swctf/&title=2022 SWCTF WriteUp"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://r4inb00w.github.io/2022/05/07/swctf/&name=2022 SWCTF WriteUp&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://r4inb00w.github.io/2022/05/07/swctf/&t=2022 SWCTF WriteUp"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://blog.rainb0w.top/2022/05/07/swctf/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://blog.rainb0w.top/2022/05/07/swctf/&text=2022 SWCTF WriteUp"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://blog.rainb0w.top/2022/05/07/swctf/&title=2022 SWCTF WriteUp"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://blog.rainb0w.top/2022/05/07/swctf/&is_video=false&description=2022 SWCTF WriteUp"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=2022 SWCTF WriteUp&body=Check out this article: https://blog.rainb0w.top/2022/05/07/swctf/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://blog.rainb0w.top/2022/05/07/swctf/&title=2022 SWCTF WriteUp"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://blog.rainb0w.top/2022/05/07/swctf/&title=2022 SWCTF WriteUp"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://blog.rainb0w.top/2022/05/07/swctf/&title=2022 SWCTF WriteUp"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://blog.rainb0w.top/2022/05/07/swctf/&title=2022 SWCTF WriteUp"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://blog.rainb0w.top/2022/05/07/swctf/&name=2022 SWCTF WriteUp&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://blog.rainb0w.top/2022/05/07/swctf/&t=2022 SWCTF WriteUp"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -603,17 +603,17 @@
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://r4inb00w.github.io/2022/05/07/swctf/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://r4inb00w.github.io/2022/05/07/swctf/&text=2022 SWCTF WriteUp"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://r4inb00w.github.io/2022/05/07/swctf/&title=2022 SWCTF WriteUp"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://r4inb00w.github.io/2022/05/07/swctf/&is_video=false&description=2022 SWCTF WriteUp"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=2022 SWCTF WriteUp&body=Check out this article: https://r4inb00w.github.io/2022/05/07/swctf/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://r4inb00w.github.io/2022/05/07/swctf/&title=2022 SWCTF WriteUp"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://r4inb00w.github.io/2022/05/07/swctf/&title=2022 SWCTF WriteUp"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://r4inb00w.github.io/2022/05/07/swctf/&title=2022 SWCTF WriteUp"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://r4inb00w.github.io/2022/05/07/swctf/&title=2022 SWCTF WriteUp"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://r4inb00w.github.io/2022/05/07/swctf/&name=2022 SWCTF WriteUp&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://r4inb00w.github.io/2022/05/07/swctf/&t=2022 SWCTF WriteUp"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://blog.rainb0w.top/2022/05/07/swctf/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://blog.rainb0w.top/2022/05/07/swctf/&text=2022 SWCTF WriteUp"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://blog.rainb0w.top/2022/05/07/swctf/&title=2022 SWCTF WriteUp"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://blog.rainb0w.top/2022/05/07/swctf/&is_video=false&description=2022 SWCTF WriteUp"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=2022 SWCTF WriteUp&body=Check out this article: https://blog.rainb0w.top/2022/05/07/swctf/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://blog.rainb0w.top/2022/05/07/swctf/&title=2022 SWCTF WriteUp"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://blog.rainb0w.top/2022/05/07/swctf/&title=2022 SWCTF WriteUp"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://blog.rainb0w.top/2022/05/07/swctf/&title=2022 SWCTF WriteUp"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://blog.rainb0w.top/2022/05/07/swctf/&title=2022 SWCTF WriteUp"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://blog.rainb0w.top/2022/05/07/swctf/&name=2022 SWCTF WriteUp&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://blog.rainb0w.top/2022/05/07/swctf/&t=2022 SWCTF WriteUp"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>

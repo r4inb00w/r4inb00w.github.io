@@ -9,47 +9,47 @@
     <meta name="description" content="前言在半个月前的CISCN线上初赛的时候碰到了一道关于ThinkPHP6.0.12LTS反序列化漏洞的题目，当时解题是直接用的网上的POC，没有细致的研究这个漏洞POP链的挖掘，这篇文章就对这个漏洞进行一个复现和分析。 环境搭建 PHP8.0.2  thinkphp6.0.12   thinkphp6.0.12下载： 1composer create-project topthink&#x2F;think">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ThinkPHP6.0.12反序列化RCE挖掘">
-<meta property="og:url" content="https://r4inb00w.github.io/2022/06/19/thinkphpAudit/index.html">
+<meta property="og:url" content="https://blog.rainb0w.top/2022/06/19/thinkphpAudit/index.html">
 <meta property="og:site_name" content="rainb0w">
 <meta property="og:description" content="前言在半个月前的CISCN线上初赛的时候碰到了一道关于ThinkPHP6.0.12LTS反序列化漏洞的题目，当时解题是直接用的网上的POC，没有细致的研究这个漏洞POP链的挖掘，这篇文章就对这个漏洞进行一个复现和分析。 环境搭建 PHP8.0.2  thinkphp6.0.12   thinkphp6.0.12下载： 1composer create-project topthink&#x2F;think">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee6a109475431296c5c06.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee6b209475431296c70d7.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee6bb09475431296c7d13.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee6d009475431296c995a.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee6d909475431296ca4e9.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee6e509475431296cb323.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee6f209475431296cc2c2.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee70309475431296cd695.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee70f09475431296ce4a0.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee72609475431296d024c.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee72f09475431296d0d84.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee73b09475431296d1b5b.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee74709475431296d2c2c.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee75409475431296d3d38.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee76309475431296d500d.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee77609475431296d6b85.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee79c09475431296da44a.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee7ac09475431296dbb77.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee7f909475431296e2376.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee7bc09475431296dd17a.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee81e09475431296e524b.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee82f09475431296e660d.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee84109475431296e7cb1.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee84b09475431296e8891.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee85509475431296e9534.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee86b09475431296eb265.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee88609475431296ed28b.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee8dd09475431296f42c0.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee89909475431296ee9b4.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee91609475431296f81b0.png">
-<meta property="og:image" content="https://r4inb00w.github.io/images/62aee91f09475431296f8cf0.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee6a109475431296c5c06.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee6b209475431296c70d7.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee6bb09475431296c7d13.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee6d009475431296c995a.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee6d909475431296ca4e9.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee6e509475431296cb323.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee6f209475431296cc2c2.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee70309475431296cd695.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee70f09475431296ce4a0.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee72609475431296d024c.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee72f09475431296d0d84.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee73b09475431296d1b5b.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee74709475431296d2c2c.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee75409475431296d3d38.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee76309475431296d500d.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee77609475431296d6b85.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee79c09475431296da44a.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee7ac09475431296dbb77.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee7f909475431296e2376.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee7bc09475431296dd17a.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee81e09475431296e524b.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee82f09475431296e660d.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee84109475431296e7cb1.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee84b09475431296e8891.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee85509475431296e9534.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee86b09475431296eb265.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee88609475431296ed28b.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee8dd09475431296f42c0.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee89909475431296ee9b4.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee91609475431296f81b0.png">
+<meta property="og:image" content="https://blog.rainb0w.top/images/62aee91f09475431296f8cf0.png">
 <meta property="article:published_time" content="2022-06-19T00:00:00.000Z">
 <meta property="article:modified_time" content="2023-12-10T02:58:30.472Z">
 <meta property="article:author" content="rainb0w">
 <meta property="article:tag" content="CVE">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://r4inb00w.github.io/images/62aee6a109475431296c5c06.png">
+<meta name="twitter:image" content="https://blog.rainb0w.top/images/62aee6a109475431296c5c06.png">
     
     
       
@@ -132,17 +132,17 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://r4inb00w.github.io/2022/06/19/thinkphpAudit/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://r4inb00w.github.io/2022/06/19/thinkphpAudit/&text=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://r4inb00w.github.io/2022/06/19/thinkphpAudit/&title=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://r4inb00w.github.io/2022/06/19/thinkphpAudit/&is_video=false&description=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=ThinkPHP6.0.12反序列化RCE挖掘&body=Check out this article: https://r4inb00w.github.io/2022/06/19/thinkphpAudit/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://r4inb00w.github.io/2022/06/19/thinkphpAudit/&title=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://r4inb00w.github.io/2022/06/19/thinkphpAudit/&title=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://r4inb00w.github.io/2022/06/19/thinkphpAudit/&title=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://r4inb00w.github.io/2022/06/19/thinkphpAudit/&title=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://r4inb00w.github.io/2022/06/19/thinkphpAudit/&name=ThinkPHP6.0.12反序列化RCE挖掘&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://r4inb00w.github.io/2022/06/19/thinkphpAudit/&t=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://blog.rainb0w.top/2022/06/19/thinkphpAudit/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://blog.rainb0w.top/2022/06/19/thinkphpAudit/&text=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://blog.rainb0w.top/2022/06/19/thinkphpAudit/&title=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://blog.rainb0w.top/2022/06/19/thinkphpAudit/&is_video=false&description=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ThinkPHP6.0.12反序列化RCE挖掘&body=Check out this article: https://blog.rainb0w.top/2022/06/19/thinkphpAudit/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://blog.rainb0w.top/2022/06/19/thinkphpAudit/&title=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://blog.rainb0w.top/2022/06/19/thinkphpAudit/&title=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://blog.rainb0w.top/2022/06/19/thinkphpAudit/&title=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://blog.rainb0w.top/2022/06/19/thinkphpAudit/&title=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://blog.rainb0w.top/2022/06/19/thinkphpAudit/&name=ThinkPHP6.0.12反序列化RCE挖掘&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://blog.rainb0w.top/2022/06/19/thinkphpAudit/&t=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -329,17 +329,17 @@
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://r4inb00w.github.io/2022/06/19/thinkphpAudit/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://r4inb00w.github.io/2022/06/19/thinkphpAudit/&text=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://r4inb00w.github.io/2022/06/19/thinkphpAudit/&title=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://r4inb00w.github.io/2022/06/19/thinkphpAudit/&is_video=false&description=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=ThinkPHP6.0.12反序列化RCE挖掘&body=Check out this article: https://r4inb00w.github.io/2022/06/19/thinkphpAudit/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://r4inb00w.github.io/2022/06/19/thinkphpAudit/&title=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://r4inb00w.github.io/2022/06/19/thinkphpAudit/&title=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://r4inb00w.github.io/2022/06/19/thinkphpAudit/&title=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://r4inb00w.github.io/2022/06/19/thinkphpAudit/&title=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://r4inb00w.github.io/2022/06/19/thinkphpAudit/&name=ThinkPHP6.0.12反序列化RCE挖掘&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://r4inb00w.github.io/2022/06/19/thinkphpAudit/&t=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://blog.rainb0w.top/2022/06/19/thinkphpAudit/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://blog.rainb0w.top/2022/06/19/thinkphpAudit/&text=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://blog.rainb0w.top/2022/06/19/thinkphpAudit/&title=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://blog.rainb0w.top/2022/06/19/thinkphpAudit/&is_video=false&description=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ThinkPHP6.0.12反序列化RCE挖掘&body=Check out this article: https://blog.rainb0w.top/2022/06/19/thinkphpAudit/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://blog.rainb0w.top/2022/06/19/thinkphpAudit/&title=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://blog.rainb0w.top/2022/06/19/thinkphpAudit/&title=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://blog.rainb0w.top/2022/06/19/thinkphpAudit/&title=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://blog.rainb0w.top/2022/06/19/thinkphpAudit/&title=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://blog.rainb0w.top/2022/06/19/thinkphpAudit/&name=ThinkPHP6.0.12反序列化RCE挖掘&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://blog.rainb0w.top/2022/06/19/thinkphpAudit/&t=ThinkPHP6.0.12反序列化RCE挖掘"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>

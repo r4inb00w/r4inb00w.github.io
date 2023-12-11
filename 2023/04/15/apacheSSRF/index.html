@@ -9,7 +9,7 @@
     <meta name="description" content="前言最近开始深入了解一些Web服务器的漏洞，感觉Apache mod_proxy SSRF这个漏洞还是很值得深究的。一方面是为了学习Apache的调试知识，还有一方面是检验一下自身的C语言水平。 Apache调试之路这里我的调试方式是远程调试，主机和虚拟机信息如下： 12宿主机：Windows11       (192.168.135.1)虚拟机：Ubuntu22.04     (192.168.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CVE-2021-40438 Apache mod_proxy SSRF">
-<meta property="og:url" content="https://r4inb00w.github.io/2023/04/15/apacheSSRF/index.html">
+<meta property="og:url" content="https://blog.rainb0w.top/2023/04/15/apacheSSRF/index.html">
 <meta property="og:site_name" content="rainb0w">
 <meta property="og:description" content="前言最近开始深入了解一些Web服务器的漏洞，感觉Apache mod_proxy SSRF这个漏洞还是很值得深究的。一方面是为了学习Apache的调试知识，还有一方面是检验一下自身的C语言水平。 Apache调试之路这里我的调试方式是远程调试，主机和虚拟机信息如下： 12宿主机：Windows11       (192.168.135.1)虚拟机：Ubuntu22.04     (192.168.">
 <meta property="og:locale" content="en_US">
@@ -118,17 +118,17 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://r4inb00w.github.io/2023/04/15/apacheSSRF/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://r4inb00w.github.io/2023/04/15/apacheSSRF/&text=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://r4inb00w.github.io/2023/04/15/apacheSSRF/&title=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://r4inb00w.github.io/2023/04/15/apacheSSRF/&is_video=false&description=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=CVE-2021-40438 Apache mod_proxy SSRF&body=Check out this article: https://r4inb00w.github.io/2023/04/15/apacheSSRF/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://r4inb00w.github.io/2023/04/15/apacheSSRF/&title=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://r4inb00w.github.io/2023/04/15/apacheSSRF/&title=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://r4inb00w.github.io/2023/04/15/apacheSSRF/&title=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://r4inb00w.github.io/2023/04/15/apacheSSRF/&title=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://r4inb00w.github.io/2023/04/15/apacheSSRF/&name=CVE-2021-40438 Apache mod_proxy SSRF&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://r4inb00w.github.io/2023/04/15/apacheSSRF/&t=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://blog.rainb0w.top/2023/04/15/apacheSSRF/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://blog.rainb0w.top/2023/04/15/apacheSSRF/&text=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://blog.rainb0w.top/2023/04/15/apacheSSRF/&title=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://blog.rainb0w.top/2023/04/15/apacheSSRF/&is_video=false&description=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=CVE-2021-40438 Apache mod_proxy SSRF&body=Check out this article: https://blog.rainb0w.top/2023/04/15/apacheSSRF/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://blog.rainb0w.top/2023/04/15/apacheSSRF/&title=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://blog.rainb0w.top/2023/04/15/apacheSSRF/&title=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://blog.rainb0w.top/2023/04/15/apacheSSRF/&title=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://blog.rainb0w.top/2023/04/15/apacheSSRF/&title=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://blog.rainb0w.top/2023/04/15/apacheSSRF/&name=CVE-2021-40438 Apache mod_proxy SSRF&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://blog.rainb0w.top/2023/04/15/apacheSSRF/&t=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -321,17 +321,17 @@
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://r4inb00w.github.io/2023/04/15/apacheSSRF/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://r4inb00w.github.io/2023/04/15/apacheSSRF/&text=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://r4inb00w.github.io/2023/04/15/apacheSSRF/&title=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://r4inb00w.github.io/2023/04/15/apacheSSRF/&is_video=false&description=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=CVE-2021-40438 Apache mod_proxy SSRF&body=Check out this article: https://r4inb00w.github.io/2023/04/15/apacheSSRF/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://r4inb00w.github.io/2023/04/15/apacheSSRF/&title=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://r4inb00w.github.io/2023/04/15/apacheSSRF/&title=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://r4inb00w.github.io/2023/04/15/apacheSSRF/&title=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://r4inb00w.github.io/2023/04/15/apacheSSRF/&title=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://r4inb00w.github.io/2023/04/15/apacheSSRF/&name=CVE-2021-40438 Apache mod_proxy SSRF&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://r4inb00w.github.io/2023/04/15/apacheSSRF/&t=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://blog.rainb0w.top/2023/04/15/apacheSSRF/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://blog.rainb0w.top/2023/04/15/apacheSSRF/&text=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://blog.rainb0w.top/2023/04/15/apacheSSRF/&title=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://blog.rainb0w.top/2023/04/15/apacheSSRF/&is_video=false&description=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=CVE-2021-40438 Apache mod_proxy SSRF&body=Check out this article: https://blog.rainb0w.top/2023/04/15/apacheSSRF/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://blog.rainb0w.top/2023/04/15/apacheSSRF/&title=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://blog.rainb0w.top/2023/04/15/apacheSSRF/&title=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://blog.rainb0w.top/2023/04/15/apacheSSRF/&title=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://blog.rainb0w.top/2023/04/15/apacheSSRF/&title=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://blog.rainb0w.top/2023/04/15/apacheSSRF/&name=CVE-2021-40438 Apache mod_proxy SSRF&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://blog.rainb0w.top/2023/04/15/apacheSSRF/&t=CVE-2021-40438 Apache mod_proxy SSRF"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>

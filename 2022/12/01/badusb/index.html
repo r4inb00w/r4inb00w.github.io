@@ -9,7 +9,7 @@
     <meta name="description" content="前言最近偶然了解到”BadUSB”，感觉很好玩，试着制作了一个，过程很曲折坎坷。我也尝试去绕过了一些AntiVirus的检测，结果也是比较让自己满意的。接下来的文章我将按照我的思路进行，写一下BadUSB的制作过程，以及遇到的困难和解决办法。（小白文，可能有些基础的东西解释的有点多） BadUSB原理浅析在2014年的BlackHat大会上，信息安全专家展示了一种新的网络安全威胁，这种技术被称为B">
 <meta property="og:type" content="article">
 <meta property="og:title" content="初探BadUSB">
-<meta property="og:url" content="https://r4inb00w.github.io/2022/12/01/badusb/index.html">
+<meta property="og:url" content="https://blog.rainb0w.top/2022/12/01/badusb/index.html">
 <meta property="og:site_name" content="rainb0w">
 <meta property="og:description" content="前言最近偶然了解到”BadUSB”，感觉很好玩，试着制作了一个，过程很曲折坎坷。我也尝试去绕过了一些AntiVirus的检测，结果也是比较让自己满意的。接下来的文章我将按照我的思路进行，写一下BadUSB的制作过程，以及遇到的困难和解决办法。（小白文，可能有些基础的东西解释的有点多） BadUSB原理浅析在2014年的BlackHat大会上，信息安全专家展示了一种新的网络安全威胁，这种技术被称为B">
 <meta property="og:locale" content="en_US">
@@ -110,17 +110,17 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://r4inb00w.github.io/2022/12/01/badusb/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://r4inb00w.github.io/2022/12/01/badusb/&text=初探BadUSB"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://r4inb00w.github.io/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://r4inb00w.github.io/2022/12/01/badusb/&is_video=false&description=初探BadUSB"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=初探BadUSB&body=Check out this article: https://r4inb00w.github.io/2022/12/01/badusb/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://r4inb00w.github.io/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://r4inb00w.github.io/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://r4inb00w.github.io/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://r4inb00w.github.io/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://r4inb00w.github.io/2022/12/01/badusb/&name=初探BadUSB&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://r4inb00w.github.io/2022/12/01/badusb/&t=初探BadUSB"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://blog.rainb0w.top/2022/12/01/badusb/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://blog.rainb0w.top/2022/12/01/badusb/&text=初探BadUSB"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://blog.rainb0w.top/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://blog.rainb0w.top/2022/12/01/badusb/&is_video=false&description=初探BadUSB"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=初探BadUSB&body=Check out this article: https://blog.rainb0w.top/2022/12/01/badusb/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://blog.rainb0w.top/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://blog.rainb0w.top/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://blog.rainb0w.top/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://blog.rainb0w.top/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://blog.rainb0w.top/2022/12/01/badusb/&name=初探BadUSB&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://blog.rainb0w.top/2022/12/01/badusb/&t=初探BadUSB"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -296,17 +296,17 @@
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://r4inb00w.github.io/2022/12/01/badusb/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://r4inb00w.github.io/2022/12/01/badusb/&text=初探BadUSB"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://r4inb00w.github.io/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://r4inb00w.github.io/2022/12/01/badusb/&is_video=false&description=初探BadUSB"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=初探BadUSB&body=Check out this article: https://r4inb00w.github.io/2022/12/01/badusb/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://r4inb00w.github.io/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://r4inb00w.github.io/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://r4inb00w.github.io/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://r4inb00w.github.io/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://r4inb00w.github.io/2022/12/01/badusb/&name=初探BadUSB&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://r4inb00w.github.io/2022/12/01/badusb/&t=初探BadUSB"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://blog.rainb0w.top/2022/12/01/badusb/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://blog.rainb0w.top/2022/12/01/badusb/&text=初探BadUSB"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://blog.rainb0w.top/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://blog.rainb0w.top/2022/12/01/badusb/&is_video=false&description=初探BadUSB"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=初探BadUSB&body=Check out this article: https://blog.rainb0w.top/2022/12/01/badusb/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://blog.rainb0w.top/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://blog.rainb0w.top/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://blog.rainb0w.top/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://blog.rainb0w.top/2022/12/01/badusb/&title=初探BadUSB"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://blog.rainb0w.top/2022/12/01/badusb/&name=初探BadUSB&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://blog.rainb0w.top/2022/12/01/badusb/&t=初探BadUSB"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
