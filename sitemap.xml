@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://blog.rainb0w.top/2024/01/09/test/</loc>
+    
+    <lastmod>2024-01-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://blog.rainb0w.top/about/index.html</loc>
     
     <lastmod>2023-12-12</lastmod>
@@ -166,7 +175,7 @@
 
   <url>
     <loc>https://blog.rainb0w.top/</loc>
-    <lastmod>2023-12-12</lastmod>
+    <lastmod>2024-01-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -174,49 +183,49 @@
   
   <url>
     <loc>https://blog.rainb0w.top/tags/security/</loc>
-    <lastmod>2023-12-12</lastmod>
+    <lastmod>2024-01-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://blog.rainb0w.top/tags/CVE/</loc>
-    <lastmod>2023-12-12</lastmod>
+    <lastmod>2024-01-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://blog.rainb0w.top/tags/tools/</loc>
-    <lastmod>2023-12-12</lastmod>
+    <lastmod>2024-01-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://blog.rainb0w.top/tags/hackthebox/</loc>
-    <lastmod>2023-12-12</lastmod>
+    <lastmod>2024-01-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://blog.rainb0w.top/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/</loc>
-    <lastmod>2023-12-12</lastmod>
+    <lastmod>2024-01-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://blog.rainb0w.top/tags/CTF/</loc>
-    <lastmod>2023-12-12</lastmod>
+    <lastmod>2024-01-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://blog.rainb0w.top/tags/%E5%9F%9F%E6%B8%97%E9%80%8F/</loc>
-    <lastmod>2023-12-12</lastmod>
+    <lastmod>2024-01-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
