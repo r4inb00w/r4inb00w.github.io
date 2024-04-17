@@ -189,6 +189,13 @@
   </url>
   
   <url>
+    <loc>https://blog.rainb0w.top/tags/tools/</loc>
+    <lastmod>2024-04-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://blog.rainb0w.top/tags/CVE/</loc>
     <lastmod>2024-04-17</lastmod>
     <changefreq>weekly</changefreq>
@@ -203,13 +210,6 @@
   </url>
   
   <url>
-    <loc>https://blog.rainb0w.top/tags/%E5%9F%9F%E6%B8%97%E9%80%8F/</loc>
-    <lastmod>2024-04-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://blog.rainb0w.top/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/</loc>
     <lastmod>2024-04-17</lastmod>
     <changefreq>weekly</changefreq>
@@ -217,7 +217,7 @@
   </url>
   
   <url>
-    <loc>https://blog.rainb0w.top/tags/tools/</loc>
+    <loc>https://blog.rainb0w.top/tags/%E5%9F%9F%E6%B8%97%E9%80%8F/</loc>
     <lastmod>2024-04-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
